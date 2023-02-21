@@ -61,6 +61,30 @@ interface Room {
 
 const rooms: Room[] = [];
 
+function checkName(name: string, roomId: string) {
+  const playerIndex = rooms[0].players.filter((player) => player.name === name);
+  if (playerIndex.length > 0) {
+    io.to(roomId)
+      .timeout(5000)
+      .emit('checkname', playerIndex[0].id, (err: any, response: any) => {
+        if (err) {
+          // Name is not taken
+          return true;
+        } else {
+          if (!response[0]) {
+            // Name is not taken
+            return true;
+          } else {
+            // Name is taken
+            return false;
+          }
+        }
+      });
+  } else {
+    return 'room-empty';
+  }
+}
+
 io.on('connection', (socket) => {
   const allowNewConnections = true;
   const referer = socket.handshake.headers.referer;
@@ -85,15 +109,18 @@ io.on('connection', (socket) => {
     );
     if (playerIndex.length > 0) {
       console.log('c');
-      io.to(roomId)
+      socket
+        .to(roomId)
         .timeout(5000)
         .emit('checkname', playerIndex[0].id, (err: any, response: any) => {
           if (err) {
-            console.log('timed out');
-            console.log(err);
+            // Name is not taken
           } else {
-            console.log('got response');
-            console.log(response);
+            if (!response[0]) {
+              // Name is not taken
+            } else {
+              // Name is taken
+            }
           }
         });
     } else {
@@ -111,6 +138,21 @@ io.on('connection', (socket) => {
 
 app.get('/', (req: Request, res: Response) => {
   res.render('index.ejs');
+});
+
+app.post('/join-lobby', (req: Request, res: Response) => {
+  console.log('a');
+  const valid = checkName(req.body.name, req.body.code);
+  if (valid === 'room-empty') {
+    // Room is empty
+    console.log('empty room');
+  } else if (valid) {
+    // Name is not taken
+    console.log('name not taken');
+  } else {
+    // Name is taken
+    console.log('name taken');
+  }
 });
 
 app.post('/', (req: Request, res: Response) => {
