@@ -1,3 +1,23 @@
-User types name
-If game exists, it'll ping the users associated id
-If no response, allow user to overwrite old one
+User creates game
+
+People join game using the game code
+They are prompted to enter their name
+Host starts game
+Game lobby now locked so no one else can join
+
+Game starts
+Host gets first pick of category
+
+
+Person chosing gets list of categories with values
+Everyone else sees a loading screen 
+When category is chosen, everyone sees the category and the value
+It then shows the question and a timer will start for 30 seconds
+A few seconds later a buzz button will appear
+Once a person buzzes, they get a few seconds to answer, when buzzing the timer is paused
+If they answer correctly, they get the points and get to pick the next question 
+If they answer incorrectly, the other players get a chance to answer and the timer is resumed
+
+
+
+When answering:
