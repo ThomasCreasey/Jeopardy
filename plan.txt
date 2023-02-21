@@ -1,0 +1,3 @@
+User types name
+If game exists, it'll ping the users associated id
+If no response, allow user to overwrite old one
