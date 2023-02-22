@@ -52,12 +52,20 @@ declare module 'http' {
 interface Player {
   name: string;
   host: boolean;
+  points: number;
   id: string;
+}
+
+interface questionData {
+  category: string;
+  question?: string;
+  value: number;
 }
 
 interface Room {
   id: string;
   open: boolean;
+  currentTurn: string;
   players: Player[];
 }
 
@@ -107,6 +115,7 @@ io.on('connection', (socket: Socket) => {
   if (!name) return;
   const player: Player = {
     name: socket.request.session.name,
+    points: 0,
     id: socket.id,
     host: false,
   };
@@ -119,6 +128,7 @@ io.on('connection', (socket: Socket) => {
     rooms.push({
       id: roomId,
       open: true,
+      currentTurn: player.id,
       players: [player],
     });
 
@@ -127,12 +137,16 @@ io.on('connection', (socket: Socket) => {
     console.log('created new room');
   } else {
     const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
-    if (roomData.players.filter((player) => player.name === name).length < 1) {
+    const playerIndex = roomData.players.filter(
+      (player) => player.name === name,
+    );
+    if (playerIndex.length < 1) {
       rooms[rooms.findIndex((room) => room.id === roomId)].players.push(player);
       io.to(roomId).emit('newplayer', player);
     } else {
-      if (roomData.players.filter((player) => player.name === name)[0].host) {
-        console.log('close lobby');
+      if (playerIndex[0].host) {
+        delete rooms[rooms.findIndex((room) => room.id === roomId)];
+        io.to(roomId).emit('lobby-closed');
       } else {
         rooms[rooms.findIndex((room) => room.id === roomId)].players.filter(
           (player) => player.name === name,
@@ -142,7 +156,14 @@ io.on('connection', (socket: Socket) => {
       }
     }
   }
-  console.log(rooms[rooms.findIndex((room) => room.id === roomId)].players);
+
+  socket.on('start-game', () => {
+    if (player.host) {
+      const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
+      roomData.open = false;
+      io.to(roomId).emit('start-game');
+    }
+  });
 
   socket.on('kick', (id: string) => {
     if (player.host) {
@@ -154,6 +175,16 @@ io.on('connection', (socket: Socket) => {
         roomData.players.splice(playerIndex, 1);
         io.to(roomId).emit('kick', id);
       }
+    }
+  });
+
+  socket.on('category-select', (data: questionData) => {
+    const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
+    if (roomData.currentTurn === socket.id) {
+      data['question'] = 'Test Question';
+      io.to(roomId).emit('set-question', data);
+    } else {
+      console.log('not your go');
     }
   });
 });

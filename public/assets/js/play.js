@@ -1,13 +1,15 @@
 const modalName = new bootstrap.Modal('#modal-name');
 const modalLoading = new bootstrap.Modal('#modal-loading');
 const modalHost = new bootstrap.Modal('#modal-host');
+const modalCategory = new bootstrap.Modal('#modal-category');
+const modalQuestion = new bootstrap.Modal('#modal-question');
 
-/*$('.btn').click(function () {
-  socket.emit('categorySelect', {
-    category: $(this).data('category'),
-    value: $(this).data('value'),
-  });
-});*/
+function show(id) {
+  document.getElementById(id).style.display = 'block';
+}
+function hide(id) {
+  document.getElementById(id).style.display = 'none';
+}
 
 $(document).ready(function () {
   modalName.show();
