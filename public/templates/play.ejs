@@ -55,6 +55,38 @@
 
     <div
       class="modal fade"
+      id="modal-host"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+    >
+      <div class="modal-dialog modal-dialog-scrollable modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Host Options</h5>
+          </div>
+          <div
+            class="modal-body d-flex flex-column align-items-center justify-content-center"
+          >
+            <table class="table table-dark">
+              <thead>
+                <tr>
+                  <th scope="col">Player Name</th>
+                  <th scope="col">#</th>
+                </tr>
+              </thead>
+              <tbody id="player-list"></tbody>
+            </table>
+            <button class="btn btn-outline-info" style="width: 75%" disabled>
+              Start Game
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
       id="modal-name"
       data-bs-keyboard="false"
       data-bs-backdrop="static"
@@ -86,10 +118,7 @@
       integrity="sha384-KA7m0DwgQGmeRC6Xre3hJO+ZxpanOauVh4Czdqbg8lDKJ3bZZYVYmP+y4F31x40L"
       crossorigin="anonymous"
     ></script>
-    <script>
-      var socket = io();
-    </script>
-    <script src="/js/socket.js"></script>
     <script src="/js/play.js"></script>
+    <script src="/js/socket.js"></script>
   </body>
 </html>
