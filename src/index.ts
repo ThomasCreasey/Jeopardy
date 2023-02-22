@@ -168,9 +168,10 @@ app.post('/create-lobby', (req: Request, res: Response) => {
 });
 
 app.post('/join-lobby', async (req: Request, res: Response) => {
-  const valid = await checkName(req.body.name, req.body.code);
+  const name = req.body.name.slice(0, 15);
+  const valid = await checkName(name, req.body.code);
   if (valid) {
-    req.session.name = req.body.name;
+    req.session.name = name;
     res.status(200).send('valid');
     // Name is not taken
     console.log('name not taken');
