@@ -17,6 +17,7 @@ function hide(id) {
 
 $(document).ready(function () {
   modalName.show();
+  $('#host-categories').selectize({ maxitems: 5 });
 });
 
 $('#btn-name').click(function () {
