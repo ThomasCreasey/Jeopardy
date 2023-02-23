@@ -3,6 +3,10 @@ const modalLoading = new bootstrap.Modal('#modal-loading');
 const modalHost = new bootstrap.Modal('#modal-host');
 const modalCategory = new bootstrap.Modal('#modal-category');
 const modalQuestion = new bootstrap.Modal('#modal-question');
+const modalResponse = new bootstrap.Modal('#modal-response');
+const modalAnswered = new bootstrap.Modal('#modal-answered');
+const modalCategorySelect = new bootstrap.Modal('#modal-category-select');
+const modalClosed = new bootstrap.Modal('#modal-closed');
 
 function show(id) {
   document.getElementById(id).style.display = 'block';
