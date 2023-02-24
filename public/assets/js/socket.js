@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
+
 var sock;
 var questionTimer;
 var inputCountdown;
@@ -170,6 +172,7 @@ function startSocket(socket) {
 
   socket.on('timed-out', () => {
     modalResponse.hide();
+    modalQuestion.hide();
     modalLoading.show();
     document.getElementById(
       'modal-loading-text',
@@ -208,7 +211,9 @@ function startSocket(socket) {
   });
 
   socket.on('player-left', (player) => {
-    document.getElementById(`hosttable-${player}`).remove();
+    if (!player) return;
+    const el = document.getElementById(`hosttable-${player}`);
+    if (el) el.remove();
   });
 
   socket.on('kick', (player) => {
@@ -240,6 +245,7 @@ function startSocket(socket) {
 
   socket.on('incorrect-answer', (player) => {
     modalResponse.hide();
+    modalQuestion.hide();
     modalLoading.hide();
     document.getElementById(
       'modal-answered-text-1',
@@ -308,7 +314,7 @@ function startSocket(socket) {
     }
   });
 
-  socket.on('start-game', () => {
+  socket.on('start-game', (categories) => {
     show('load-points');
     if (window.localStorage.getItem('host') === 'true') {
       // Show category options
@@ -318,6 +324,32 @@ function startSocket(socket) {
     } else {
       document.getElementById('modal-loading-text').innerText =
         'Waiting for host to select a category...';
+    }
+    const head = document.getElementById('category-select-head');
+    const body = document.getElementById('category-select-body');
+
+    categories.forEach((category) => {
+      const th = document.createElement('th');
+      th.setAttribute('scope', 'row');
+      th.innerText = category;
+      head.appendChild(th);
+    });
+
+    for (let i = 0; i < 5; i++) {
+      const tr = document.createElement('tr');
+      categories.forEach((category) => {
+        const value = 200 * (i + 1);
+        const td = document.createElement('td');
+        const button = document.createElement('button');
+        button.classList.add('btn', 'btn-outline-info', 'category-select-btn');
+        button.innerText = value;
+        button.id = `${category}-${value}`;
+        button.setAttribute('data-category', category);
+        button.setAttribute('data-value', value);
+        td.appendChild(button);
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
     }
   });
 
@@ -338,14 +370,23 @@ function startSocket(socket) {
 }
 
 $('#host-startgame').click(function () {
-  sock.emit('start-game');
+  const select = document.getElementById('host-categories');
+  if (select.options.length > 5 || select.options.length < 1) {
+    alert('Please select up to 5 categories');
+    return;
+  }
+  const allowJoining = document.getElementById('join-after-start').checked;
+
+  const categories = [...select.options].map((option) => option.value);
+
+  sock.emit('start-game', { categories, allowJoining });
 });
 
 function kick(id) {
   sock.emit('kick', id);
 }
 
-$('.category-select-btn').click(function () {
+$(document).on('click', '.category-select-btn', function () {
   sock.emit('category-select', {
     category: $(this).data('category'),
     value: $(this).data('value'),

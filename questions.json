@@ -1,8 +1,65 @@
 {
-  "category": {
-    "Question": {
+  "Category": [
+    {
+      "name": "Question 1",
       "answers": [],
-      "points": 0
+      "value": 0
     }
-  }
+  ],
+  "Science": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ],
+  "General Knowledge": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ],
+  "Sports": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ],
+  "Geography": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ],
+  "History": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ],
+  "Music": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ],
+  "Art": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ],
+  "Brands": [
+    {
+      "name": "Question 1",
+      "answers": [],
+      "value": 0
+    }
+  ]
 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable no-undef */
 const modalName = new bootstrap.Modal('#modal-name');
 const modalLoading = new bootstrap.Modal('#modal-loading');
 const modalHost = new bootstrap.Modal('#modal-host');

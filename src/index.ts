@@ -5,6 +5,7 @@ import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import session, { Session } from 'express-session';
 import bodyParser from 'body-parser';
+import fs from 'fs';
 
 interface Player {
   name: string;
@@ -26,12 +27,20 @@ interface questionDataServer {
   answers: string[];
   value: number;
 }
+interface question {
+  category: string;
+  question: string;
+  answers: string[];
+  value: number;
+}
 
 interface Room {
   id: string;
   open: boolean;
   waitingFor: string;
+  categories?: string[];
   question?: questionDataServer;
+  questions: any;
   currentTurn: string;
   players: Player[];
 }
@@ -141,6 +150,7 @@ io.on('connection', (socket: Socket) => {
       // Create a new room
       id: roomId,
       waitingFor: '',
+      questions: [],
       open: true,
       currentTurn: player.id,
       players: [player],
@@ -179,13 +189,36 @@ io.on('connection', (socket: Socket) => {
     }
   }
 
-  socket.on('start-game', () => {
+  socket.on('start-game', (data) => {
     // When the host starts the game
     const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
     if (player.host && roomData.players.length > 1) {
       // If the player is the host and there is more than 1 player
-      roomData.open = false;
-      io.to(roomId).emit('start-game');
+      if (!data.allowJoining) roomData.open = false;
+
+      if (data.categories.length > 5) return; // If there are more than 5 categories, return
+      roomData.categories = data.categories;
+
+      const questions = JSON.parse(fs.readFileSync('questions.json', 'utf8')); // Read the questions file
+      const categories = data.categories; // Get the categories from the request
+      categories.forEach((category: string) => {
+        // For each category
+        const categoryQuestions = questions[category]; // Get the questions for the category
+        const randomQuestions: question[] = []; // Create an array for the random questions
+        for (let i = 0; i < 5; i++) {
+          const categoryValue = i + 1 * 200;
+          const randomQuestions = categoryQuestions.filter(
+            (question: any) => question.value === categoryValue,
+          );
+          const randomQuestion =
+            randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
+          randomQuestions.push(randomQuestion);
+        }
+        roomData.questions[category] = randomQuestions; // Push the random questions to the room questions array
+      });
+      console.log(roomData);
+
+      io.to(roomId).emit('start-game', data.categories); // Emit the start game event to the room
     }
   });
 
@@ -238,6 +271,29 @@ io.on('connection', (socket: Socket) => {
     if (roomData.waitingFor === socket.id) {
       roomData.waitingFor = ''; // Set the waiting for property to empty
       io.to(roomId).emit('timed-out'); // Emit the timed out event to the room to allow the next player to buzz in
+
+      const colourData = {
+        // Data to update the colour of the category buttons
+        colour: 'danger',
+        category: roomData.question.category,
+        value: roomData.question.value,
+      };
+      if (
+        // If all players have answered
+        roomData.question.usersAnswered.length === roomData.players.length
+      ) {
+        setTimeout(() => {
+          // Set a timeout to allow the modal to display for a few seconds, time should match the client side modal timeout
+          const nextUser = roomData.players.find(
+            (player) => player.id === roomData.currentTurn,
+          );
+          if (!nextUser)
+            return io.to(roomId).emit('lobby-closed', 'Not enough players');
+
+          io.to(roomId).emit('category-select', nextUser); // Allow the user to select a new category
+          io.to(roomId).emit('update-colour', colourData); // Emit the update colour event to the room to update the colour of the category buttons
+        }, 3000);
+      }
     }
   });
 
@@ -357,7 +413,7 @@ io.on('connection', (socket: Socket) => {
 
             io.to(roomId).emit('category-select', nextUser); // Allow the user to select a new category
             io.to(roomId).emit('update-colour', colourData); // Emit the update colour event to the room to update the colour of the category buttons
-          }, 2000);
+          }, 3000);
         }
       }
     }
@@ -427,23 +483,17 @@ app.post('/', (req: Request, res: Response) => {
 });
 
 app.get('/play/:id', (req: Request, res: Response) => {
-  const categories = [
-    {
-      name: 'Category 1',
-    },
-    {
-      name: 'Category 2',
-    },
-    {
-      name: 'Category 3',
-    },
-    {
-      name: 'Category 4',
-    },
-    {
-      name: 'Category 5',
-    },
-  ];
+  const categories = JSON.parse(fs.readFileSync('questions.json', 'utf8')); // Get the categories from the json file (this is just an array of objects
+
+  for (let i = 0; i < 5; ) {
+    const random = Math.floor(Math.random() * Object.keys(categories).length);
+    const index = Object.keys(categories)[random];
+    if (!categories[index].selected) {
+      categories[index].selected = true;
+      i++;
+    }
+  }
+
   const name = req.session.name;
   res.render('play.ejs', { categories, name });
 });
