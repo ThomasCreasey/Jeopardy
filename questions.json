@@ -1,65 +1,1085 @@
 {
-  "Category": [
-    {
-      "name": "Question 1",
-      "answers": [],
-      "value": 0
-    }
-  ],
   "Science": [
     {
-      "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "name": "What is the smallest particle that makes up an element?",
+      "answers": ["atom"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the force that attracts two objects with mass towards each other?",
+      "answers": ["gravity"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the largest organ in the human body?",
+      "answers": ["skin"],
+      "value": 200
+    },
+    {
+      "name": "What is the chemical formula for water?",
+      "answers": ["h2o", "h₂o"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the galaxy we live in?",
+      "answers": ["milky way", "the milky way"],
+      "value": 200
+    },
+    {
+      "name": "What is the largest planet in our solar system?",
+      "answers": ["jupiter"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the process by which plants make their own food?",
+      "answers": ["photosynthesis"],
+      "value": 200
+    },
+    {
+      "name": "What is the term for a change in the DNA sequence that affects genetic information?",
+      "answers": ["mutation"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the planet closest to the sun?",
+      "answers": ["mercury"],
+      "value": 200
+    },
+    {
+      "name": "What is the process by which a gas changes into a liquid?",
+      "answers": ["condensation"],
+      "value": 400
+    },
+    {
+      "name": "What is the chemical symbol for gold?",
+      "answers": ["au"],
+      "value": 400
+    },
+    {
+      "name": "What is the process by which liquid water turns into water vapor?",
+      "answers": ["evaporation"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the process by which heat is transferred through a fluid or gas by the circulation of currents?",
+      "answers": ["convection"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the gas that makes up most of the Earth's atmosphere?",
+      "answers": ["nitrogen"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the largest bone in the human body?",
+      "answers": ["femur"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the metal that is a liquid at room temperature?",
+      "answers": ["mercury", "hg"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the device that measures earthquakes?",
+      "answers": ["seismometer", "seismograph"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the process by which solid ice turns directly into water vapor without first melting?",
+      "answers": ["sublimation"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the process by which a solid turns directly into a gas without first becoming a liquid?",
+      "answers": ["deposition"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the process by which a gas turns directly into a solid without first becoming a liquid?",
+      "answers": ["deposition"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the unit of measurement for electric current?",
+      "answers": ["ampere", "amp", "a"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the measure of the amount of matter in an object?",
+      "answers": ["mass", "m"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the gas that makes up the second largest percentage of the Earth's atmosphere?",
+      "answers": ["oxygen", "o2"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the process by which a substance changes from a liquid to a solid?",
+      "answers": ["freezing", "solidification"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the molecule responsible for carrying oxygen in our blood?",
+      "answers": ["hemoglobin", "haemoglobin"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the force that opposes motion between two surfaces in contact?",
+      "answers": ["friction"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the process by which two or more atomic nuclei come together to form a heavier nucleus?",
+      "answers": ["fusion"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the type of energy associated with motion?",
+      "answers": ["kinetic energy", "motion energy", "kinetic"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the process by which a living organism takes in oxygen and releases carbon dioxide?",
+      "answers": ["respiration"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the process by which a liquid turns into a gas?",
+      "answers": ["evaporation", "vaporization"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the type of energy associated with the position of an object in a gravitational field?",
+      "answers": ["potential energy", "gravitational energy"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the process by which white light is separated into its component colors?",
+      "answers": ["prism", "spectroscope"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the substance that gives skin and hair its color?",
+      "answers": ["melanin", "melonin"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the layer of the atmosphere that is closest to the Earth's surface?",
+      "answers": ["troposphere"],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the phenomenon that occurs when a sound wave encounters an obstacle and then bends around it?",
+      "answers": ["diffraction"],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the process by which a cell divides into two daughter cells?",
+      "answers": ["mitosis"],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the process by which a substance is broken down into its constituent parts?",
+      "answers": ["decomposition"],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the unit used to measure the amount of electric charge?",
+      "answers": ["coulomb", "C"],
+      "value": 1000
     }
   ],
   "General Knowledge": [
     {
-      "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "name": "What is the capital of France?",
+      "answers": ["paris"],
+      "value": 200
+    },
+    {
+      "name": "What is 8x8",
+      "answers": ["64", "sixty four"],
+      "value": 200
+    },
+    {
+      "name": "What is the capital of England?",
+      "answers": ["london"],
+      "value": 200
+    },
+    {
+      "name": "What is the capital of Luxembourg?",
+      "answers": ["luxembourg"],
+      "value": 200
+    },
+    {
+      "name": "What's the hardest substance in the world?",
+      "answers": ["Diamonds"],
+      "value": 200
+    },
+    {
+      "name": "What is the largest planet in our solar system?",
+      "answers": ["jupiter"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the highest mountain in the world?",
+      "answers": ["mount everest", "everest"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the famous detective created by Sir Arthur Conan Doyle?",
+      "answers": ["sherlock holmes", "sherlock", "holmes"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the fictional spy created by Ian Fleming?",
+      "answers": ["james bond", "bond"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the world's largest hot desert?",
+      "answers": ["sahara", "sahara desert"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the largest bird in the world?",
+      "answers": ["ostrich"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the currency used in Japan?",
+      "answers": ["yen"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the largest organ in the human body?",
+      "answers": ["skin"],
+      "value": 400
+    },
+    {
+      "name": "What is the largest continent on Earth by land mass?",
+      "answers": ["asia"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the smallest planet in our solar system?",
+      "answers": ["mercury"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the world's largest coral reef system located in Australia?",
+      "answers": ["great barrier reef", "barrier reef", "great reef"],
+      "value": 400
+    },
+    {
+      "name": "Which planet in our solar system is known as the 'Red Planet'?",
+      "answers": ["mars"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the world's longest river?",
+      "answers": ["nile", "river nile"],
+      "value": 400
+    },
+    {
+      "name": "Who has the most monthly listeners on spotify",
+      "answers": ["the weeknd", "weeknd"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the smallest continent in the world?",
+      "answers": ["oceania", "australia"],
+      "value": 400
+    },
+    {
+      "name": "Which city is known as the City of Love?",
+      "answers": ["paris"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's largest reptile?",
+      "answers": ["saltwater crocodile", "crocodile"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the world's largest land animal?",
+      "answers": ["elephant"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the largest living mammal on Earth?",
+      "answers": ["blue whale", "whale"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the smallest bird in the world?",
+      "answers": ["bee hummingbird", "hummingbird"],
+      "value": 400
+    },
+    {
+      "name": "Which country is known as the Land of the Rising Sun?",
+      "answers": ["japan"],
+      "value": 400
+    },
+    {
+      "name": "Who painted the famous artwork 'The Mona Lisa'?",
+      "answers": ["leonardo da vinci", "da vinci", "leonardo"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's largest island?",
+      "answers": ["greenland"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the largest country by land mass?",
+      "answers": ["russia"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's deepest ocean?",
+      "answers": ["pacific ocean", "the pacific"],
+      "value": 600
+    },
+    {
+      "name": "How many hearts does an octopus have?",
+      "answers": ["3", "three"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's largest ocean?",
+      "answers": ["pacific ocean", "the pacific"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's largest waterfall?",
+      "answers": ["angel falls", "the angel falls"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the second planet from the Sun?",
+      "answers": ["venus"],
+      "value": 600
+    },
+    {
+      "name": "What is the chemical symbol for gold?",
+      "answers": ["au"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the capital city of Thailand?",
+      "answers": ["bangkok"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's largest canyon?",
+      "answers": ["grand canyon", "the grand canyon"],
+      "value": 600
+    },
+    {
+      "name": "Which country is both the smallest by land area and by population?",
+      "answers": ["vatican city", "the vatican", "vatican"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's largest peninsula?",
+      "answers": ["arabian peninsula", "the arabian peninsula"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the highest mountain peak in Africa?",
+      "answers": ["mount kilimanjaro", "kilimanjaro"],
+      "value": 800
+    },
+    {
+      "name": "Which American president served the longest term in office?",
+      "answers": [
+        "franklin d. roosevelt",
+        "roosevelt",
+        "franklin roosevelt",
+        "fdr",
+        "franklin d roosevelt",
+        "franklin delano roosevelt"
+      ],
+      "value": 800
+    },
+    {
+      "name": "Who wrote the famous novel 'To Kill a Mockingbird'?",
+      "answers": ["harper lee", "lee", "harper"],
+      "value": 800
+    },
+    {
+      "name": "Which country has the largest population in the world?",
+      "answers": ["china"],
+      "value": 800
+    },
+    {
+      "name": "Who is credited with discovering penicillin?",
+      "answers": ["alexander fleming", "fleming", "alex fleming"],
+      "value": 1000
+    },
+    {
+      "name": "Who invented the telephone?",
+      "answers": ["alexander graham bell", "bell"],
+      "value": 1000
+    },
+    {
+      "name": "Which country has the longest coastline in the world?",
+      "answers": ["canada"],
+      "value": 1000
+    },
+    {
+      "name": "What is the smallest bone in the human body?",
+      "answers": ["stapes", "stirrup"],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the brightest star in our solar system?",
+      "answers": ["sirius"],
+      "value": 1000
+    },
+    {
+      "name": "What is the highest mountain in North America?",
+      "answers": ["denali", "mt. mckinley"],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the world's largest spider by leg span?",
+      "answers": [
+        "goliath birdeater",
+        "birdeater spider",
+        "goliath",
+        "birdeater",
+        "goliath bird eater",
+        "goliath bird-eater",
+        "bird-eater",
+        "bird-eater spider"
+      ],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the world's largest amphibian?",
+      "answers": ["chinese giant salamander", "giant salamander"],
+      "value": 1000
     }
   ],
   "Sports": [
     {
-      "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "name": "What is the name of the sport where players hit a ball over a net with a racket?",
+      "answers": ["tennis"],
+      "value": 200
+    },
+    {
+      "name": "What sport uses the terms “strike,” “spare,” and “gutter ball”?",
+      "answers": ["bowling"],
+      "value": 200
+    },
+    {
+      "name": "What sport features a puck?",
+      "answers": ["hockey"],
+      "value": 200
+    },
+    {
+      "name": "What sport uses a round ball and a hoop?",
+      "answers": ["basketball"],
+      "value": 200
+    },
+    {
+      "name": "What is the national sport of Canada?",
+      "answers": ["hockey", "ice hockey"],
+      "value": 200
+    },
+    {
+      "name": "What sport is known as the “gentleman’s game”?",
+      "answers": ["cricket"],
+      "value": 200
+    },
+    {
+      "name": "What sport is played on a diamond?",
+      "answers": ["baseball"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the sport where players try to knock down pins with a ball?",
+      "answers": ["bowling"],
+      "value": 200
+    },
+    {
+      "name": "What is the term used for a score of zero in tennis?",
+      "answers": ["love"],
+      "value": 400
+    },
+    {
+      "name": "Which country won the first FIFA World Cup in 1930?",
+      "answers": ["uruguay"],
+      "value": 400
+    },
+    {
+      "name": "Which boxer was known as 'The Greatest' and 'The Louisville Lip'?",
+      "answers": ["muhammad ali", "ali", "cassius clay"],
+      "value": 400
+    },
+    {
+      "name": "What is the highest score possible in a single game of ten-pin bowling?",
+      "answers": ["300", "three hundred"],
+      "value": 400
+    },
+    {
+      "name": "Which Jamaican sprinter won three gold medals at the 2008 Summer Olympics?",
+      "answers": ["usain bolt", "bolt"],
+      "value": 400
+    },
+    {
+      "name": "In which city are the headquarters of the International Olympic Committee located?",
+      "answers": ["lausanne", "switzerland"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the trophy awarded to the winner of the Wimbledon men's singles title?",
+      "answers": ["the challenge cup", "wimbledon trophy", "wimbledon cup"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the highest score in a single play in American football?",
+      "answers": ["touchdown", "TD"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the Canadian ice hockey team that has won the most Stanley Cup championships?",
+      "answers": ["montreal canadiens", "canadiens"],
+      "value": 600
+    },
+    {
+      "name": "Which athlete holds the world record for the most Olympic gold medals?",
+      "answers": ["michael phelps", "phelps"],
+      "value": 600
+    },
+    {
+      "name": "In what year did the first modern Olympic Games take place?",
+      "answers": ["1896"],
+      "value": 600
+    },
+    {
+      "name": "What is the term used in golf for a hole completed in one stroke?",
+      "answers": ["hole in one", "ace"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the Los Angeles basketball team that plays at the Staples Center?",
+      "answers": ["los angeles lakers", "lakers"],
+      "value": 600
+    },
+    {
+      "name": "Who is the only male tennis player to have won a calendar-year Grand Slam?",
+      "answers": ["rod laver", "laver"],
+      "value": 600
+    },
+    {
+      "name": "In what year did the first ever FIFA World Cup take place?",
+      "answers": ["1930"],
+      "value": 600
+    },
+    {
+      "name": "Which country hosted the 2018 Winter Olympics?",
+      "answers": ["south korea", "korea", "republic of korea"],
+      "value": 600
+    },
+    {
+      "name": "Which NFL team won the Super Bowl in 2020?",
+      "answers": ["kansas city chiefs", "chiefs"],
+      "value": 600
+    },
+    {
+      "name": "Which country won the Euro 2020 football tournament?",
+      "answers": ["italy"],
+      "value": 600
+    },
+    {
+      "name": "Who holds the world record for the most goals scored in a single season in football (soccer)?",
+      "answers": ["lionel messi", "messi"],
+      "value": 800
+    },
+    {
+      "name": "What is the maximum number of players allowed on a basketball court at the same time?",
+      "answers": ["10", "ten"],
+      "value": 800
+    },
+    {
+      "name": "Which country has won the most FIFA World Cup titles?",
+      "answers": ["Brazil"],
+      "value": 800
+    },
+    {
+      "name": "What is the maximum number of substitutions allowed in a football (soccer) match?",
+      "answers": ["3", "three"],
+      "value": 800
+    },
+
+    {
+      "name": "Which team won the first Super Bowl in 1967?",
+      "answers": ["green bay packers", "packers", "green bay"],
+      "value": 800
+    },
+    {
+      "name": "Who holds the record for the most Grand Slam singles titles in tennis?",
+      "answers": [
+        "serena williams",
+        "williams",
+        "stefi graf",
+        "margaret court"
+      ],
+      "value": 800
+    },
+    {
+      "name": "Which country hosted the 2014 Winter Olympics?",
+      "answers": ["russia", "sochi"],
+      "value": 800
+    },
+    {
+      "name": "Who won the Tour de France in 2021?",
+      "answers": ["tadej pogacar", "pogacar"],
+      "value": 1000
+    },
+    {
+      "name": "Which basketball player has won the most NBA championships?",
+      "answers": ["bill russell", "russell"],
+      "value": 1000
+    },
+    {
+      "name": "In what year did the first modern Olympic Games take place?",
+      "answers": ["1896"],
+      "value": 1000
+    },
+    {
+      "name": "Who was the first black athlete to win an Olympic gold medal?",
+      "answers": ["Jesse Owens"],
+      "value": 1000
+    },
+    {
+      "name": "What boxer is known for his catchphrase 'float like a butterfly, sting like a bee'?",
+      "answers": ["Muhammad Ali", "Cassius Clay"],
+      "value": 1000
+    },
+    {
+      "name": "What is the name of the annual horse race that takes place at Churchill Downs in Kentucky?",
+      "answers": ["The Kentucky Derby"],
+      "value": 1000
+    },
+    {
+      "name": "What country won the first Rugby World Cup in 1987?",
+      "answers": ["New Zealand"],
+      "value": 1000
+    },
+    {
+      "name": "Who won the gold medal for the men's 100-meter butterfly at the 2008 Beijing Olympics?",
+      "answers": ["Michael Phelps"],
+      "value": 1000
     }
   ],
   "Geography": [
     {
       "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "answers": ["poop", "pee"],
+      "value": 200
+    },
+    {
+      "name": "Question 2",
+      "answers": ["poop", "pee"],
+      "value": 400
+    },
+    {
+      "name": "Question 3",
+      "answers": ["poop", "pee"],
+      "value": 600
+    },
+    {
+      "name": "Question 4",
+      "answers": ["poop", "pee"],
+      "value": 800
+    },
+    {
+      "name": "Question 5",
+      "answers": ["poop", "pee"],
+      "value": 1000
     }
   ],
   "History": [
     {
-      "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "name": "In what year did World War II end?",
+      "answers": ["1945"],
+      "value": 200
+    },
+    {
+      "name": "What was the name of the German leader who was responsible for the Holocaust?",
+      "answers": ["hitler", "adolf hitler", "my goat"],
+      "value": 200
+    },
+    {
+      "name": "Which German dictator led the Nazi Party?",
+      "answers": ["adolf hitler"],
+      "value": 200
+    },
+    {
+      "name": "Who wrote the famous diary while hiding from the Nazis during World War II?",
+      "answers": ["anne frank", "anne", "frank"],
+      "value": 400
+    },
+    {
+      "name": "What was the name of the first President of the United States?",
+      "answers": ["george washington"],
+      "value": 400
+    },
+    {
+      "name": "Who invented the telephone?",
+      "answers": ["alexander graham bell", "bell"],
+      "value": 600
+    },
+    {
+      "name": "Who was the first emperor of Rome?",
+      "answers": ["augustus", "octavian"],
+      "value": 600
+    },
+    {
+      "name": "What was the name of the first satellite launched into space by the Soviet Union?",
+      "answers": ["sputnik"],
+      "value": 600
+    },
+    {
+      "name": "What was the name of the first pharaoh of Egypt?",
+      "answers": ["narmer", "menes"],
+      "value": 800
+    },
+    {
+      "name": "What was the name of the infamous prison located in Paris that was stormed during the French Revolution?",
+      "answers": ["bastille"],
+      "value": 800
+    },
+    {
+      "name": "In what year did the American Civil War end?",
+      "answers": ["1865"],
+      "value": 800
+    },
+    {
+      "name": "What was the first civilization in ancient Greece?",
+      "answers": ["minoa", "minoan civilization"],
+      "value": 1000
+    },
+    {
+      "name": "Who was the first person to circumnavigate the globe?",
+      "answers": ["ferdinand magellan", "magellan"],
+      "value": 1000
+    },
+    {
+      "name": "What was the name of the first permanent English settlement in North America?",
+      "answers": ["jamestown"],
+      "value": 1000
     }
   ],
   "Music": [
     {
       "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "answers": ["poop", "pee"],
+      "value": 200
+    },
+    {
+      "name": "Question 2",
+      "answers": ["poop", "pee"],
+      "value": 400
+    },
+    {
+      "name": "Question 3",
+      "answers": ["poop", "pee"],
+      "value": 600
+    },
+    {
+      "name": "Question 4",
+      "answers": ["poop", "pee"],
+      "value": 800
+    },
+    {
+      "name": "Question 5",
+      "answers": ["poop", "pee"],
+      "value": 1000
     }
   ],
   "Art": [
     {
       "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "answers": ["poop", "pee"],
+      "value": 200
+    },
+    {
+      "name": "Question 2",
+      "answers": ["poop", "pee"],
+      "value": 400
+    },
+    {
+      "name": "Question 3",
+      "answers": ["poop", "pee"],
+      "value": 600
+    },
+    {
+      "name": "Question 4",
+      "answers": ["poop", "pee"],
+      "value": 800
+    },
+    {
+      "name": "Question 5",
+      "answers": ["poop", "pee"],
+      "value": 1000
     }
   ],
   "Brands": [
     {
-      "name": "Question 1",
-      "answers": [],
-      "value": 0
+      "name": "What brand is known for its 'Just Do It' slogan?",
+      "answers": ["nike"],
+      "value": 200
+    },
+    {
+      "name": "Which company is famous for its 'I'm Lovin' It' slogan?",
+      "answers": ["mcdonalds", "mcdonald's"],
+      "value": 200
+    },
+    {
+      "name": "What popular search engine is known for its doodles on its homepage?",
+      "answers": ["google"],
+      "value": 200
+    },
+    {
+      "name": "What social media platform is known for its yellow ghost logo?",
+      "answers": ["snapchat"],
+      "value": 200
+    },
+    {
+      "name": "What brand's logo is a green mermaid?",
+      "answers": ["starbucks"],
+      "value": 200
+    },
+    {
+      "name": "What company's logo is a bitten apple?",
+      "answers": ["apple"],
+      "value": 200
+    },
+    {
+      "name": "What brand is known for its 'Finger Lickin' Good' slogan?",
+      "answers": ["kfc"],
+      "value": 200
+    },
+    {
+      "name": "What company's logo is a blue bird?",
+      "answers": ["twitter"],
+      "value": 200
+    },
+    {
+      "name": "What company's logo is a yellow M?",
+      "answers": ["mcdonalds", "mcdonald's"],
+      "value": 200
+    },
+    {
+      "name": "What company produces the iPhone?",
+      "answers": ["apple"],
+      "value": 200
+    },
+    {
+      "name": "What brand is known for its 'Can You Hear Me Now?' slogan?",
+      "answers": ["verizon"],
+      "value": 400
+    },
+    {
+      "name": "What company produces the Galaxy phone?",
+      "answers": ["samsung"],
+      "value": 400
+    },
+    {
+      "name": "Which brand of sportswear produces the 'Air Jordan' line of basketball shoes?",
+      "answers": ["nike"],
+      "value": 400
+    },
+    {
+      "name": "What fast food chain has a clown as their mascot?",
+      "answers": ["mcdonalds"],
+      "value": 400
+    },
+    {
+      "name": "What company produces the Xbox gaming console?",
+      "answers": ["microsoft"],
+      "value": 400
+    },
+    {
+      "name": "What car brand has a logo with four interlocking rings?",
+      "answers": ["audi"],
+      "value": 400
+    },
+    {
+      "name": "What social media platform is known for its 140-character limit on posts?",
+      "answers": ["twitter"],
+      "value": 400
+    },
+    {
+      "name": "Which fast-food chain is known for its 'Whopper' burger?",
+      "answers": ["burger king"],
+      "value": 400
+    },
+    {
+      "name": "What company produces the Kindle e-reader?",
+      "answers": ["amazon"],
+      "value": 400
+    },
+    {
+      "name": "Which automaker produces the popular F-150 pickup truck?",
+      "answers": ["ford"],
+      "value": 400
+    },
+    {
+      "name": "What company produces the PlayStation gaming console?",
+      "answers": ["sony"],
+      "value": 400
+    },
+    {
+      "name": "What car brand has a logo with a blue and white propeller?",
+      "answers": ["bmw"],
+      "value": 400
+    },
+    {
+      "name": "Which technology giant is known for its 'ThinkPad' line of laptops and tablets?",
+      "answers": ["lenovo"],
+      "value": 600
+    },
+    {
+      "name": "What brand is known for its 'The Ultimate Driving Machine' slogan?",
+      "answers": ["bmw"],
+      "value": 600
+    },
+    {
+      "name": "What brand is known for its blue and yellow branding and is a large Swedish furniture retailer?",
+      "answers": ["ikea", "the wonderful everyday"],
+      "value": 600
+    },
+    {
+      "name": "Which car manafacturers logo is a circle with a lightning bolt through it?",
+      "answers": ["opel", "opal"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the German luxury car manufacturer known for its 3-pointed star logo?",
+      "answers": ["mercedes-benz", "mercedes", "benz"],
+      "value": 600
+    },
+    {
+      "name": "Which technology giant is known for its 'ThinkPad' line of laptops and tablets?",
+      "answers": ["lenovo"],
+      "value": 600
+    },
+    {
+      "name": "Which American footwear company is famous for its 'Chuck Taylor All Star' sneakers?",
+      "answers": ["converse"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the Japanese automaker known for its 'Impreza' and 'WRX' models?",
+      "answers": ["subaru"],
+      "value": 600
+    },
+    {
+      "name": "Which soft drink brand's logo features a red circle with a white wave?",
+      "answers": ["pepsi"],
+      "value": 600
+    },
+    {
+      "name": "What car company owns the luxury brand Bugatti?",
+      "answers": ["volkswagen", "vw"],
+      "value": 600
+    },
+    {
+      "name": "Which company's logo features a yellow shell with red letters?",
+      "answers": ["shell"],
+      "value": 600
+    },
+    {
+      "name": "What brand is known for its 'Because You're Worth It' slogan?",
+      "answers": ["l'oreal", "loreal"],
+      "value": 800
+    },
+    {
+      "name": "What brand's logo features the words 'the happiest place on Earth'?",
+      "answers": ["disney"],
+      "value": 800
+    },
+    {
+      "name": "What brand is known for their 'Eat Fresh' slogan?",
+      "answers": ["subway"],
+      "value": 800
+    },
+    {
+      "name": "Which sportswear brand's logo features a jumping cat?",
+      "answers": ["puma"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the French clothing company known for its crocodile logo?",
+      "answers": ["lacoste"],
+      "value": 800
+    },
+    {
+      "name": "Which brand of luxury watches is known for its 'Oyster' and 'Submariner' models?",
+      "answers": ["rolex"],
+      "value": 800
+    },
+    {
+      "name": "What car brand features a prancing horse on its logo?",
+      "answers": ["ferrari"],
+      "value": 1000
+    },
+    {
+      "name": "Which company uses the slogan 'Think Different'?",
+      "answers": ["apple"],
+      "value": 800
+    },
+    {
+      "name": "What popular shoe company was named after its founder, Adi Dassler?",
+      "answers": ["adidas"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the luxury car brand that is a subsidiary of Toyota?",
+      "answers": ["lexus"],
+      "value": 800
+    },
+    {
+      "name": "Which luxury fashion brand is known for its red-soled shoes?",
+      "answers": ["louboutin", "christian louboutin"],
+      "value": 1000
+    },
+    {
+      "name": "Which tech giant was originally founded as 'BackRub'?",
+      "answers": ["google"],
+      "value": 1000
+    },
+    {
+      "name": "Which fashion brand is known for its signature double-C logo?",
+      "answers": ["chanel"],
+      "value": 1000
+    },
+    {
+      "name": "Which popular soft drink was originally marketed as a cure for headaches?",
+      "answers": ["pepsi"],
+      "value": 1000
+    },
+    {
+      "name": "Which luxury car brand's name translates to 'I roll' in Latin?",
+      "answers": ["volvo"],
+      "value": 1000
+    },
+    {
+      "name": "Which iconic denim brand is named after its founder?",
+      "answers": ["levi", "levi's"],
+      "value": 1000
+    },
+    {
+      "name": "What year was Coca-Cola invented?",
+      "answers": ["1886"],
+      "value": 1000
     }
   ]
 }
