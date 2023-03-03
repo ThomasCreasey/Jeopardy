@@ -1,4 +1,4 @@
-import express, { Express, Request, Response, NextFunction } from 'express';
+import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import { createServer } from 'http';
@@ -40,6 +40,7 @@ interface Room {
   waitingFor: string;
   categories?: string[];
   question?: questionDataServer;
+  questionsAnswered: number;
   questions: any;
   currentTurn: string;
   players: Player[];
@@ -48,6 +49,7 @@ declare module 'http' {
   interface IncomingMessage {
     session: Session & {
       name: string;
+      code: string;
     };
   }
 }
@@ -66,20 +68,11 @@ const sessionMiddleware = session({
 
 app.use(sessionMiddleware);
 
-const port = 8080;
+const port = 3000;
 
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-  /* options */
-});
-
-io.use((socket: Socket, next) => {
-  sessionMiddleware(
-    socket.request as Request,
-    {} as Response,
-    next as NextFunction,
-  );
-});
+const io = new Server(httpServer, {});
+io.engine.use(sessionMiddleware);
 
 app.set('view engine', 'ejs');
 
@@ -126,10 +119,10 @@ function checkName(name: string, roomId: string) {
 
 io.on('connection', (socket: Socket) => {
   // When a client connects to the server
-  const referer = socket.handshake.headers.referer; // Get the referer from the request
-  const roomId = referer ? referer.split('/play/')[1] : null; // Get the room id from the referer
+  const roomId = socket.request.session.code; // Get the room id from the referer
   if (!roomId) return; // If there is no room id return
   const name = socket.request.session.name; // Get the users name from the session
+  console.log(name);
   if (!name) return; // If there is no name, return
 
   const player: Player = {
@@ -151,6 +144,7 @@ io.on('connection', (socket: Socket) => {
       id: roomId,
       waitingFor: '',
       questions: [],
+      questionsAnswered: 0,
       open: true,
       currentTurn: player.id,
       players: [player],
@@ -159,7 +153,6 @@ io.on('connection', (socket: Socket) => {
 
     io.to(roomId).emit('newplayer', player); // Emit the new player event to the room
     io.to(roomId).emit('host', player); // Set the host of the room via event
-    console.log('created new room');
   } else {
     // If the room exists
     const roomData = rooms[rooms.findIndex((room) => room.id === roomId)]; // Get the room data
@@ -182,8 +175,8 @@ io.on('connection', (socket: Socket) => {
         rooms.splice(index, 1);
         io.to(roomId).emit('lobby-closed', 'Host left the lobby');
       } else {
+        roomData.players.push(player); // Add the player to the room
         playerIndex[0].id = socket.id;
-        console.log('reconnected');
         io.to(roomId).emit('newplayer', player);
       }
     }
@@ -206,17 +199,18 @@ io.on('connection', (socket: Socket) => {
         const categoryQuestions = questions[category]; // Get the questions for the category
         const randomQuestions: question[] = []; // Create an array for the random questions
         for (let i = 0; i < 5; i++) {
-          const categoryValue = i + 1 * 200;
-          const randomQuestions = categoryQuestions.filter(
+          const categoryValue = (i + 1) * 200;
+          const filteredQuestions = categoryQuestions.filter(
             (question: any) => question.value === categoryValue,
           );
           const randomQuestion =
-            randomQuestions[Math.floor(Math.random() * randomQuestions.length)];
-          randomQuestions.push(randomQuestion);
+            filteredQuestions[
+              Math.floor(Math.random() * filteredQuestions.length)
+            ];
+          if (randomQuestion) randomQuestions.push(randomQuestion);
         }
         roomData.questions[category] = randomQuestions; // Push the random questions to the room questions array
       });
-      console.log(roomData);
 
       io.to(roomId).emit('start-game', data.categories); // Emit the start game event to the room
     }
@@ -242,16 +236,22 @@ io.on('connection', (socket: Socket) => {
     // When a category is selected
     const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
     if (roomData.currentTurn === socket.id) {
+      roomData.waitingFor = '';
+      const currentQuestion = roomData.questions[data.category].filter(
+        (q: any) => q.value === data.value,
+      )[0];
+      if (!currentQuestion) return;
       // Ensure the request is from the right player
-      data['question'] = 'Test Question';
+      data['question'] = currentQuestion.name;
       const serverData: questionDataServer = {
-        question: 'Test Question',
+        question: currentQuestion.name,
         usersAnswered: [],
-        answers: ['Test Answer 1', 'Test Answer 2', 'Test Answer 3'],
+        answers: currentQuestion.answers,
         category: data.category,
-        value: data.value,
+        value: currentQuestion.value,
       };
       roomData.question = serverData;
+      roomData.questionsAnswered += 1;
       io.to(roomId).emit('set-question', data);
     }
   });
@@ -260,6 +260,7 @@ io.on('connection', (socket: Socket) => {
     // When a player buzzes in
     const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
     if (roomData.question.usersAnswered.includes(player.id)) return; // If the player has already buzzed in, return
+    if (roomData.waitingFor) return;
     roomData.waitingFor = socket.id; // Set the waiting for property to the player who buzzed in
     roomData.question.usersAnswered.push(player.id); // Add the player to the users answered array
     io.to(roomId).emit('buzzed', player); // Emit the buzzed event to the room to allow them to input an answer
@@ -353,13 +354,19 @@ io.on('connection', (socket: Socket) => {
   socket.on('answer', (answer: string) => {
     // When a player answers a question
     const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
+    console.log(Object.keys(roomData.questions).length * 5);
     if (roomData.waitingFor === socket.id) {
+      roomData.waitingFor = '';
       // If the request is from the right player
       const playerIndex = roomData.players.findIndex(
         (player) => player.id === socket.id,
       );
 
-      const answers = roomData.question.answers; // Get the answers from the question object stored in the room data
+      const questionData = roomData.question;
+      const currentQuestion = roomData.questions[questionData.category].filter(
+        (q: any) => q.name === questionData.question,
+      )[0];
+      const answers = currentQuestion.answers;
 
       if (answers.includes(answer)) {
         // If the answer is correct
@@ -387,7 +394,21 @@ io.on('connection', (socket: Socket) => {
           );
           if (!nextUser)
             return io.to(roomId).emit('lobby-closed', 'Not enough players');
-          io.to(roomId).emit('category-select', nextUser); // Allow the user to select a new category
+
+          if (
+            roomData.questionsAnswered ===
+            Object.keys(roomData.questions).length * 5
+          ) {
+            const playerPoints = roomData.players.map((player) => {
+              return { name: player.name, points: player.points };
+            });
+            const sortedPlayers = playerPoints.sort(
+              (a, b) => b.points - a.points,
+            );
+            io.to(roomId).emit('game-over', sortedPlayers);
+          } else {
+            io.to(roomId).emit('category-select', nextUser); // Allow the user to select a new category
+          }
         }, 3000);
       } else {
         const colourData = {
@@ -411,8 +432,22 @@ io.on('connection', (socket: Socket) => {
             if (!nextUser)
               return io.to(roomId).emit('lobby-closed', 'Not enough players');
 
-            io.to(roomId).emit('category-select', nextUser); // Allow the user to select a new category
-            io.to(roomId).emit('update-colour', colourData); // Emit the update colour event to the room to update the colour of the category buttons
+            if (
+              roomData.questionsAnswered ===
+              Object.keys(roomData.questions).length * 5
+            ) {
+              console.log('game over');
+              const playerPoints = roomData.players.map((player) => {
+                return { name: player.name, points: player.points };
+              });
+              const sortedPlayers = playerPoints.sort(
+                (a, b) => b.points - a.points,
+              );
+              io.to(roomId).emit('game-over', sortedPlayers);
+            } else {
+              io.to(roomId).emit('category-select', nextUser); // Allow the user to select a new category
+              io.to(roomId).emit('update-colour', colourData); // Emit the update colour event to the room to update the colour of the category buttons
+            }
           }, 3000);
         }
       }
@@ -462,13 +497,12 @@ app.post('/join-lobby', async (req: Request, res: Response) => {
   const valid = await checkName(name, req.body.code); // Check if name is taken
   if (valid) {
     // Name is not taken
+    req.session.code = req.body.code;
     req.session.name = name;
     res.status(200).send('valid');
-    console.log('name not taken');
   } else {
     // Name is taken
     res.status(200).send('invalid');
-    console.log('name taken');
   }
 });
 

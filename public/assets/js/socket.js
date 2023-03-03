@@ -11,6 +11,23 @@ var timeLeft = 30;
 var categorySelectTimer;
 var categorySelectCountdown;
 
+function hideAll() {
+  modalLoading.hide();
+  modalQuestion.hide();
+  modalResponse.hide();
+  modalAnswered.hide();
+  modalCategory.hide();
+  modalCategorySelect.hide();
+  modalHost.hide();
+  modalClosed.hide();
+}
+
+function showLoadModal() {
+  modalLoading.show();
+  document.getElementById('load-points').innerText = 'Show Points';
+  document.getElementById('show-points').innerHTML = '';
+}
+
 function startSocket(socket) {
   sock = socket;
 
@@ -26,13 +43,7 @@ function startSocket(socket) {
 
   socket.on('lobby-locked', (id) => {
     if (id === window.localStorage.getItem('socketId')) {
-      modalLoading.hide();
-      modalQuestion.hide();
-      modalResponse.hide();
-      modalAnswered.hide();
-      modalCategory.hide();
-      modalCategorySelect.hide();
-      modalHost.hide();
+      hideAll();
 
       document.getElementById('modal-closed-reason').innerText =
         'Game has already begun';
@@ -55,7 +66,7 @@ function startSocket(socket) {
   });
 
   socket.on('category-select', (player) => {
-    modalCategorySelect.hide();
+    hideAll();
     hide('category-select-countdown');
     var categorySelectTimeLeft = 30;
     inputTimeLeft = 10;
@@ -64,8 +75,6 @@ function startSocket(socket) {
     clearTimeout(inputTimeout);
     clearInterval(inputCountdown);
     clearInterval(questionCountdown);
-    modalQuestion.hide();
-    modalAnswered.hide();
 
     if (player.id === window.localStorage.getItem('socketId')) {
       modalCategorySelect.show();
@@ -84,10 +93,8 @@ function startSocket(socket) {
         modalCategorySelect.hide();
         socket.emit('category-select-timeout');
       }, 30000);
-
-      modalLoading.hide();
     } else {
-      modalLoading.show();
+      showLoadModal();
       document.getElementById(
         'modal-loading-text',
       ).innerText = `${player.name} is selecting a category...`;
@@ -95,6 +102,7 @@ function startSocket(socket) {
   });
 
   socket.on('set-question', (inpData) => {
+    hideAll();
     hide('category-select-countdown');
     clearTimeout(categorySelectTimer);
     clearInterval(categorySelectCountdown);
@@ -106,8 +114,6 @@ function startSocket(socket) {
     document.getElementById('buzz').disabled = false;
 
     data = inpData;
-    modalCategorySelect.hide();
-    modalLoading.hide();
     document.getElementById(`${data.category}-${data.value}`).disabled = true;
     document.getElementById('modal-category-name').innerText = data.category;
     document.getElementById(
@@ -138,8 +144,7 @@ function startSocket(socket) {
     clearInterval(questionCountdown);
     clearTimeout(questionTimer);
     document.getElementById('input-response').value = '';
-
-    modalQuestion.hide();
+    hideAll();
 
     if (player.id === window.localStorage.getItem('socketId')) {
       document.getElementById('buzz').disabled = true;
@@ -166,14 +171,13 @@ function startSocket(socket) {
       document.getElementById(
         'modal-loading-text',
       ).innerText = `${player.name} buzzed in! Waiting for answer...`;
-      modalLoading.show();
+      showLoadModal();
     }
   });
 
   socket.on('timed-out', () => {
-    modalResponse.hide();
-    modalQuestion.hide();
-    modalLoading.show();
+    hideAll();
+    showLoadModal();
     document.getElementById(
       'modal-loading-text',
     ).innerText = `Player took too long to answer...`;
@@ -225,8 +229,7 @@ function startSocket(socket) {
   });
 
   socket.on('correct-answer', (data) => {
-    modalResponse.hide();
-    modalLoading.hide();
+    hideAll();
     document.getElementById(
       'modal-answered-text-1',
     ).innerText = `${data.player.name} answered correctly`;
@@ -244,9 +247,7 @@ function startSocket(socket) {
   });
 
   socket.on('incorrect-answer', (player) => {
-    modalResponse.hide();
-    modalQuestion.hide();
-    modalLoading.hide();
+    hideAll();
     document.getElementById(
       'modal-answered-text-1',
     ).innerText = `${player.name} answered incorrectly`;
@@ -273,13 +274,7 @@ function startSocket(socket) {
   });
 
   socket.on('lobby-closed', (reason) => {
-    modalLoading.hide();
-    modalQuestion.hide();
-    modalResponse.hide();
-    modalAnswered.hide();
-    modalCategory.hide();
-    modalCategorySelect.hide();
-    modalHost.hide();
+    hideAll();
 
     document.getElementById('modal-closed-reason').innerText = reason;
     modalClosed.show();
@@ -302,14 +297,13 @@ function startSocket(socket) {
   socket.on('host', (host) => {
     if (host.id === window.localStorage.getItem('socketId')) {
       window.localStorage.setItem('host', true);
-      modalLoading.hide();
+      hideAll();
       modalHost.show();
     }
   });
 
   socket.on('checkname', (socketId, callback) => {
     if (socketId === window.localStorage.getItem('socketId')) {
-      console.log('true');
       callback(true);
     }
   });
@@ -318,8 +312,7 @@ function startSocket(socket) {
     show('load-points');
     if (window.localStorage.getItem('host') === 'true') {
       // Show category options
-      modalLoading.hide();
-      modalHost.hide();
+      hideAll();
       modalCategorySelect.show();
     } else {
       document.getElementById('modal-loading-text').innerText =
@@ -353,6 +346,15 @@ function startSocket(socket) {
     }
   });
 
+  socket.on('game-over', (data) => {
+    hideAll();
+    modalGameOver.show();
+    console.log(data);
+    document.getElementById('gameover-points').innerHTML = data
+      .map((player) => `<li>${player.name} - ${player.points}</li>`)
+      .join('');
+  });
+
   socket.on('update-colour', (data) => {
     const categoryEl = document.getElementById(
       `${data.category}-${data.value}`,
@@ -360,12 +362,6 @@ function startSocket(socket) {
 
     categoryEl.classList.remove('btn-outline-info');
     categoryEl.classList.add(`btn-outline-${data.colour}`);
-  });
-
-  socket.on('name-taken', (socketId) => {
-    if (socketId === window.localStorage.getItem('socketId')) {
-      console.log('false');
-    }
   });
 }
 
@@ -397,7 +393,7 @@ $('#buzz').click(function () {
   sock.emit('buzz');
 });
 
-$('#submit-response').click(function () {
+$('#submit-response-form').submit(function () {
   document.getElementById('submit-response').disabled = true;
   clearTimeout(inputTimeout);
   const answer = document.getElementById('input-response').value;
@@ -421,7 +417,12 @@ $('#load-points').click(function () {
         return `${player.name}: ${player.points}`;
       })
       .join('\n');
-    document.getElementById('show-points').innerText = points;
-    console.log(data);
+    if (document.getElementById('load-points').innerHTML === 'Hide Points') {
+      document.getElementById('load-points').innerHTML = 'Load Points';
+      document.getElementById('show-points').innerText = '';
+    } else {
+      document.getElementById('load-points').innerHTML = 'Hide Points';
+      document.getElementById('show-points').innerText = points;
+    }
   });
 });

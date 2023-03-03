@@ -76,6 +76,19 @@
       </div>
     </div>
 
+    <div class="modal fade" id="modal-game-over" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div
+            class="modal-body d-flex flex-column align-items-center justify-content-center"
+          >
+            <p id="modal-loading-text">Game Over!</p>
+            <div class="mt-2" id="gameover-points"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="modal fade" id="modal-closed" tabindex="-1">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -167,10 +180,21 @@
             <p id="modal-response-text">
               What is your answer? You get 10 seconds to answer...
             </p>
-            <input type="text" class="form-control" id="input-response" />
-            <button class="btn btn-outline-info mt-2" id="submit-response">
-              Submit
-            </button>
+            <form id="submit-response-form" autocomplete="off">
+              <input
+                type="text"
+                class="form-control"
+                id="input-response"
+                autofill
+              />
+              <button
+                class="btn btn-outline-info mt-2"
+                id="submit-response"
+                type="submit"
+              >
+                Submit
+              </button>
+            </form>
           </div>
         </div>
       </div>

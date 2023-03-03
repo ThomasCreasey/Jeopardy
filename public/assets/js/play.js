@@ -9,6 +9,7 @@ const modalResponse = new bootstrap.Modal('#modal-response');
 const modalAnswered = new bootstrap.Modal('#modal-answered');
 const modalCategorySelect = new bootstrap.Modal('#modal-category-select');
 const modalClosed = new bootstrap.Modal('#modal-closed');
+const modalGameOver = new bootstrap.Modal('#modal-game-over');
 
 function show(id) {
   document.getElementById(id).style.display = 'block';

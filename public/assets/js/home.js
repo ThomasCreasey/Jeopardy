@@ -35,6 +35,8 @@ $(document).ready(function () {
             document
               .getElementById('code-input')
               .setAttribute('placeholder', 'This game doesnt exist');
+            var e = document.getElementById('start-button');
+            e.innerText = 'Create Game';
           }
         },
       });
