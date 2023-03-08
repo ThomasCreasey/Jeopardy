@@ -122,7 +122,6 @@ io.on('connection', (socket: Socket) => {
   const roomId = socket.request.session.code; // Get the room id from the referer
   if (!roomId) return; // If there is no room id return
   const name = socket.request.session.name; // Get the users name from the session
-  console.log(name);
   if (!name) return; // If there is no name, return
 
   const player: Player = {
@@ -354,7 +353,6 @@ io.on('connection', (socket: Socket) => {
   socket.on('answer', (answer: string) => {
     // When a player answers a question
     const roomData = rooms[rooms.findIndex((room) => room.id === roomId)];
-    console.log(Object.keys(roomData.questions).length * 5);
     if (roomData.waitingFor === socket.id) {
       roomData.waitingFor = '';
       // If the request is from the right player
@@ -368,7 +366,7 @@ io.on('connection', (socket: Socket) => {
       )[0];
       const answers = currentQuestion.answers;
 
-      if (answers.includes(answer)) {
+      if (answers.includes(answer.toLowerCase())) {
         // If the answer is correct
         const colourData = {
           // Data to update the colour of the category buttons
