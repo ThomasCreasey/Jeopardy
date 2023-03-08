@@ -6,6 +6,7 @@ import { Server, Socket } from 'socket.io';
 import session, { Session } from 'express-session';
 import bodyParser from 'body-parser';
 import fs from 'fs';
+import stringSimilarity from 'string-similarity';
 
 interface Player {
   name: string;
@@ -365,8 +366,16 @@ io.on('connection', (socket: Socket) => {
         (q: any) => q.name === questionData.question,
       )[0];
       const answers = currentQuestion.answers;
+      const closest = stringSimilarity.findBestMatch(
+        answer.toLowerCase(),
+        answers,
+      );
+      const similarity = stringSimilarity.compareTwoStrings(
+        answer.toLowerCase(),
+        closest.bestMatch.target,
+      );
 
-      if (answers.includes(answer.toLowerCase())) {
+      if (similarity > 0.75) {
         // If the answer is correct
         const colourData = {
           // Data to update the colour of the category buttons
