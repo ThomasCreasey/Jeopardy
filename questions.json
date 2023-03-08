@@ -607,7 +607,7 @@
     },
     {
       "name": "Which country has won the most FIFA World Cup titles?",
-      "answers": ["Brazil"],
+      "answers": ["brazil"],
       "value": 800
     },
     {
@@ -653,54 +653,274 @@
     },
     {
       "name": "Who was the first black athlete to win an Olympic gold medal?",
-      "answers": ["Jesse Owens"],
+      "answers": ["jesse owens"],
       "value": 1000
     },
     {
       "name": "What boxer is known for his catchphrase 'float like a butterfly, sting like a bee'?",
-      "answers": ["Muhammad Ali", "Cassius Clay"],
+      "answers": ["muhammad Ali", "cassius clay"],
       "value": 1000
     },
     {
       "name": "What is the name of the annual horse race that takes place at Churchill Downs in Kentucky?",
-      "answers": ["The Kentucky Derby"],
+      "answers": ["the kentucky derby"],
       "value": 1000
     },
     {
       "name": "What country won the first Rugby World Cup in 1987?",
-      "answers": ["New Zealand"],
+      "answers": ["new zealand"],
       "value": 1000
     },
     {
       "name": "Who won the gold medal for the men's 100-meter butterfly at the 2008 Beijing Olympics?",
-      "answers": ["Michael Phelps"],
+      "answers": ["michael phelps"],
       "value": 1000
     }
   ],
   "Geography": [
     {
-      "name": "Question 1",
-      "answers": ["poop", "pee"],
+      "name": "What is the capital city of France?",
+      "answers": ["paris"],
       "value": 200
     },
     {
-      "name": "Question 2",
-      "answers": ["poop", "pee"],
+      "name": "What is the capital city of Thailand?",
+      "answers": ["bangkok"],
+      "value": 200
+    },
+    {
+      "name": "What is the largest desert in the world?",
+      "answers": ["sahara", "sahara desert"],
+      "value": 200
+    },
+    {
+      "name": "What is the capital of Greece?",
+      "answers": ["athens"],
+      "value": 200
+    },
+    {
+      "name": "What is the longest river in the world?",
+      "answers": ["nile", "the river nile", "river nile"],
+      "value": 200
+    },
+    {
+      "name": "What is the smallest continent?",
+      "answers": ["australia", "oceania"],
+      "value": 200
+    },
+    {
+      "name": "Which continent is the largest in terms of land area?",
+      "answers": ["asia"],
+      "value": 200
+    },
+    {
+      "name": "Which continent is the coldest?",
+      "answers": ["antarctica"],
+      "value": 200
+    },
+    {
+      "name": "What is the capital of Japan?",
+      "answers": ["tokyo"],
+      "value": 200
+    },
+    {
+      "name": "Which country is known as the 'Land of the Rising Sun'?",
+      "answers": ["japan"],
       "value": 400
     },
     {
-      "name": "Question 3",
-      "answers": ["poop", "pee"],
+      "name": "What is the capital city of Spain?",
+      "answers": ["madrid"],
+      "value": 400
+    },
+    {
+      "name": "What is the largest country in South America by land mass?",
+      "answers": ["brazil"],
+      "value": 400
+    },
+    {
+      "name": "What is the capital city of Russia?",
+      "answers": ["moscow"],
+      "value": 400
+    },
+    {
+      "name": "What is the highest mountain in Africa?",
+      "answers": ["kilimanjaro"],
+      "value": 400
+    },
+    {
+      "name": "What is the largest ocean in the world?",
+      "answers": ["pacific", "pacific ocean"],
+      "value": 400
+    },
+    {
+      "name": "What is the smallest country in the world by land area?",
+      "answers": ["vatican city"],
+      "value": 400
+    },
+    {
+      "name": "What is the largest lake in Africa?",
+      "answers": ["lake victoria", "victoria"],
+      "value": 400
+    },
+    {
+      "name": "What is the capital of Italy?",
+      "answers": ["rome"],
+      "value": 400
+    },
+    {
+      "name": "Which European country is known for its windmills and tulips?",
+      "answers": ["netherlands", "the netherlands"],
       "value": 600
     },
     {
-      "name": "Question 4",
-      "answers": ["poop", "pee"],
+      "name": "What is the capital of South Korea?",
+      "answers": ["seoul"],
+      "value": 600
+    },
+    {
+      "name": "What is the capital of India?",
+      "answers": ["new delhi"],
+      "value": 600
+    },
+    {
+      "name": "What is the capital of Australia?",
+      "answers": ["canberra"],
+      "value": 600
+    },
+    {
+      "name": "What is the only country that covers the entire area of its continent?",
+      "answers": ["australia"],
+      "value": 600
+    },
+    {
+      "name": "What African country has the largest population?",
+      "answers": ["nigeria"],
+      "value": 600
+    },
+    {
+      "name": "Which river flows through the Grand Canyon?",
+      "answers": ["colorado river", "the colorado river"],
+      "value": 600
+    },
+    {
+      "name": "What country is home to the ancient ruins of Machu Picchu?",
+      "answers": ["peru"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the world's largest reef system?",
+      "answers": ["great barrier reef", "the great barrier reef"],
+      "value": 600
+    },
+    {
+      "name": "What is the name of the longest river in Asia?",
+      "answers": ["yangtze", "changjiang"],
       "value": 800
     },
     {
-      "name": "Question 5",
-      "answers": ["poop", "pee"],
+      "name": "What is the largest state in the United States by area?",
+      "answers": ["alaska"],
+      "value": 800
+    },
+    {
+      "name": "Which African country was formerly known as Abyssinia?",
+      "answers": ["ethiopia"],
+      "value": 800
+    },
+    {
+      "name": "What is the highest mountain in North America?",
+      "answers": ["denali", "mount mckinley"],
+      "value": 800
+    },
+    {
+      "name": "Which island country in the Pacific Ocean is known as the 'Land of the Long White Cloud'?",
+      "answers": ["new zealand"],
+      "value": 800
+    },
+    {
+      "name": "What is the smallest ocean in the world?",
+      "answers": ["arctic", "arctic ocean", "the arctic ocean"],
+      "value": 800
+    },
+    {
+      "name": "What is the capital of Iraq?",
+      "answers": ["baghdad"],
+      "value": 800
+    },
+    {
+      "name": "Which river is the longest in Europe?",
+      "answers": ["volga"],
+      "value": 800
+    },
+    {
+      "name": "What is the second largest country in South America?",
+      "answers": ["argentina"],
+      "value": 800
+    },
+    {
+      "question": "What is the largest country by land area in Africa?",
+      "answers": ["algeria"],
+      "value": 800
+    },
+    {
+      "name": "Which country is both the smallest by area and population in South America?",
+      "answers": ["suriname"],
+      "value": 1000
+    },
+    {
+      "name": "What is the capital of Papua New Guinea?",
+      "answers": ["port moresby", "moresby"],
+      "value": 1000
+    },
+    {
+      "name": "What strait separates Asia and North America?",
+      "answers": ["berring strait", "berring strait"],
+      "value": 1000
+    },
+    {
+      "name": "What is the highest mountain in South America?",
+      "answers": ["aconcagua"],
+      "value": 1000
+    },
+    {
+      "name": "What is the capital of Ethiopia?",
+      "answers": ["addis ababa"],
+      "value": 1000
+    },
+    {
+      "question": "What is the name of the largest island in the Mediterranean Sea?",
+      "answers": ["sicily"],
+      "value": 1000
+    },
+    {
+      "question": "What is the name of the river that flows through Baghdad?",
+      "answers": ["tigris"],
+      "value": 1000
+    },
+    {
+      "name": "What is the only sea without any coastline?",
+      "answers": ["sargasso", "sargasso sea"],
+      "value": 1000
+    },
+    {
+      "name": "What is the capital of Tajikistan?",
+      "answers": ["dushanbe"],
+      "value": 1000
+    },
+    {
+      "name": "What is the deepest lake in the world?",
+      "answers": ["baikal", "lake baikal"],
+      "value": 1000
+    },
+    {
+      "name": "What is the capital of Uzbekistan?",
+      "answers": ["tashkent"],
+      "value": 1000
+    },
+    {
+      "name": "What is the world's largest desert?",
+      "answers": ["antarctica", "antarctic desert", "antarctic"],
       "value": 1000
     }
   ],
@@ -778,55 +998,147 @@
   ],
   "Music": [
     {
-      "name": "Question 1",
-      "answers": ["poop", "pee"],
+      "name": "What is the name of the popular boy band from South Korea?",
+      "answers": ["bts"],
       "value": 200
     },
     {
-      "name": "Question 2",
-      "answers": ["poop", "pee"],
+      "name": "Which musical instrument, invented by Adolphe Sax in the 1840s, is commonly used in jazz, classical, and pop music?",
+      "answers": ["saxophone"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the American singer who is known for hits such as 'Bad Guy",
+      "answers": ["billie eilish"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the singer who popularized the song 'All About That Bass'?",
+      "answers": ["meghan trainor"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of Beyonce's husband?",
+      "answers": ["jay-z", "jayz"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the Canadian rapper who became famous for his song 'In My Feelings'?",
+      "answers": ["drake"],
+      "value": 200
+    },
+    {
+      "name": "Finish the lyrics, 'Hello..' !Tip its not an Adele lyric!",
+      "answers": ["is it me your looking for"],
+      "value": 200
+    },
+    {
+      "name": "What is the name of the American singer and actor known as the 'King of Rock and Roll'?",
+      "answers": ["elvis presley"],
+      "value": 200
+    },
+    {
+      "name": "Who was in Paris",
+      "answers": [
+        "kanye west",
+        "jay z",
+        "kanye and jay z",
+        "niggas",
+        "jay z and kanye",
+        "kanyussy",
+        "kanye west and jay z",
+        "jay z and kanye west"
+      ],
       "value": 400
     },
     {
-      "name": "Question 3",
-      "answers": ["poop", "pee"],
+      "name": "What is the name of the late British singer who was known for his flamboyant stage presence and hits such as 'Bohemian Rhapsody'?",
+      "answers": ["freddie mercury"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the musical style that originated in Jamaica in the 1960s and is characterized by its offbeat rhythms and use of electric guitars and keyboards?",
+      "answers": ["reggae"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the musical instrument commonly used in classical music, which has four strings and is played with a bow?",
+      "answers": ["violin"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the genre of music that originated in the African American communities of New Orleans and is characterized by its upbeat rhythms and use of brass instruments?",
+      "answers": ["jazz"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of the Canadian singer who became famous for his song 'Sorry'?",
+      "answers": ["justin bieber"],
+      "value": 400
+    },
+    {
+      "name": "What is the name of Taylor Swift's most recent album?",
+      "answers": ["midnights"],
       "value": 600
     },
     {
-      "name": "Question 4",
-      "answers": ["poop", "pee"],
+      "name": "What is the name of the British singer and songwriter known for hits such as 'Rocket Man' and 'Tiny Dancer'?",
+      "answers": ["elton john"],
+      "value": 600
+    },
+    {
+      "name": "Who holds the record for longest time on the billboard number 1 spot",
+      "answers": ["lil nas x"],
+      "value": 600
+    },
+    {
+      "name": "Who holds the record for most billboard number 1s?",
+      "answers": ["the beatles"],
+      "value": 600
+    },
+    {
+      "name": "Who is the lead singer of the band Coldplay?",
+      "answers": ["chris martin"],
       "value": 800
     },
     {
-      "name": "Question 5",
-      "answers": ["poop", "pee"],
+      "name": "Which female rapper became the first solo female rapper to win a Grammy Award for Best Rap Album with her 2018 album 'Invasion of Privacy'?",
+      "answers": ["cardi b"],
+      "value": 800
+    },
+    {
+      "name": "What is the name of the British rock band known for hits such as 'Yellow' and 'Clocks'?",
+      "answers": ["coldplay"],
+      "value": 800
+    },
+    {
+      "name": "What is the oldest known instrument?",
+      "answers": ["bone flute"],
+      "value": 800
+    },
+    {
+      "name": "Which band was formed by four Liverpool musicians in the early 1960s and went on to become one of the most successful and influential bands in history?",
+      "answers": ["the beatles"],
+      "value": 800
+    },
+    {
+      "name": "How many pieces has Mozart created?",
+      "answers": ["600", "600+", "six hundred", "over 600", "over six hundred"],
       "value": 1000
-    }
-  ],
-  "Art": [
-    {
-      "name": "Question 1",
-      "answers": ["poop", "pee"],
-      "value": 200
     },
     {
-      "name": "Question 2",
-      "answers": ["poop", "pee"],
-      "value": 400
+      "name": "In the music video for Michael Jackson's 'Thriller', what was the name of the actor who played Jackson's girlfriend?",
+      "answers": ["ophelia lovibond"],
+      "value": 1000
     },
     {
-      "name": "Question 3",
-      "answers": ["poop", "pee"],
-      "value": 600
+      "name": "What is the most famous fully deaf artist",
+      "answers": ["Beethoven"],
+      "value": 1000
     },
     {
-      "name": "Question 4",
-      "answers": ["poop", "pee"],
-      "value": 800
-    },
-    {
-      "name": "Question 5",
-      "answers": ["poop", "pee"],
+      "name": "What is the name of the electronic music festival that takes place annually in Belgium?",
+      "answers": ["tomorrowland"],
       "value": 1000
     }
   ],
