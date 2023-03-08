@@ -317,6 +317,7 @@ function startSocket(socket) {
     } else {
       document.getElementById('modal-loading-text').innerText =
         'Waiting for host to select a category...';
+      showLoadModal();
     }
     const head = document.getElementById('category-select-head');
     const body = document.getElementById('category-select-body');
@@ -393,7 +394,7 @@ $('#buzz').click(function () {
   sock.emit('buzz');
 });
 
-$('#submit-response-form').submit(function () {
+$('#submit-response').click(function () {
   document.getElementById('submit-response').disabled = true;
   clearTimeout(inputTimeout);
   const answer = document.getElementById('input-response').value;
