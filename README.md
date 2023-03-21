@@ -1,3 +1,6 @@
+## Need Hosting Services?
+Check out [Scorch Hosting](https://scorch.host). Ensuring your services are fast, secure & online when you need them most, committed to bringing you affordable hosting, with excellent performance and reliability. 
+
 # Jeopardy
 
 Online multiplayer game that is remarkably similar to the other game called Jeopardy, but that's just a coincidence. 
