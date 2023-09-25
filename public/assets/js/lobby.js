@@ -14,6 +14,7 @@ class KickEvent {
 
 window.onload = function() {
     const roomId = window.location.pathname.split('/')[2];
+    let isHost;
 
     document.getElementById('room-code').innerText = roomId;
 
@@ -26,6 +27,27 @@ window.onload = function() {
         conn.send(JSON.stringify(event));
     }
 
+    function updateHost() {
+        const lobbyTable = document.getElementById('lobby-players');
+        const tableChildren = lobbyTable.children;
+        if (isHost) {
+            document.getElementById('start-game-button').disabled = false;
+
+            for(let i=0; i<tableChildren.length; i++) {
+                const kickButton = tableChildren[i].children[2].children[0];
+                kickButton.disabled = false;
+            }
+
+        } else {
+            document.getElementById('start-game-button').disabled = true;
+
+            for(let i=0; i<tableChildren.length; i++) {
+                const kickButton = tableChildren[i].children[2].children[0];
+                kickButton.disabled = true;
+            }
+        }
+    }
+
     conn.onopen = function(e) {
         console.log("Connection established!");
     }
@@ -35,31 +57,12 @@ window.onload = function() {
         console.log(data)
         if(data.type == "server_successfully_joined") {
             $('#view-lobby').toggleClass('d-none', false);
-
-            const players = data.payload;
-
-            players.forEach(player => {
-                const tr = document.createElement('tr');
-
-                const usernameTd = document.createElement('td');
-                usernameTd.innerText = player.username;
-
-                const pingTd = document.createElement('td');
-                pingTd.innerText = "?";
-
-                const kickTd = document.createElement('td');
-                const kickButton = document.createElement('button');
-                kickButton.innerText = "Kick";
-                kickButton.classList.add('btn', 'btn-danger', 'kick-button');
-                kickButton.dataset.id = player.username
-                kickTd.appendChild(kickButton);
-
-                tr.appendChild(usernameTd);
-                tr.appendChild(pingTd);
-                tr.appendChild(kickTd);
-
-                document.getElementById('lobby-players').append(tr);
-            })
+            isHost = data.payload;
+            updateHost();
+        }
+        else if (data.type == "server_set_host") {
+            isHost = true;
+            updateHost();
         }
         else if (data.type == "server_update_ping") {
             const lobbyTable = document.getElementById('lobby-players');
@@ -75,22 +78,54 @@ window.onload = function() {
                 ping.innerText = player.ping;
             }
         }
+        else if(data.type == "server_update_players") {
+            const players = data.payload;
+
+            document.getElementById('lobby-players').innerHTML = "";
+
+            players.forEach(player => {
+                const tr = document.createElement('tr');
+
+                const usernameTd = document.createElement('td');
+                usernameTd.innerText = player.username;
+
+                const pingTd = document.createElement('td');
+                pingTd.innerText = "?";
+
+                const kickTd = document.createElement('td');
+                const kickButton = document.createElement('button');
+                kickButton.innerText = "Kick";
+                kickButton.classList.add('btn', 'btn-danger', 'kick-button');
+                kickButton.dataset.id = player.username
+                kickButton.disabled = !isHost;
+                kickTd.appendChild(kickButton);
+
+                tr.appendChild(usernameTd);
+                tr.appendChild(pingTd);
+                tr.appendChild(kickTd);
+
+                document.getElementById('lobby-players').append(tr);
+            })
+        }
     }
 
     conn.onclose = function(e) {
         $('#view-lobby').toggleClass('d-none', true);
-        console.log(e.code, e.reason)
+        
+        const fixedReason = '{"'+e.reason
+        console.log(fixedReason)
+        const parsed = JSON.parse(fixedReason);
+        console.log(parsed)
+
+        $('#error-modal-text').innerText = parsed.payload;
+        $('#error-modal').modal('show');
         console.log("Connection closed!");
     }
 
 
     document.addEventListener('click', function(e) {
         if(e.target.classList.contains('kick-button')) {
-            console.log('kick')
             const username = e.target.dataset.id;
-            const data = {
-                username
-            }
 
             let outgoingEvent = new KickEvent(username);
 

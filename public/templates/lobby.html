@@ -30,10 +30,23 @@
                 <div class="row mt-3">
                     <div class="col"></div>
                     <div class="col">
-                        <button class="btn btn-primary w-100 p-3">Start Game</button>
+                        <button class="btn btn-primary w-100 p-3" id="start-game-button">Start Game</button>
                     </div>
                     <div class="col"></div>
                 </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="error-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="error-modal-text"></div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary">Return to menu</button>
+                </div>
+              </div>
             </div>
         </div>
 

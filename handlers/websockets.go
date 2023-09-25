@@ -21,11 +21,13 @@ var (
 
 const (
 	EventSendMessage        = "server_send_message"
-	EventUserJoined         = "server_user_joined"
+	EventUpdatePlayers      = "server_update_players"
 	EventSendError          = "server_send_error"
 	EventUpdatePing         = "server_update_ping"
 	EventSuccessfullyJoined = "server_successfully_joined"
+	EventSetHost            = "server_set_host"
 	EventUserKicked         = "client_kick_user"
+	EventStartGame          = "client_start_game"
 )
 
 type UserKicked struct {
@@ -57,6 +59,11 @@ type Event struct {
 type EventHandler func(event Event, c *Client) error
 
 type ClientPing struct {
+	Username string `json:"username"`
+	Ping     uint16 `json:"ping"`
+}
+
+type GameUser struct {
 	Username string `json:"username"`
 	Ping     uint16 `json:"ping"`
 }
@@ -121,7 +128,6 @@ func NewClient(conn *websocket.Conn, manager *Manager, roomId string, username s
 			RemoveClient(conn, nil, EventSendError, "Username is taken")
 			return nil
 		}
-
 	}
 
 	return &Client{
@@ -142,12 +148,56 @@ func (m *Manager) registerClient(client *Client) {
 func (m *Manager) removeClient(client *Client) {
 	m.Lock()
 	defer m.Unlock()
+
+	wasHost := client.host
+
 	if _, ok := m.clients[client]; ok {
 		// close connection
 		client.conn.Close()
 		// remove
 		delete(m.clients, client)
 	}
+
+	var data []GameUser
+
+	for client := range m.clients { // Get all clients in room
+		data = append(data, GameUser{ // Append client's ping to data
+			Username: client.username,
+			Ping:     client.ping,
+		})
+	}
+
+	if wasHost {
+		for client := range m.clients {
+			client.host = true
+
+			data := true
+			dataBytes, err := json.Marshal(data) // Marshal data to bytes
+
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+
+			client.egress <- Event{ // Inform all clients in room that user left
+				Type:    EventSetHost,
+				Payload: dataBytes,
+			}
+			break
+		}
+	}
+
+	dataBytes, err := json.Marshal(data) // Marshal data to bytes
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	client.manager.Broadcast(Event{ // Inform all clients in room that user left
+		Type:    EventUpdatePlayers,
+		Payload: dataBytes,
+	})
 }
 
 func checkOrigin(r *http.Request) bool {
@@ -185,9 +235,9 @@ func handleSendMessage(event Event, c *Client) error {
 func (m *Manager) setupEventHandlers() {
 	m.handlers[EventSendMessage] = handleSendMessage
 	m.handlers[EventUpdatePing] = handleSendMessage
-	m.handlers[EventUserJoined] = UserJoinedHandler
+	m.handlers[EventUpdatePlayers] = handleSendMessage
+	m.handlers[EventSuccessfullyJoined] = handleSendMessage
 	m.handlers[EventUserKicked] = UserKickedHandler
-	m.handlers[EventSuccessfullyJoined] = SuccessfullyJoinedHandler
 }
 
 func (c *Client) readMessages() {
@@ -283,57 +333,6 @@ func (c *Client) pongHandler(pongMsg string) error {
 	return c.conn.SetReadDeadline(time.Now().Add(pongWait))
 }
 
-func SuccessfullyJoinedHandler(event Event, c *Client) error {
-	type ClientData struct {
-		Username string `json:"username"`
-		Host     bool   `json:"host"`
-	}
-
-	var data []ClientData
-
-	for client := range c.manager.clients { // Get all clients in room
-		data = append(data, ClientData{ // Append client's ping to data
-			Username: client.username,
-			Host:     client.host,
-		})
-	}
-
-	dataBytes, err := json.Marshal(data) // Marshal data to bytes
-
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	var outgoingEvent Event
-	outgoingEvent.Type = EventSuccessfullyJoined
-	outgoingEvent.Payload = dataBytes
-
-	c.egress <- outgoingEvent // Send event to client
-
-	return nil
-}
-
-func UserJoinedHandler(event Event, c *Client) error {
-	fmt.Println("User joined handler")
-
-	username := string(event.Payload)
-
-	data, err := json.Marshal(username)
-
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-
-	var outgoingEvent Event
-	outgoingEvent.Type = EventUserJoined
-	outgoingEvent.Payload = data
-
-	c.manager.Broadcast(outgoingEvent) // Broadcast event to all clients in room
-	return nil
-}
-
 func UserKickedHandler(event Event, c *Client) error {
 	if c.host { // Only host can kick
 		var userKicked UserKicked
@@ -411,20 +410,44 @@ func HandleWs(w http.ResponseWriter, r *http.Request) {
 
 	m := GetManager(roomId)
 	client := NewClient(conn, m, roomId, username)
-
 	if client != nil { // If client was created successfully
 		m.registerClient(client)
 
 		go client.readMessages()  // Setup listener for incoming messages
 		go client.writeMessages() // Setup listener for outgoing messages
 
-		m.routeEvent(Event{ // Inform all clients in room that user joined
-			Type:    EventUserJoined,
-			Payload: []byte(username),
-		}, client)
+		var data []GameUser
+
+		for client := range m.clients { // Get all clients in room
+			data = append(data, GameUser{ // Append client's ping to data
+				Username: client.username,
+			})
+		}
+
+		dataBytes, err := json.Marshal(data) // Marshal data to bytes
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		client.manager.Broadcast(Event{ // Inform all clients in room that user left
+			Type:    EventUpdatePlayers,
+			Payload: dataBytes,
+		})
+
+		isHost := client.host
+
+		dataBytes, err = json.Marshal(isHost) // Marshal data to bytes
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
 		m.routeEvent(Event{ // Inform client that they successfully joined
-			Type: EventSuccessfullyJoined,
+			Type:    EventSuccessfullyJoined,
+			Payload: dataBytes,
 		}, client)
 	}
 }
