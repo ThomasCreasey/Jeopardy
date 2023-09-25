@@ -12,7 +12,7 @@ var Key []byte
 var Store *sessions.CookieStore
 
 func init() {
-	err := godotenv.Load(".dev.env")
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
