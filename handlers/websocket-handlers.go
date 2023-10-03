@@ -35,6 +35,11 @@ type RoomState5 struct {
 
 func StartGameHandler(event Event, c *Client) error {
 	if c.host && !c.manager.started { // Ensure user is host, and game isn't already started
+
+		if len(c.manager.clients) < 2 { // Ensure there are at least 2 players
+			return nil
+		}
+
 		c.manager.currRoomState = 1
 
 		var gameState GameState
@@ -62,6 +67,10 @@ func UserKickedHandler(event Event, c *Client) error {
 		if err != nil {
 			utils.Log(err)
 			return err
+		}
+
+		if userKicked.Username == c.username { // Ensure user isn't kicking themselves
+			return nil
 		}
 
 		for client := range c.manager.clients { // Get all clients in room
