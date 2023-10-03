@@ -225,5 +225,20 @@ window.onload = function() {
 
             sendEvent("client_kick_user", outgoingEvent);
         }
+        else if(e.target.tagName == 'TD') {
+            if(e.target.classList.contains('disabled')) return;
+            
+            const categories = document.getElementById('lobby-table-categories').children;
+            const category = categories[e.target.cellIndex].innerText;
+            const value = e.target.innerText
+
+            const outgoingEvent = {
+                Category: category,
+                Value: value
+            }
+
+            sendEvent("client_select_question", outgoingEvent);
+        }
     })
+    
 };

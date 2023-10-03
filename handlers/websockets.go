@@ -40,6 +40,7 @@ const (
 	EventStartedGame        = "server_started_game"
 	EventUpdateGameState    = "server_update_game_state"
 	EventStartGame          = "client_start_game"
+	EventSelectQuestion     = "client_select_question"
 )
 
 type UserKicked struct {
