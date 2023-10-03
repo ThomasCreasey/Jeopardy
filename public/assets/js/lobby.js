@@ -1,4 +1,4 @@
-class Event {
+class WSEvent {
     constructor(type, payload) {
         this.type = type;
         this.payload = payload;
@@ -11,6 +11,24 @@ class KickEvent {
     }
 }
 
+function padStringToEnd(inputString, desiredLength) {
+    if (inputString.length >= desiredLength) {
+        console.log(inputString.length)
+      return inputString; // No need to pad if the string is already long enough
+    }
+    
+    const spacesToAdd = desiredLength - inputString.length;
+    const paddedString = inputString + '&nbsp;'.repeat(spacesToAdd);
+    
+    console.log(paddedString)
+
+    return paddedString;
+  }
+
+
+var errorModal = new bootstrap.Modal(document.getElementById('error-modal'), {
+    keyboard: false
+});
 
 window.onload = function() {
     const roomId = window.location.pathname.split('/')[2];
@@ -20,11 +38,31 @@ window.onload = function() {
 
     conn = new WebSocket('ws://localhost:8080/ws?roomId='+roomId);
 
+    // Close the WebSocket connection when it is no longer needed
+    window.addEventListener('beforeunload', function() {
+        conn.close();
+    });
+
     function sendEvent(eventName, payload) {
         // Create a event Object with a event named send_message
-        const event = new Event(eventName, payload);
+        const event = new WSEvent(eventName, payload);
         // Format as JSON and send
         conn.send(JSON.stringify(event));
+    }
+
+    function showPage(page) {
+        if(!page) return;
+
+        const allViews = $('div[id^="view-"]');
+        allViews.toggleClass('d-none', true);
+
+        console.log(page)
+
+        if(page == 'select' && !isHost) {
+            page = 'waiting';
+        }
+        $('#view-'+page).toggleClass('d-none', false);
+        
     }
 
     function updateHost() {
@@ -48,6 +86,11 @@ window.onload = function() {
         }
     }
 
+    $('#start-game-button').click(function() {
+        if (!isHost) return;
+        sendEvent("client_start_game", null)
+    })
+
     conn.onopen = function(e) {
         console.log("Connection established!");
     }
@@ -56,9 +99,11 @@ window.onload = function() {
         const data = JSON.parse(e.data);
         console.log(data)
         if(data.type == "server_successfully_joined") {
-            $('#view-lobby').toggleClass('d-none', false);
-            isHost = data.payload;
+            //$('#view-lobby').toggleClass('d-none', false);
+            isHost = data.payload
+
             updateHost();
+
         }
         else if (data.type == "server_set_host") {
             isHost = true;
@@ -107,18 +152,67 @@ window.onload = function() {
                 document.getElementById('lobby-players').append(tr);
             })
         }
+        else if(data.type == "server_update_game_state") {
+            const payload = data.payload;
+            const state = payload.roomState;
+            const payloadData = payload.data;
+
+            /* ROOM STATES
+                0: Waiting for players
+                1: Selecting categories
+                2: Answering questions
+                3: Displaying Scores
+                4: Game Over
+                5: Waiting for user to reconnect
+            */
+                console.log(state)
+            switch (state) {
+                case 0:
+                    showPage('lobby')
+                    break;
+                case 1:
+                    const categories = payloadData.Categories;
+
+                    document.getElementById('lobby-table-categories').innerHTML = "";
+
+                    categories.forEach((category, index) => {
+                        const th = document.createElement('th');
+                        th.innerText = category.Category
+                        document.getElementById('lobby-table-categories').appendChild(th);
+
+                        for(let i = 0; i < 5; i++) {
+                            const children = document.getElementById('game-table').children[i];
+                            const disabled = category.Disabled[i];
+                            $(children.children[index]).toggleClass('disabled', disabled)
+                        }
+                    })
+                    showPage('select');
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 5:
+                    document.getElementById('view-waiting-user-text').innerText = `Waiting for user: ${payloadData.Username} to reconnect...`;
+                    showPage('waiting-user')
+            }
+
+        }
     }
 
     conn.onclose = function(e) {
+        console.log("CLOSED")
         $('#view-lobby').toggleClass('d-none', true);
+        try {
+            document.getElementById('error-modal-text').innerText = e.reason;
+        }
+        catch (e) {
+            document.getElementById('error-modal-text').innerText = "Connection closed without reason";
+        }
         
-        const fixedReason = '{"'+e.reason
-        console.log(fixedReason)
-        const parsed = JSON.parse(fixedReason);
-        console.log(parsed)
-
-        $('#error-modal-text').innerText = parsed.payload;
-        $('#error-modal').modal('show');
+        errorModal.show()
         console.log("Connection closed!");
     }
 
