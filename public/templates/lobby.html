@@ -35,6 +35,66 @@
                     <div class="col"></div>
                 </div>
             </div>
+            <div id="view-select" class="d-none w-100">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr id="lobby-table-categories">
+                            <th>Category 1</th>
+                            <th>Category 2</th>
+                            <th>Category 3</th>
+                            <th>Category 4</th>
+                            <th>Category 5</th>
+                        </tr>
+                    </thead>
+                    <tbody class="game-table" id="game-table">
+                        <tr>
+                            <td>$200</td>
+                            <td>$200</td>
+                            <td>$200</td>
+                            <td>$200</td>
+                            <td>$200</td>
+                        </tr>
+                        <tr>
+                            <td>$400</td>
+                            <td>$400</td>
+                            <td>$400</td>
+                            <td>$400</td>
+                            <td>$400</td>
+                        </tr>
+                        <tr>
+                            <td>$600</td>
+                            <td>$600</td>
+                            <td>$600</td>
+                            <td>$600</td>
+                            <td>$600</td>
+                        </tr>
+                        <tr>
+                            <td>$800</td>
+                            <td>$800</td>
+                            <td>$800</td>
+                            <td>$800</td>
+                            <td>$800</td>
+                        </tr>
+                        <tr>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="view-waiting" class="d-none w-100">
+                <div class="w-100">
+                    <h1 class="text-center">Waiting for host to select category...</h1>
+                </div>
+            </div>
+            <div id="view-waiting-user" class="d-none w-100">
+                <div class="w-100">
+                    <h1 class="text-center" id="view-waiting-user-text"></h1>
+                </div>
+            </div>
         </div>
 
         <div class="modal fade" id="error-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -44,7 +104,7 @@
                     <div class="alert alert-danger" role="alert" id="error-modal-text"></div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-primary">Return to menu</button>
+                  <a class="btn btn-primary" href="/">Return to menu</a>
                 </div>
               </div>
             </div>
