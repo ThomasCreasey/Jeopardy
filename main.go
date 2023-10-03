@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"jeopardy/handlers"
 	"jeopardy/routes"
+	"jeopardy/utils"
 	"net/http"
 	"os"
 	"time"
@@ -17,6 +17,10 @@ import (
 
 func main() {
 	os.Remove("database.sqlite")
+
+	//categories := utils.GetCategories()
+	//utils.Log(categories)
+
 	useLogs := false
 	logger := httplog.NewLogger("httplog-example", httplog.Options{
 		Concise: true,
@@ -79,7 +83,7 @@ func main() {
 
 	r.Get("/ws", handlers.HandleWs)
 
-	fmt.Println("Server running on port 8080")
+	utils.Log("\033[0;32mServer running on port 8080\033[0m")
 	server := &http.Server{
 		Addr:              ":8080",
 		Handler:           r,

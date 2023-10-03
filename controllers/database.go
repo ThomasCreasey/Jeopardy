@@ -34,7 +34,7 @@ func init() {
 	if err != nil {
 		panic("failed to connect database")
 	}
-	fmt.Println("Database connected successfully")
+	fmt.Println("\033[0;36mDatabase connected successfully\033[0m")
 
 	// Migrate the schema
 	err = DB.AutoMigrate(&types.Room{})
