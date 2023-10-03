@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"jeopardy/controllers"
 	"jeopardy/types"
 	"jeopardy/utils"
@@ -16,7 +15,7 @@ import (
 func GetHome(w http.ResponseWriter, r *http.Request) {
 	tmpl, err := template.ParseFiles("./public/templates/home.html")
 	if err != nil {
-		fmt.Println(err)
+		utils.Log(err)
 		return
 	}
 
@@ -27,7 +26,7 @@ func GetHome(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(err)
+		utils.Log(err)
 		return
 	}
 }
@@ -39,13 +38,13 @@ func PostCreateRoom(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println(err)
+		utils.Log(err)
 		return
 	}
 
 	if body.Username == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Println("Username is empty")
+		utils.Log("Username is empty")
 		return
 	}
 
@@ -81,7 +80,7 @@ func GetLobby(w http.ResponseWriter, r *http.Request) {
 
 	tmpl, err := template.ParseFiles("./public/templates/lobby.html")
 	if err != nil {
-		fmt.Println(err)
+		utils.Log(err)
 		return
 	}
 
@@ -89,7 +88,7 @@ func GetLobby(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Println(err)
+		utils.Log(err)
 		return
 	}
 }
