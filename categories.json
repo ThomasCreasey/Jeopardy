@@ -1,0 +1,381 @@
+{
+    "Random Stats": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        },
+        "mode=closest"
+    ],
+    "Music": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ],
+    "Sports": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ],
+    "Geography": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ],
+    "Science": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ],
+    "Logos": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ],
+    "Roblox": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ],
+    "Games": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ],
+    "TV / Films": [
+        {
+            "200": [
+                {
+                    "question": "q1",
+                    "answer": "a1"
+                },
+                {
+                    "question": "q2",
+                    "answer": "a2"
+                },
+                {
+                    "question": "q3",
+                    "answer": "a3"
+                }
+            ],
+            "400": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "600": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "800": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ],
+            "1000": [
+                {
+                    "question": "",
+                    "answer": ""
+                }
+            ]
+        }
+    ]
+}
