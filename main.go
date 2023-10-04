@@ -29,7 +29,7 @@ func main() {
 	cspBuilder := cspbuilder.Builder{
 		Directives: map[string][]string{
 			cspbuilder.DefaultSrc: {"'self'"},
-			cspbuilder.StyleSrc:   {"'self'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"},
+			cspbuilder.StyleSrc:   {"'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css"},
 			cspbuilder.ScriptSrc:  {"'self'", "$NONCE", "https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js", "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"},
 			cspbuilder.ImgSrc:     {"'self'", "data:", "*"},
 		},
