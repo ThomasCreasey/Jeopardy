@@ -41,6 +41,7 @@ const (
 	EventUpdateGameState    = "server_update_game_state"
 	EventStartGame          = "client_start_game"
 	EventSelectQuestion     = "client_select_question"
+	EventUpdateQuestion     = "server_update_question"
 )
 
 type UserKicked struct {
@@ -55,6 +56,7 @@ type Client struct {
 	host     bool
 	pingSent time.Time
 	ping     uint16
+	score    int
 }
 
 type RoomQuestionData struct {
@@ -73,6 +75,8 @@ type Manager struct {
 	currRoomState int8
 	questionData  RoomQuestionData
 	categories    []types.CategoryData
+	pauseCh       chan bool
+	resumeCh      chan bool
 	sync.RWMutex
 }
 
@@ -91,6 +95,7 @@ type ClientPing struct {
 type GameUser struct {
 	Username string `json:"username"`
 	Ping     uint16 `json:"ping"`
+	Score    int    `json:"score"`
 }
 
 type GameState struct {
@@ -108,6 +113,8 @@ func (m *Manager) setupEventHandlers() {
 	m.handlers[EventUserKicked] = UserKickedHandler
 	m.handlers[EventStartGame] = StartGameHandler
 	m.handlers[EventStartedGame] = handleSendMessage
+	m.handlers[EventSelectQuestion] = SelectQuestionHandler
+	m.handlers[EventUpdateQuestion] = handleSendMessage
 }
 
 var Managers = make(map[string]*Manager)
@@ -127,6 +134,8 @@ func GetManager(roomId string) *Manager {
 		currRoomState: 0,
 		prevRoomState: 0,
 		roomId:        roomId,
+		pauseCh:       make(chan bool),
+		resumeCh:      make(chan bool),
 	}
 
 	Managers[roomId] = manager // Add manager to map of managers
@@ -187,6 +196,7 @@ func NewClient(conn *websocket.Conn, manager *Manager, roomId string, username s
 		egress:   make(chan Event),
 		username: username,
 		host:     len(manager.clients) == 0,
+		score:    0,
 	}
 }
 
@@ -219,6 +229,7 @@ func (m *Manager) removeClient(client *Client) {
 			data = append(data, GameUser{ // Append client's ping to data
 				Username: client.username,
 				Ping:     client.ping,
+				Score:    client.score,
 			})
 		}
 
@@ -477,6 +488,8 @@ func HandleWs(w http.ResponseWriter, r *http.Request) {
 		for client := range m.clients { // Get all clients in room
 			data = append(data, GameUser{ // Append client's ping to data
 				Username: client.username,
+				Ping:     client.ping,
+				Score:    client.score,
 			})
 		}
 
