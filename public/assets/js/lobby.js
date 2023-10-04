@@ -11,20 +11,9 @@ class KickEvent {
     }
 }
 
-function padStringToEnd(inputString, desiredLength) {
-    if (inputString.length >= desiredLength) {
-        console.log(inputString.length)
-      return inputString; // No need to pad if the string is already long enough
-    }
-    
-    const spacesToAdd = desiredLength - inputString.length;
-    const paddedString = inputString + '&nbsp;'.repeat(spacesToAdd);
-    
-    console.log(paddedString)
-
-    return paddedString;
-  }
-
+function generateUniqueID() {
+    return Math.random().toString(36).substring(2, 15)
+}
 
 var errorModal = new bootstrap.Modal(document.getElementById('error-modal'), {
     keyboard: false
@@ -33,6 +22,7 @@ var errorModal = new bootstrap.Modal(document.getElementById('error-modal'), {
 window.onload = function() {
     const roomId = window.location.pathname.split('/')[2];
     let isHost;
+    let question;
 
     document.getElementById('room-code').innerText = roomId;
 
@@ -62,7 +52,6 @@ window.onload = function() {
             page = 'waiting';
         }
         $('#view-'+page).toggleClass('d-none', false);
-        
     }
 
     function updateHost() {
@@ -99,7 +88,6 @@ window.onload = function() {
         const data = JSON.parse(e.data);
         console.log(data)
         if(data.type == "server_successfully_joined") {
-            //$('#view-lobby').toggleClass('d-none', false);
             isHost = data.payload
 
             updateHost();
@@ -125,6 +113,8 @@ window.onload = function() {
         }
         else if(data.type == "server_update_players") {
             const players = data.payload;
+
+            updatePlayers(players)
 
             document.getElementById('lobby-players').innerHTML = "";
 
@@ -189,6 +179,8 @@ window.onload = function() {
                     showPage('select');
                     break;
                 case 2:
+                    question = payloadData.Question;
+                    showPage('question')
                     break;
                 case 3:
                     break;
@@ -230,7 +222,8 @@ window.onload = function() {
             
             const categories = document.getElementById('lobby-table-categories').children;
             const category = categories[e.target.cellIndex].innerText;
-            const value = e.target.innerText
+            let value = e.target.innerText
+            value = value.replace('$', '');
 
             const outgoingEvent = {
                 Category: category,
@@ -238,6 +231,9 @@ window.onload = function() {
             }
 
             sendEvent("client_select_question", outgoingEvent);
+        }
+        else if(e.target.id == 'buzz') {
+            console.log("BUZZ")
         }
     })
     
