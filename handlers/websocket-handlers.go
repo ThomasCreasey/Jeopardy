@@ -2,6 +2,8 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
+	"jeopardy/types"
 	"jeopardy/utils"
 	"time"
 )
@@ -54,6 +56,74 @@ func StartGameHandler(event Event, c *Client) error {
 		c.manager.Broadcast(event)
 
 		c.manager.started = true // Set game as started
+	}
+
+	return nil
+}
+
+func readLetters(message string, pauseCh, resumeCh <-chan bool) {
+	var builtString string
+	for _, letter := range message {
+		builtString += string(letter)
+
+		if letter == ' ' {
+			continue
+		}
+		select {
+		case <-pauseCh:
+			// Paused, wait for resume signal
+			<-resumeCh
+		default:
+			fmt.Println(builtString)
+			time.Sleep(100 * time.Millisecond) // Adjust the delay as needed
+		}
+	}
+}
+
+func SelectQuestionHandler(event Event, c *Client) error {
+	fmt.Println("SelectQuestionHandler")
+	if c.host { // Only host can select question
+		fmt.Println("Is Host")
+		var clientSelectQuestion types.ClientSelectQuestion
+		err := json.Unmarshal(event.Payload, &clientSelectQuestion)
+
+		if err != nil {
+			utils.Log(err)
+			return err
+		}
+
+		if c.manager.questionData != (RoomQuestionData{}) { // Ensure there isn't already a question selected
+			return nil
+		}
+
+		for _, category := range c.manager.categories {
+			if category.Category == clientSelectQuestion.Category {
+				for _, value := range category.Values {
+					if value.Value == clientSelectQuestion.Value {
+						if value.Question.Answered {
+							return nil
+						}
+
+						var roomQuestionData RoomQuestionData
+
+						roomQuestionData.Question = value.Question.Question
+						roomQuestionData.Answer = value.Question.Answer
+						value.Question.Answered = true
+
+						c.manager.currRoomState = 2
+						c.manager.questionData = roomQuestionData
+
+						go readLetters(roomQuestionData.Question, c.manager.pauseCh, c.manager.resumeCh)
+
+						event := Event{
+							Type: EventUpdateGameState,
+						}
+
+						c.manager.Broadcast(event)
+					}
+				}
+			}
+		}
 	}
 
 	return nil
