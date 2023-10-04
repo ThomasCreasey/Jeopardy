@@ -95,6 +95,21 @@
                     <h1 class="text-center" id="view-waiting-user-text"></h1>
                 </div>
             </div>
+
+            <div id="view-question" class="d-none w-100 h-100">
+                <div class="row m-4 d-block d-xl-none">
+                    <button class="btn btn-primary" id="buzz">Buzz in</button>
+                </div>
+                <div class="row mt-3">
+                    <div class="alert alert-info text-center">
+                        <p class="mb-0" id="view-question-question"></p>
+                    </div> 
+                </div>
+                <div class="row text-center" id="question-players"></div>
+                <div class="row m-4 d-none d-xl-block">
+                    <button class="btn btn-primary" id="buzz">Buzz in</button>
+                </div>
+            </div> 
         </div>
 
         <div class="modal fade" id="error-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -110,6 +125,7 @@
             </div>
         </div>
 
+        <script src="/js/question-page.js"></script>
         <script src="/js/lobby.js"></script>
     </body>
 </html>
