@@ -26,9 +26,15 @@ type RoomState1 struct {
 	Categories []RoomCategoryData
 }
 
+type UserColours struct {
+	Username string
+	Colour   string
+}
+
 type RoomState2 struct {
-	Question string
-	Expires  time.Time
+	Question    string
+	UserColours []UserColours
+	Expires     time.Time
 }
 
 type RoomState5 struct {
@@ -61,7 +67,7 @@ func StartGameHandler(event Event, c *Client) error {
 	return nil
 }
 
-func readLetters(message string, pauseCh, resumeCh <-chan bool) {
+func readLetters(message string, manager *Manager) {
 	var builtString string
 	for _, letter := range message {
 		builtString += string(letter)
@@ -70,14 +76,34 @@ func readLetters(message string, pauseCh, resumeCh <-chan bool) {
 			continue
 		}
 		select {
-		case <-pauseCh:
+		case <-manager.pauseQuesCh:
+			fmt.Println("Read Letters Pause")
 			// Paused, wait for resume signal
-			<-resumeCh
+			<-manager.resumeQuesCh
 		default:
-			fmt.Println(builtString)
+			data, err := json.Marshal(builtString)
+			if err != nil {
+				utils.Log(err)
+			}
+
+			manager.questionState = builtString
+
+			manager.Broadcast(Event{
+				Type:    EventUpdateQuestion,
+				Payload: data,
+			})
+
 			time.Sleep(100 * time.Millisecond) // Adjust the delay as needed
 		}
 	}
+}
+
+func RoundOver(c *Client) {
+	c.manager.currRoomState = 3
+	c.manager.questionData = RoomQuestionData{}
+	c.manager.waitingFor = ""
+	c.manager.buzzed = []string{}
+	c.manager.buzzedAt = time.Time{}
 }
 
 func SelectQuestionHandler(event Event, c *Client) error {
@@ -113,13 +139,49 @@ func SelectQuestionHandler(event Event, c *Client) error {
 						c.manager.currRoomState = 2
 						c.manager.questionData = roomQuestionData
 
-						go readLetters(roomQuestionData.Question, c.manager.pauseCh, c.manager.resumeCh)
+						go readLetters(roomQuestionData.Question, c.manager)
 
 						event := Event{
 							Type: EventUpdateGameState,
 						}
 
 						c.manager.Broadcast(event)
+
+						go func() {
+							ticker := time.NewTicker(1 * time.Second)
+							currTimer := 0
+							maxTime := 10
+
+							for {
+								select {
+								case <-ticker.C:
+									if c.manager.questionData == (RoomQuestionData{}) {
+										return
+									}
+
+									if currTimer >= maxTime {
+										RoundOver(c)
+										fmt.Println("Next Round")
+										ticker.Stop()
+										return
+									}
+
+									c.manager.Broadcast(Event{
+										Type:    EventUpdateQuestionTimer,
+										Payload: []byte(fmt.Sprintf("%d", maxTime-currTimer)),
+									})
+
+									currTimer++
+								case <-c.manager.pauseQuesCh:
+									fmt.Println("Received Pause Question Ch")
+									ticker.Stop()
+									c.manager.pauseQuesCh <- true
+								case <-c.manager.resumeQuesCh:
+									fmt.Println("Setting new ticker")
+									ticker = time.NewTicker(1 * time.Second)
+								}
+							}
+						}()
 					}
 				}
 			}
@@ -187,8 +249,7 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		gameState.Data = dataBytes
 	case 2:
 		var roomState2 RoomState2
-		roomState2.Question = c.manager.questionData.Question
-		roomState2.Expires = c.manager.questionData.Expires
+		roomState2.Question = c.manager.questionState
 
 		dataBytes, err := json.Marshal(roomState2)
 		if err != nil {
@@ -197,6 +258,17 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		}
 
 		gameState.Data = dataBytes
+
+		var userColours []UserColours
+
+		for client := range c.manager.clients {
+			userColours = append(userColours, UserColours{
+				Username: client.username,
+				Colour:   client.colour,
+			})
+		}
+
+		roomState2.UserColours = userColours
 	case 5:
 		var roomState5 RoomState5
 		roomState5.Username = string(event.Payload)
@@ -233,6 +305,96 @@ func handleSendMessage(event Event, c *Client) error {
 	newEvent.Payload = event.Payload // Set the payload
 
 	c.egress <- newEvent // Send the event to the client's egress channel
+
+	return nil
+}
+
+func BuzzHandler(event Event, c *Client) error {
+	if c.manager.currRoomState == 2 {
+		/*if c.manager.questionData.Expires.Before(time.Now()) {
+
+			return nil
+		}*/
+
+		fmt.Println("Buzzed")
+		if c.manager.waitingFor != "" {
+			fmt.Println("Already waiting for someone")
+			return nil
+		}
+
+		var foundUser bool
+		for _, user := range c.manager.buzzed {
+			if user == c.username {
+				foundUser = true
+			}
+		}
+
+		if foundUser {
+			fmt.Println("Already buzzed")
+			return nil
+		}
+
+		c.manager.waitingFor = c.username
+		c.manager.buzzed = append(c.manager.buzzed, c.username)
+		c.manager.buzzedAt = time.Now()
+
+		fmt.Println("Pausing Question Ch: Buzzed")
+		c.manager.pauseQuesCh <- true
+
+		dataBytes, err := json.Marshal(c.username)
+		if err != nil {
+			utils.Log(err)
+			return err
+		}
+
+		fmt.Println("Broadcasting")
+
+		c.manager.Broadcast(Event{
+			Type:    EventBuzzed,
+			Payload: dataBytes,
+		})
+
+		go func() {
+			ticker := time.NewTicker(1 * time.Second)
+			currTimer := 0
+			maxTime := 10
+
+			for {
+				select {
+				case <-ticker.C:
+					fmt.Println("Tick")
+					if c.manager.waitingFor == "" {
+						fmt.Println("Resuming question ch: no longer waiting for someone")
+						ticker.Stop()
+					}
+
+					c.egress <- Event{
+						Type:    EventUpdateAnswerTimer,
+						Payload: []byte(fmt.Sprintf("%d", maxTime-currTimer)),
+					}
+
+					currTimer++
+
+					if currTimer >= maxTime {
+						c.manager.waitingFor = ""
+						ticker.Stop()
+						return
+					}
+				case <-c.manager.resumeAnsCh:
+					fmt.Println("Received Resume Answer")
+					ticker.Stop()
+					c.manager.resumeQuesCh <- true
+				}
+			}
+		}()
+
+		go func() {
+			time.Sleep(10 * time.Second)
+			fmt.Println("Resuming Question Ch: Answer Timeout")
+			c.manager.waitingFor = ""
+			c.manager.resumeQuesCh <- true
+		}()
+	}
 
 	return nil
 }
