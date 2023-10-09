@@ -7,6 +7,7 @@ import (
 	"jeopardy/types"
 	"jeopardy/utils"
 	"log"
+	"math/rand"
 	"net/http"
 	"sync"
 	"time"
@@ -29,19 +30,46 @@ var (
 	ErrEventNotSupported = errors.New("this event type is not supported")
 )
 
+var allColours = []string{
+	"#FF5733", // Red
+	"#FFC300", // Yellow
+	"#FF33FF", // Pink
+	"#33FF33", // Green
+	"#3366FF", // Blue
+	"#FF9933", // Orange
+	"#9933FF", // Purple
+	"#33FFFF", // Cyan
+	"#FF66CC", // Rose
+	"#66FF66", // Lime
+	"#FF6666", // Light Red
+	"#FFCC33", // Light Yellow
+	"#FF66FF", // Light Pink
+	"#66FF99", // Light Green
+	"#6666FF", // Light Blue
+	"#FF9966", // Light Orange
+	"#9966FF", // Light Purple
+	"#66FFFF", // Light Cyan
+	"#FF99CC", // Light Rose
+	"#99FF99", // Light Lime
+}
+
 const (
-	EventSendMessage        = "server_send_message"
-	EventUpdatePlayers      = "server_update_players"
-	EventSendError          = "server_send_error"
-	EventUpdatePing         = "server_update_ping"
-	EventSuccessfullyJoined = "server_successfully_joined"
-	EventSetHost            = "server_set_host"
-	EventUserKicked         = "client_kick_user"
-	EventStartedGame        = "server_started_game"
-	EventUpdateGameState    = "server_update_game_state"
-	EventStartGame          = "client_start_game"
-	EventSelectQuestion     = "client_select_question"
-	EventUpdateQuestion     = "server_update_question"
+	EventSendMessage         = "server_send_message"
+	EventUpdatePlayers       = "server_update_players"
+	EventSendError           = "server_send_error"
+	EventUpdatePing          = "server_update_ping"
+	EventSuccessfullyJoined  = "server_successfully_joined"
+	EventSetHost             = "server_set_host"
+	EventUserKicked          = "client_kick_user"
+	EventStartedGame         = "server_started_game"
+	EventUpdateGameState     = "server_update_game_state"
+	EventStartGame           = "client_start_game"
+	EventSelectQuestion      = "client_select_question"
+	EventUpdateQuestion      = "server_update_question"
+	EventBuzz                = "client_buzz"
+	EventBuzzed              = "server_buzzed"
+	EventUpdateAnswerTimer   = "server_update_answer_timer"
+	EventUpdateQuestionTimer = "server_update_question_timer"
 )
 
 type UserKicked struct {
@@ -57,26 +85,33 @@ type Client struct {
 	pingSent time.Time
 	ping     uint16
 	score    int
+	colour   string
 }
 
 type RoomQuestionData struct {
 	Question string
 	Answer   string
-	Expires  time.Time
 }
 
 type Manager struct {
-	roomId        string
-	clients       map[*Client]bool
-	recentlyLeft  map[string]bool
-	handlers      map[string]EventHandler
-	started       bool
-	prevRoomState int8
-	currRoomState int8
-	questionData  RoomQuestionData
-	categories    []types.CategoryData
-	pauseCh       chan bool
-	resumeCh      chan bool
+	roomId           string
+	clients          map[*Client]bool
+	recentlyLeft     map[string]bool
+	handlers         map[string]EventHandler
+	started          bool
+	prevRoomState    int8
+	currRoomState    int8
+	questionData     RoomQuestionData
+	categories       []types.CategoryData
+	pauseAnsCh       chan bool
+	pauseQuesCh      chan bool
+	resumeAnsCh      chan bool
+	resumeQuesCh     chan bool
+	questionState    string
+	availableColours []string
+	buzzed           []string
+	waitingFor       string
+	buzzedAt         time.Time
 	sync.RWMutex
 }
 
@@ -96,6 +131,7 @@ type GameUser struct {
 	Username string `json:"username"`
 	Ping     uint16 `json:"ping"`
 	Score    int    `json:"score"`
+	Colour   string `json:"colour"`
 }
 
 type GameState struct {
@@ -115,6 +151,10 @@ func (m *Manager) setupEventHandlers() {
 	m.handlers[EventStartedGame] = handleSendMessage
 	m.handlers[EventSelectQuestion] = SelectQuestionHandler
 	m.handlers[EventUpdateQuestion] = handleSendMessage
+	m.handlers[EventBuzz] = BuzzHandler
+	m.handlers[EventBuzzed] = handleSendMessage
+	m.handlers[EventUpdateAnswerTimer] = handleSendMessage
+	m.handlers[EventUpdateQuestionTimer] = handleSendMessage
 }
 
 var Managers = make(map[string]*Manager)
@@ -126,16 +166,22 @@ func GetManager(roomId string) *Manager {
 		}
 	}
 
+	colourCopy := make([]string, len(allColours))
+	copy(colourCopy, allColours)
+
 	// If manager for room doesn't exist, create one
 	manager := &Manager{
-		clients:       make(map[*Client]bool),
-		handlers:      make(map[string]EventHandler),
-		recentlyLeft:  make(map[string]bool),
-		currRoomState: 0,
-		prevRoomState: 0,
-		roomId:        roomId,
-		pauseCh:       make(chan bool),
-		resumeCh:      make(chan bool),
+		clients:          make(map[*Client]bool),
+		handlers:         make(map[string]EventHandler),
+		recentlyLeft:     make(map[string]bool),
+		currRoomState:    0,
+		prevRoomState:    0,
+		roomId:           roomId,
+		pauseQuesCh:      make(chan bool),
+		pauseAnsCh:       make(chan bool),
+		resumeQuesCh:     make(chan bool),
+		resumeAnsCh:      make(chan bool),
+		availableColours: colourCopy,
 	}
 
 	Managers[roomId] = manager // Add manager to map of managers
@@ -200,6 +246,24 @@ func NewClient(conn *websocket.Conn, manager *Manager, roomId string, username s
 	}
 }
 
+func (c *Client) SetRandomColour() {
+	m := c.manager
+	m.Lock()
+	defer m.Unlock()
+
+	if len(m.availableColours) == 0 {
+		return
+	}
+
+	randomIndex := rand.Intn(len(m.availableColours))
+
+	colour := m.availableColours[randomIndex]
+
+	m.availableColours = append(m.availableColours[:randomIndex], m.availableColours[randomIndex+1:]...)
+
+	c.colour = colour
+}
+
 func (m *Manager) registerClient(client *Client) {
 	m.Lock()
 	defer m.Unlock()
@@ -219,6 +283,9 @@ func (m *Manager) removeClient(client *Client) {
 
 	if _, ok := m.clients[client]; ok {
 		defer client.conn.Close()
+
+		m.availableColours = append(m.availableColours, client.colour)
+
 		delete(m.clients, client)
 
 		wasHost := client.host
@@ -230,6 +297,7 @@ func (m *Manager) removeClient(client *Client) {
 				Username: client.username,
 				Ping:     client.ping,
 				Score:    client.score,
+				Colour:   client.colour,
 			})
 		}
 
@@ -480,6 +548,7 @@ func HandleWs(w http.ResponseWriter, r *http.Request) {
 	if client != nil { // If client was created successfully
 		m.registerClient(client)
 
+		client.SetRandomColour()
 		go client.readMessages()  // Setup listener for incoming messages
 		go client.writeMessages() // Setup listener for outgoing messages
 
@@ -490,6 +559,7 @@ func HandleWs(w http.ResponseWriter, r *http.Request) {
 				Username: client.username,
 				Ping:     client.ping,
 				Score:    client.score,
+				Colour:   client.colour,
 			})
 		}
 
@@ -505,9 +575,15 @@ func HandleWs(w http.ResponseWriter, r *http.Request) {
 			Payload: dataBytes,
 		})
 
-		isHost := client.host
+		var joinedData struct {
+			Username string `json:"username"`
+			IsHost   bool   `json:"isHost"`
+		}
 
-		dataBytes, err = json.Marshal(isHost) // Marshal data to bytes
+		joinedData.Username = client.username
+		joinedData.IsHost = client.host
+
+		dataBytes, err = json.Marshal(joinedData) // Marshal data to bytes
 
 		if err != nil {
 			utils.Log(err)
