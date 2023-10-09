@@ -37,6 +37,10 @@ type RoomState2 struct {
 	Expires     time.Time
 }
 
+type RoomState3 struct {
+	Scores []UserScore `json:"scores"`
+}
+
 type RoomState5 struct {
 	Username string
 }
@@ -96,14 +100,19 @@ func readLetters(message string, manager *Manager) {
 			time.Sleep(100 * time.Millisecond) // Adjust the delay as needed
 		}
 	}
+
 }
 
 func RoundOver(c *Client) {
+	fmt.Println("FUNC Round Over")
 	c.manager.currRoomState = 3
 	c.manager.questionData = RoomQuestionData{}
 	c.manager.waitingFor = ""
 	c.manager.buzzed = []string{}
-	c.manager.buzzedAt = time.Time{}
+
+	c.manager.Broadcast(Event{
+		Type: EventUpdateGameState,
+	})
 }
 
 func SelectQuestionHandler(event Event, c *Client) error {
@@ -150,18 +159,20 @@ func SelectQuestionHandler(event Event, c *Client) error {
 						go func() {
 							ticker := time.NewTicker(1 * time.Second)
 							currTimer := 0
-							maxTime := 10
+							maxTime := 9
 
 							for {
 								select {
 								case <-ticker.C:
+									fmt.Println("Tick2")
 									if c.manager.questionData == (RoomQuestionData{}) {
+										fmt.Println("No question data")
 										return
 									}
 
 									if currTimer >= maxTime {
-										RoundOver(c)
 										fmt.Println("Next Round")
+										RoundOver(c)
 										ticker.Stop()
 										return
 									}
@@ -175,7 +186,12 @@ func SelectQuestionHandler(event Event, c *Client) error {
 								case <-c.manager.pauseQuesCh:
 									fmt.Println("Received Pause Question Ch")
 									ticker.Stop()
-									c.manager.pauseQuesCh <- true
+
+									if c.manager.questionData != (RoomQuestionData{}) {
+										if c.manager.questionState != c.manager.questionData.Question {
+											c.manager.pauseQuesCh <- true
+										}
+									}
 								case <-c.manager.resumeQuesCh:
 									fmt.Println("Setting new ticker")
 									ticker = time.NewTicker(1 * time.Second)
@@ -269,6 +285,17 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		}
 
 		roomState2.UserColours = userColours
+	case 3:
+		var roomState3 RoomState3
+		roomState3.Scores = c.manager.scores
+
+		dataBytes, err := json.Marshal(roomState3)
+		if err != nil {
+			utils.Log(err)
+			return err
+		}
+
+		gameState.Data = dataBytes
 	case 5:
 		var roomState5 RoomState5
 		roomState5.Username = string(event.Payload)
@@ -311,10 +338,10 @@ func handleSendMessage(event Event, c *Client) error {
 
 func BuzzHandler(event Event, c *Client) error {
 	if c.manager.currRoomState == 2 {
-		/*if c.manager.questionData.Expires.Before(time.Now()) {
-
+		if c.manager.questionData == (RoomQuestionData{}) {
+			fmt.Println("Manager has no question")
 			return nil
-		}*/
+		}
 
 		fmt.Println("Buzzed")
 		if c.manager.waitingFor != "" {
@@ -336,7 +363,6 @@ func BuzzHandler(event Event, c *Client) error {
 
 		c.manager.waitingFor = c.username
 		c.manager.buzzed = append(c.manager.buzzed, c.username)
-		c.manager.buzzedAt = time.Now()
 
 		fmt.Println("Pausing Question Ch: Buzzed")
 		c.manager.pauseQuesCh <- true
@@ -357,7 +383,7 @@ func BuzzHandler(event Event, c *Client) error {
 		go func() {
 			ticker := time.NewTicker(1 * time.Second)
 			currTimer := 0
-			maxTime := 10
+			maxTime := 9
 
 			for {
 				select {
@@ -366,6 +392,7 @@ func BuzzHandler(event Event, c *Client) error {
 					if c.manager.waitingFor == "" {
 						fmt.Println("Resuming question ch: no longer waiting for someone")
 						ticker.Stop()
+						c.manager.resumeQuesCh <- true
 					}
 
 					c.egress <- Event{
@@ -378,6 +405,7 @@ func BuzzHandler(event Event, c *Client) error {
 					if currTimer >= maxTime {
 						c.manager.waitingFor = ""
 						ticker.Stop()
+						c.manager.resumeQuesCh <- true
 						return
 					}
 				case <-c.manager.resumeAnsCh:

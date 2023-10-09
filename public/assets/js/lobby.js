@@ -200,8 +200,6 @@ window.onload = function() {
 
         }
         else if(data.type == "server_update_question") {
-            showScore(lastBuzzer)
-            answerModal.hide();
             document.getElementById('view-question-question').innerText = data.payload;
         }
         else if(data.type == "server_buzzed") {
@@ -216,9 +214,11 @@ window.onload = function() {
         }
         else if(data.type == "server_update_answer_timer") {
             const timeLeft = data.payload;
-            document.getElementById('answer-timer').innerText = timeLeft;
+            document.getElementById('answer-timer').innerText = timeLeft + 's';
         }
         else if(data.type == "server_update_question_timer") {
+            showScore(lastBuzzer)
+            answerModal.hide();
             document.getElementById('question-timer').innerText = data.payload + 's';
         }
     }

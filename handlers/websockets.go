@@ -93,6 +93,11 @@ type RoomQuestionData struct {
 	Answer   string
 }
 
+type UserScore struct {
+	Username string `json:"username"`
+	Score    int    `json:"score"`
+}
+
 type Manager struct {
 	roomId           string
 	clients          map[*Client]bool
@@ -110,8 +115,8 @@ type Manager struct {
 	questionState    string
 	availableColours []string
 	buzzed           []string
+	scores           []UserScore
 	waitingFor       string
-	buzzedAt         time.Time
 	sync.RWMutex
 }
 
@@ -174,6 +179,7 @@ func GetManager(roomId string) *Manager {
 		clients:          make(map[*Client]bool),
 		handlers:         make(map[string]EventHandler),
 		recentlyLeft:     make(map[string]bool),
+		scores:           make([]UserScore, 0),
 		currRoomState:    0,
 		prevRoomState:    0,
 		roomId:           roomId,
