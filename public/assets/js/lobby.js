@@ -19,10 +19,15 @@ var errorModal = new bootstrap.Modal(document.getElementById('error-modal'), {
     keyboard: false
 });
 
+var answerModal = new bootstrap.Modal(document.getElementById('answer-modal'), {
+    keyboard: false
+});
+
 window.onload = function() {
     const roomId = window.location.pathname.split('/')[2];
     let isHost;
-    let question;
+    let username;
+    let lastBuzzer;
 
     document.getElementById('room-code').innerText = roomId;
 
@@ -88,7 +93,9 @@ window.onload = function() {
         const data = JSON.parse(e.data);
         console.log(data)
         if(data.type == "server_successfully_joined") {
-            isHost = data.payload
+            const payload = data.payload;
+            username = payload.username;
+            isHost = payload.isHost;
 
             updateHost();
 
@@ -179,7 +186,7 @@ window.onload = function() {
                     showPage('select');
                     break;
                 case 2:
-                    question = payloadData.Question;
+                    document.getElementById('view-question-question').innerText = payloadData.Question;
                     showPage('question')
                     break;
                 case 3:
@@ -191,6 +198,28 @@ window.onload = function() {
                     showPage('waiting-user')
             }
 
+        }
+        else if(data.type == "server_update_question") {
+            showScore(lastBuzzer)
+            answerModal.hide();
+            document.getElementById('view-question-question').innerText = data.payload;
+        }
+        else if(data.type == "server_buzzed") {
+            lastBuzzer = data.payload;
+            showBuzzer(lastBuzzer);
+
+            if (lastBuzzer == username) {
+                document.getElementById('answer-input').value = "";
+                answerModal.show();
+                console.log("YOU BUZZED BOZO")   
+            }
+        }
+        else if(data.type == "server_update_answer_timer") {
+            const timeLeft = data.payload;
+            document.getElementById('answer-timer').innerText = timeLeft;
+        }
+        else if(data.type == "server_update_question_timer") {
+            document.getElementById('question-timer').innerText = data.payload + 's';
         }
     }
 
@@ -233,7 +262,7 @@ window.onload = function() {
             sendEvent("client_select_question", outgoingEvent);
         }
         else if(e.target.id == 'buzz') {
-            console.log("BUZZ")
+            sendEvent("client_buzz")
         }
     })
     
