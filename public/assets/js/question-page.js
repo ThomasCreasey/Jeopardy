@@ -1,97 +1,7 @@
 let allPlayerSvgs = [];
 
-const existingColors = []; // Store existing colors
-const maxAttempts = 100; // Maximum number of attempts to generate a unique color
-
-function randomColor() {
-  for (let attempts = 0; attempts < maxAttempts; attempts++) {
-    const color = generateRandomColor();
-
-    // Check if the generated color is sufficiently different from existing colors
-    if (!isColorTooSimilar(color, existingColors)) {
-      existingColors.push(color);
-      return color;
-    }
-  }
-
-  console.error("Max attempts reached, couldn't generate a unique color.");
-  return null; // Handle the case when it's challenging to find a unique color
-}
-
-function generateRandomColor() {
-  // Generate a random hexadecimal color code
-  let color = '#';
-  for (let i = 0; i < 6; i++) {
-    color += Math.floor(Math.random() * 16).toString(16);
-  }
-  return color;
-}
-
-function isColorTooSimilar(color, existingColors) {
-  // Minimum acceptable color difference (adjust as needed)
-  const minDifference = 50; // Adjust this value as needed
-
-  for (const existingColor of existingColors) {
-    if (colorDifference(color, existingColor) < minDifference) {
-      return true; // The color is too similar to an existing one
-    }
-  }
-
-  return false; // The color is sufficiently different
-}
-
-function colorDifference(color1, color2) {
-  // Convert colors to LAB color space
-  const labColor1 = rgbToLab(hexToRgb(color1));
-  const labColor2 = rgbToLab(hexToRgb(color2));
-
-  // Calculate the color difference (CIE76 delta E)
-  const deltaL = labColor1[0] - labColor2[0];
-  const deltaA = labColor1[1] - labColor2[1];
-  const deltaB = labColor1[2] - labColor2[2];
-
-  return Math.sqrt(deltaL * deltaL + deltaA * deltaA + deltaB * deltaB);
-}
-
-function hexToRgb(hex) {
-  // Convert a hex color code to an RGB color
-  const bigint = parseInt(hex.slice(1), 16);
-  const r = (bigint >> 16) & 255;
-  const g = (bigint >> 8) & 255;
-  const b = bigint & 255;
-  return [r, g, b];
-}
-
-function rgbToLab(rgb) {
-  // Convert RGB color to LAB color
-  const [r, g, b] = rgb.map((value) => {
-    value /= 255;
-    return value <= 0.04045
-      ? value / 12.92
-      : Math.pow((value + 0.055) / 1.055, 2.4);
-  });
-
-  const x = r * 0.4124564 + g * 0.3575761 + b * 0.1804375;
-  const y = r * 0.2126729 + g * 0.7151522 + b * 0.0721750;
-  const z = r * 0.0193339 + g * 0.1191920 + b * 0.9503041;
-
-  const epsilon = 0.008856;
-  const kappa = 903.3;
-
-  const xr = x > epsilon ? Math.pow(x, 1 / 3) : (kappa * x + 16) / 116;
-  const yr = y > epsilon ? Math.pow(y, 1 / 3) : (kappa * y + 16) / 116;
-  const zr = z > epsilon ? Math.pow(z, 1 / 3) : (kappa * z + 16) / 116;
-
-  const L = Math.max(0, (116 * yr) - 16);
-  const A = (xr - yr) * 500;
-  const B = (yr - zr) * 200;
-
-  return [L, A, B];
-}
-
-function createSvg(username, score) {
+function createSvg(username, score, colour) {
   const uniqueID = username
-  const color = randomColor(username);
   // Create a new SVG element
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
@@ -152,7 +62,7 @@ function createSvg(username, score) {
     }
 
     .cls-${uniqueID}-6 {
-      fill: ${color};
+      fill: ${colour};
     }
 
     .cls-${uniqueID}-7 {
@@ -280,7 +190,7 @@ function createSvg(username, score) {
     buzzSvg.setAttribute("height", "100");
     buzzSvg.setAttribute("viewBox", "0 0 24 24");
     buzzSvg.setAttribute("stroke-width", "2");
-    buzzSvg.setAttribute("stroke", "currentColor");
+    buzzSvg.setAttribute("stroke", "currentColour");
     buzzSvg.setAttribute("fill", "none");
     buzzSvg.setAttribute("stroke-linecap", "round");
     buzzSvg.setAttribute("stroke-linejoin", "round");
@@ -365,10 +275,11 @@ function updateScore(username, score) {
 
 function showScore(username) {
   const buzzEl = document.getElementById(`buzz-${username}`);
-  buzzEl.setAttribute("hidden", "true");
+  if (buzzEl) buzzEl.setAttribute("hidden", "true");
+  
 
   const scoreEl = document.getElementById(`score-${username}`);
-  scoreEl.removeAttribute("hidden");
+  if (scoreEl) scoreEl.removeAttribute("hidden");
 }
 
 function showBuzzer(username) {
@@ -384,7 +295,7 @@ function updatePlayers(players) {
   container.innerHTML = '';
 
   players.forEach(player => {
-    const svg = createSvg(player.username, player.score);
+    const svg = createSvg(player.username, player.score, player.colour);
     container.appendChild(svg);
   });
 }
