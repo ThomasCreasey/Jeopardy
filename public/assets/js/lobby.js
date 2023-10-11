@@ -190,6 +190,7 @@ window.onload = function() {
                     showPage('question')
                     break;
                 case 3:
+
                     break;
                 case 4:
                     break;
@@ -204,7 +205,7 @@ window.onload = function() {
         }
         else if(data.type == "server_buzzed") {
             lastBuzzer = data.payload;
-            showBuzzer(lastBuzzer);
+            showSvgEl(lastBuzzer, 'buzz');
 
             if (lastBuzzer == username) {
                 document.getElementById('answer-input').value = "";
@@ -217,9 +218,13 @@ window.onload = function() {
             document.getElementById('answer-timer').innerText = timeLeft + 's';
         }
         else if(data.type == "server_update_question_timer") {
-            showScore(lastBuzzer)
+            showSvgEl(lastBuzzer, 'score')
             answerModal.hide();
             document.getElementById('question-timer').innerText = data.payload + 's';
+        }
+        else if(data.type == "server_incorrect_answer") {
+            lastBuzzer = data.payload
+            showSvgEl(lastBuzzer, 'incorrect');
         }
     }
 
@@ -264,6 +269,19 @@ window.onload = function() {
         else if(e.target.id == 'buzz') {
             sendEvent("client_buzz")
         }
+    })
+
+    $('#answer-form').submit(function(e) {
+        e.preventDefault();
+        const answer = document.getElementById('answer-input').value;
+        if (!answer) return;
+        const outgoingEvent = {
+            Answer: answer
+        }
+
+        console.log(answer)
+
+        sendEvent("client_answer", outgoingEvent);
     })
     
 };
