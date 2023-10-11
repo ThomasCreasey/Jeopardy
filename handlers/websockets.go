@@ -70,6 +70,8 @@ const (
 	EventBuzzed              = "server_buzzed"
 	EventUpdateAnswerTimer   = "server_update_answer_timer"
 	EventUpdateQuestionTimer = "server_update_question_timer"
+	EventAnswer              = "client_answer"
+	EventIncorrectAnswer     = "server_incorrect_answer"
 )
 
 type UserKicked struct {
@@ -91,6 +93,7 @@ type Client struct {
 type RoomQuestionData struct {
 	Question string
 	Answer   string
+	Value    int
 }
 
 type UserScore struct {
@@ -99,19 +102,31 @@ type UserScore struct {
 }
 
 type Manager struct {
-	roomId           string
-	clients          map[*Client]bool
-	recentlyLeft     map[string]bool
-	handlers         map[string]EventHandler
-	started          bool
-	prevRoomState    int8
-	currRoomState    int8
-	questionData     RoomQuestionData
-	categories       []types.CategoryData
-	pauseAnsCh       chan bool
-	pauseQuesCh      chan bool
-	resumeAnsCh      chan bool
-	resumeQuesCh     chan bool
+	roomId        string
+	clients       map[*Client]bool
+	recentlyLeft  map[string]bool
+	handlers      map[string]EventHandler
+	started       bool
+	prevRoomState int8
+	currRoomState int8
+	questionData  RoomQuestionData
+	categories    []types.CategoryData
+
+	pauseQuesCh  chan bool
+	resumeQuesCh chan bool
+	closeQuesCh  chan bool
+	quesChClosed bool
+
+	pauseAnsCh  chan bool
+	closeAnsCh  chan bool
+	ansChClosed bool
+
+	pauseReadLetterCh  chan bool
+	readLetterChPaused bool
+	resumeReadLetterCh chan bool
+	closeReadLetterCh  chan bool
+	readLetterChClosed bool
+
 	questionState    string
 	availableColours []string
 	buzzed           []string
@@ -160,6 +175,8 @@ func (m *Manager) setupEventHandlers() {
 	m.handlers[EventBuzzed] = handleSendMessage
 	m.handlers[EventUpdateAnswerTimer] = handleSendMessage
 	m.handlers[EventUpdateQuestionTimer] = handleSendMessage
+	m.handlers[EventAnswer] = AnswerHandler
+	m.handlers[EventIncorrectAnswer] = handleSendMessage
 }
 
 var Managers = make(map[string]*Manager)
@@ -176,18 +193,22 @@ func GetManager(roomId string) *Manager {
 
 	// If manager for room doesn't exist, create one
 	manager := &Manager{
-		clients:          make(map[*Client]bool),
-		handlers:         make(map[string]EventHandler),
-		recentlyLeft:     make(map[string]bool),
-		scores:           make([]UserScore, 0),
-		currRoomState:    0,
-		prevRoomState:    0,
-		roomId:           roomId,
-		pauseQuesCh:      make(chan bool),
-		pauseAnsCh:       make(chan bool),
-		resumeQuesCh:     make(chan bool),
-		resumeAnsCh:      make(chan bool),
-		availableColours: colourCopy,
+		clients:            make(map[*Client]bool),
+		handlers:           make(map[string]EventHandler),
+		recentlyLeft:       make(map[string]bool),
+		scores:             make([]UserScore, 0),
+		currRoomState:      0,
+		prevRoomState:      0,
+		roomId:             roomId,
+		pauseQuesCh:        make(chan bool),
+		pauseAnsCh:         make(chan bool),
+		resumeQuesCh:       make(chan bool),
+		closeAnsCh:         make(chan bool),
+		closeQuesCh:        make(chan bool),
+		pauseReadLetterCh:  make(chan bool),
+		resumeReadLetterCh: make(chan bool),
+		closeReadLetterCh:  make(chan bool),
+		availableColours:   colourCopy,
 	}
 
 	Managers[roomId] = manager // Add manager to map of managers
