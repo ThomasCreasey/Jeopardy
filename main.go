@@ -18,9 +18,6 @@ import (
 func main() {
 	os.Remove("database.sqlite")
 
-	//categories := utils.GetCategories()
-	//utils.Log(categories)
-
 	useLogs := false
 	logger := httplog.NewLogger("httplog-example", httplog.Options{
 		Concise: true,
@@ -77,6 +74,7 @@ func main() {
 	r.Group(func(r chi.Router) { // Home
 		r.Get("/", routes.GetHome)
 		r.Post("/create", routes.PostCreateRoom)
+		r.Post("/join", routes.PostJoinRoom)
 
 		r.Get("/lobby/{roomId}", routes.GetLobby)
 	})
