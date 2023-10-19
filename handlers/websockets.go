@@ -79,15 +79,16 @@ type UserKicked struct {
 }
 
 type Client struct {
-	manager  *Manager
-	conn     *websocket.Conn
-	egress   chan Event
-	username string
-	host     bool
-	pingSent time.Time
-	ping     uint16
-	score    int
-	colour   string
+	manager    *Manager
+	conn       *websocket.Conn
+	egress     chan Event
+	username   string
+	host       bool
+	pingSent   time.Time
+	ping       uint16
+	score      int
+	colour     string
+	lastAnswer string
 }
 
 type RoomQuestionData struct {
@@ -117,7 +118,6 @@ type Manager struct {
 	closeQuesCh  chan bool
 	quesChClosed bool
 
-	pauseAnsCh  chan bool
 	closeAnsCh  chan bool
 	ansChClosed bool
 
@@ -201,7 +201,6 @@ func GetManager(roomId string) *Manager {
 		prevRoomState:      0,
 		roomId:             roomId,
 		pauseQuesCh:        make(chan bool),
-		pauseAnsCh:         make(chan bool),
 		resumeQuesCh:       make(chan bool),
 		closeAnsCh:         make(chan bool),
 		closeQuesCh:        make(chan bool),

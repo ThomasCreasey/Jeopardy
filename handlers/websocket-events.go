@@ -38,8 +38,14 @@ type RoomState2 struct {
 	Expires     time.Time
 }
 
+type UserAnswer struct {
+	Username string
+	Answer   string
+}
+
 type RoomState3 struct {
-	Scores []UserScore `json:"scores"`
+	Answers []UserAnswer `json:"answers"`
+	Scores  []UserScore  `json:"scores"`
 }
 
 type RoomState5 struct {
@@ -143,6 +149,10 @@ func RoundOver(c *Client) {
 	c.manager.Broadcast(Event{
 		Type: EventUpdateGameState,
 	})
+
+	for client := range c.manager.clients {
+		client.lastAnswer = "" // Reset last answer
+	}
 }
 
 func SelectQuestionHandler(event Event, c *Client) error {
@@ -319,6 +329,17 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 	case 3:
 		var roomState3 RoomState3
 		roomState3.Scores = c.manager.scores
+
+		var UserAnswers []UserAnswer
+
+		for client := range c.manager.clients {
+			UserAnswers = append(UserAnswers, UserAnswer{
+				Username: client.username,
+				Answer:   client.lastAnswer,
+			})
+		}
+
+		roomState3.Answers = UserAnswers
 
 		dataBytes, err := json.Marshal(roomState3)
 		if err != nil {
@@ -540,7 +561,11 @@ func AnswerHandler(event Event, c *Client) error {
 			return err
 		}
 
-		if answer.Answer == c.manager.questionData.Answer {
+		c.lastAnswer = answer.Answer
+
+		answerScore := utils.CompareTwoStrings(answer.Answer, c.manager.questionData.Answer)
+
+		if answerScore >= 0.8 {
 			fmt.Println("Correct Answer")
 
 			var foundScore bool
