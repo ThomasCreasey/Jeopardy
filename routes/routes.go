@@ -69,6 +69,36 @@ func PostCreateRoom(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func PostJoinRoom(w http.ResponseWriter, r *http.Request) {
+	var body *types.JoinRoomBody
+
+	err := json.NewDecoder(r.Body).Decode(&body)
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		utils.Log(err)
+		return
+	}
+
+	if body.Username == "" {
+		http.Error(w, "Username is empty", http.StatusBadRequest)
+		return
+	}
+
+	session, _ := controllers.Store.Get(r, "jeopardy")
+	session.Values["username"] = body.Username
+	session.Save(r, w)
+
+	roomExists := utils.CheckRoomExists(body.RoomId)
+
+	if !roomExists {
+		http.Error(w, "Room does not exist", http.StatusBadRequest)
+		return
+	}
+
+	w.Write([]byte(body.RoomId))
+}
+
 func GetLobby(w http.ResponseWriter, r *http.Request) {
 	roomId := chi.URLParam(r, "roomId")
 
