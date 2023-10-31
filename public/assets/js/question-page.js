@@ -49,6 +49,13 @@ function createSvg(username, score, colour) {
         font-weight: 700;
     }
 
+    .cls-${uniqueID}-13 {
+      fill : #fff;
+      font-family: TitilliumWeb-Bold, 'Titillium Web';
+      font-size: 6rem;
+      font-weight: 700;
+    }
+
     .cls-${uniqueID}-3 {
       fill: #2f3d96;
     }
@@ -169,6 +176,29 @@ function createSvg(username, score, colour) {
   path4.classList.add(`cls-${uniqueID}-6`);
   path4.setAttribute("d", "m166.49,238.49v105.53c2.66-.03,9.63-.46,16.55-5.38,6.26-4.45,9.13-10.19,10.21-12.71v-87.43");
 
+  const answerEl = document.createElementNS("http://www.w3.org/2000/svg", "foreignObject");
+  answerEl.setAttribute("x", "33.8");
+  answerEl.setAttribute("y", "162.08");
+  answerEl.setAttribute("width", "128.13");
+  answerEl.setAttribute("height", "178.61");
+  
+  const answerTextDiv = document.createElement("div");
+  answerTextDiv.style.textAlign = "center";
+  answerTextDiv.style.display = "flex";
+  answerTextDiv.style.alignItems = "center";
+  answerTextDiv.style.justifyContent = "center";
+  answerTextDiv.style.height = "100%";
+  answerTextDiv.style.width = "100%";
+
+  const answerText = document.createElement("p");
+  answerText.id = `answer-${uniqueID}`;
+  answerText.setAttribute("hidden", "true");
+  answerText.style.margin = "0";
+  answerText.textContent = "Who was the one along the way";
+
+  answerTextDiv.appendChild(answerText);
+  answerEl.appendChild(answerTextDiv);
+
   const usernameEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
   usernameEl.classList.add(`cls-${uniqueID}-11`);
   usernameEl.id = `username-${uniqueID}`;
@@ -184,6 +214,15 @@ function createSvg(username, score, colour) {
   scoreEl.setAttribute("y", "250");
   scoreEl.setAttribute("x", "100");
   scoreEl.textContent = score;
+
+  const incorrectEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  incorrectEl.classList.add(`cls-${uniqueID}-13`);
+  incorrectEl.id = `incorrect-${uniqueID}`;
+  incorrectEl.setAttribute("text-anchor", "middle");
+  incorrectEl.setAttribute("y", "275");
+  incorrectEl.setAttribute("x", "100");
+  incorrectEl.setAttribute("hidden", "true");
+  incorrectEl.textContent = "X";
 
   const buzzSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     buzzSvg.setAttribute("width", "100");
@@ -258,6 +297,8 @@ function createSvg(username, score, colour) {
     svg.appendChild(path4);
     svg.appendChild(usernameEl);
     svg.appendChild(scoreEl);
+    svg.appendChild(incorrectEl);
+    svg.appendChild(answerEl);
     svg.appendChild(buzzSvg);
     svg.appendChild(circle1);
   
@@ -273,22 +314,23 @@ function updateScore(username, score) {
   scoreEl.textContent = score;
 }
 
-function showScore(username) {
-  const buzzEl = document.getElementById(`buzz-${username}`);
-  if (buzzEl) buzzEl.setAttribute("hidden", "true");
-  
 
+function showSvgEl(username, el) {
+  if(!username || !el) return;
+
+  const buzzEl = document.getElementById(`buzz-${username}`);
   const scoreEl = document.getElementById(`score-${username}`);
-  if (scoreEl) scoreEl.removeAttribute("hidden");
+  const incorrectEl = document.getElementById(`incorrect-${username}`);
+  const answerEl = document.getElementById(`answer-${username}`);
+
+  if(el == "score" && !incorrectEl.hasAttribute("hidden")) return; 
+
+  el == "buzz" ? buzzEl.removeAttribute("hidden") : buzzEl.setAttribute("hidden", "true");
+  el == "score" ? scoreEl.removeAttribute("hidden") : scoreEl.setAttribute("hidden", "true");
+  el == "incorrect" ? incorrectEl.removeAttribute("hidden") : incorrectEl.setAttribute("hidden", "true");
+  el == "answer" ? answerEl.removeAttribute("hidden") : answerEl.setAttribute("hidden", "true");
 }
 
-function showBuzzer(username) {
-  const buzzEl = document.getElementById(`buzz-${username}`);
-  buzzEl.removeAttribute("hidden");
-
-  const scoreEl = document.getElementById(`score-${username}`);
-  scoreEl.setAttribute("hidden", "true");
-}
 
 function updatePlayers(players) {
   const container = document.getElementById('question-players')
