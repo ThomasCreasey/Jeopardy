@@ -1,0 +1,61 @@
+@font-face {
+    font-family: 'Titillium';
+    src: url('/fonts/TitilliumWeb-SemiBold.ttf');
+}
+
+@font-face {
+    font-family: 'UniSans';
+    src: url('/fonts/UniH.otf');
+}
+
+body {
+    font-family: 'Titillium';
+    background-color: #2F3D96;
+    color: #fff;
+}
+
+h1 {
+    font-family: 'UniSans'
+}
+
+.table {
+    --bs-table-bg: #2F3D96 !important;
+    --bs-table-color: white !important;
+}
+
+table {
+    border-collapse: collapse;
+    height: 100%
+}
+
+table td {
+    vertical-align: middle
+}
+
+thead {
+    text-align: center;
+}
+
+.lobby-table tr td {
+    text-align: center;
+    border-top: 0.1rem solid rgb(148, 148, 148);
+    border-bottom: 0.1rem solid rgb(148, 148, 148);
+}
+
+.game-table tr td {
+    border-collapse: collapse;
+    border: 0.1rem solid black;
+    text-align: center;
+    font-size: x-large;
+    transition: all 0.3s ease-in-out;
+}
+
+td:hover:not(.disabled) {
+    cursor: pointer;
+    background-color: #27337d;
+}
+
+.disabled {
+    color: #ffffff00 !important;
+    cursor: not-allowed !important;
+}

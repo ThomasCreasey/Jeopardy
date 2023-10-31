@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 193.76 344.52">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #8b5e3c;
+      }
+
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8 {
+        stroke: #231f20;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-9 {
+        letter-spacing: 0em;
+      }
+
+      .cls-10 {
+        letter-spacing: 0em;
+      }
+
+      .cls-2 {
+        fill: #bcbec0;
+      }
+
+      .cls-11 {
+        fill: #fff;
+        font-family: TitilliumWeb-Bold, 'Titillium Web';
+        font-size: 16.04px;
+        font-weight: 700;
+      }
+
+      .cls-3 {
+        fill: #2f3d96;
+      }
+
+      .cls-4 {
+        fill: #c49a6c;
+      }
+
+      .cls-5 {
+        fill: #58595b;
+      }
+
+      .cls-6 {
+        fill: #414042;
+      }
+
+      .cls-7 {
+        fill: #a7a9ac;
+      }
+
+      .cls-8 {
+        fill: #6d6e71;
+      }
+    </style>
+  </defs>
+  <ellipse class="cls-6" cx="63.23" cy="96.09" rx="10.1" ry="30.46" transform="translate(-50.17 115.37) rotate(-66.3)"/>
+  <ellipse class="cls-6" cx="133.73" cy="94.91" rx="30.46" ry="10.1" transform="translate(-26.87 61.75) rotate(-23.7)"/>
+  <ellipse class="cls-6" cx="97.87" cy="142.02" rx="34.63" ry="72.25"/>
+  <rect class="cls-5" x="27.27" y="132.96" width="139.21" height="211.06"/>
+  <rect class="cls-3" x="33.8" y="136.01" width="128.13" height="22.19"/>
+  <rect class="cls-3" x="33.8" y="162.08" width="128.13" height="178.61"/>
+  <path class="cls-1" d="m.52,238.49h26.75v-105.53c-2.65.03-9.62.46-16.54,5.38-6.26,4.45-9.13,10.19-10.21,12.71v87.43"/>
+  <polygon class="cls-2" points="27.26 151.06 .52 170.96 .52 180.94 27.27 162.08 27.26 151.06"/>
+  <polygon class="cls-8" points="27.24 170.78 .5 190.68 .5 200.67 27.25 181.81 27.24 170.78"/>
+  <polygon class="cls-7" points="27.24 190.35 .5 210.25 .5 220.23 27.25 201.37 27.24 190.35"/>
+  <polygon class="cls-8" points="27.26 209.32 .52 229.22 .52 239.2 27.27 220.34 27.26 209.32"/>
+  <path class="cls-6" d="m27.27,238.49v105.53c-2.66-.03-9.63-.46-16.55-5.38-6.26-4.45-9.13-10.19-10.21-12.71v-87.43"/>
+  <path class="cls-1" d="m193.24,238.49h-26.75v-105.53c2.65.03,9.62.46,16.54,5.38,6.26,4.45,9.13,10.19,10.21,12.71v87.43"/>
+  <polygon class="cls-2" points="166.49 151.06 193.24 170.96 193.24 180.94 166.49 162.08 166.49 151.06"/>
+  <polygon class="cls-8" points="166.51 170.78 193.26 190.68 193.26 200.67 166.5 181.81 166.51 170.78"/>
+  <polygon class="cls-2" points="166.51 190.35 193.26 210.25 193.26 220.23 166.5 201.37 166.51 190.35"/>
+  <polygon class="cls-8" points="166.49 209.32 193.24 229.22 193.24 239.2 166.49 220.34 166.49 209.32"/>
+  <path class="cls-6" d="m166.49,238.49v105.53c2.66-.03,9.63-.46,16.55-5.38,6.26-4.45,9.13-10.19,10.21-12.71v-87.43"/>
+  <text class="cls-11" transform="translate(53.24 152.27)"><tspan x="0" y="0">Pl</tspan><tspan class="cls-10" x="13.78" y="0">a</tspan><tspan class="cls-9" x="21.86" y="0">y</tspan><tspan x="29.76" y="0">er Name</tspan></text>
+  <circle class="cls-4" cx="97.87" cy="35.13" r="34.63"/>
+</svg>

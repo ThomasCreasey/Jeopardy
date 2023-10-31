@@ -1,45 +1,58 @@
-$(document).ready(function () {
-  $('#code-input').keyup(function (a) {
-    var e = document.getElementById('start-button');
-    if (!this.value || this.value == '') {
-      e.innerText = 'Create Game';
-    } else {
-      e.innerText = 'Join Game';
-    }
-  });
+$(document).ready(function() {
+    document.getElementById('create-game').disabled = false;
 
-  $('#start-form').submit(function (el) {
-    el.preventDefault();
-    var e = document.getElementById('start-button');
-    if (e.innerText == 'Create Game') {
-      $.ajax({
-        type: 'POST',
-        url: '/create-lobby',
-        data: {
-          name: $('#name-input').val(),
-        },
-        success: function (data) {
-          window.location.href = `/play/${data}`;
-        },
-      });
-    } else {
-      $.ajax({
-        type: 'POST',
-        url: '/',
-        data: {
-          code: $('#code-input').val(),
-        },
-        success: function (data) {
-          if (data === 'invalid') {
-            document.getElementById('code-input').value = '';
-            document
-              .getElementById('code-input')
-              .setAttribute('placeholder', 'This game doesnt exist');
-            var e = document.getElementById('start-button');
-            e.innerText = 'Create Game';
-          }
-        },
-      });
-    }
-  });
-});
+    $('#create-game').on('click', function() {
+        this.disabled = true;
+
+        const username = document.getElementById('username').value;
+        const data = {
+            'username': username
+        }
+
+        window.localStorage.setItem('username', username);
+        
+        $.ajax({
+            url: '/create',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(data) {
+               window.location.href = '/lobby/'+data
+            },
+            error: function(err) {
+                console.log(err);
+            },
+        })
+    })
+
+    $('#join-game').on('click', function() {
+        const username = document.getElementById('username').value;
+        if(!username) return;
+        const roomId = document.getElementById('room-code').value;
+        if(!roomId) return;
+
+        this.disabled = true;
+
+        const data = {
+            'username': username,
+            'roomId': roomId
+        }
+
+        window.localStorage.setItem('username', username);
+        
+        $.ajax({
+            url: '/join',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function(data) {
+               window.location.href = '/lobby/'+data
+            },
+            error: function(err) {
+                document.getElementById('error-home-text').innerText = err.responseText.replace("\n", "");
+                $('#error-home-text').toggleClass('d-none', false);
+                document.getElementById('join-game').disabled = false;
+            },
+        })
+    })
+})

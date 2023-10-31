@@ -1,0 +1,37 @@
+@font-face {
+    font-family: 'Titillium';
+    src: url('/fonts/TitilliumWeb-SemiBold.ttf');
+}
+
+body {
+    font-family: 'Titillium';
+    background-color: #2F3D96;
+    color: white;
+}
+
+.card {
+    color: white;
+    background-color: #2F3D96;
+    box-sizing: border-box;
+    border: 0.5rem solid rgb(37, 37, 37);
+    text-align: center;
+}
+
+.card-body {
+    border-top: 0.5rem solid rgb(37, 37, 37);
+    height: 25rem;
+}
+
+.card-body p {
+    font-size: 6rem;
+}
+
+.playername {
+    position: absolute;
+    top: 1rem;
+}
+
+.playersvg {
+    position: relative;
+}
+

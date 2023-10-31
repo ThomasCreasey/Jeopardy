@@ -1,0 +1,171 @@
+<html>
+    <head>
+        <title>fort nei</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <link href="/css/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container-xl d-flex justify-content-center align-items-center vh-100">
+            <div class="w-100 d-none" id="view-lobby">
+                <h1 class="text-center">Game Lobby</h1>
+                <h5 class="text-center">Room Code: <span id="room-code"></span></h5>
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col">
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <td>Player Name</td>
+                                    <td>Ping</td>
+                                    <td>#</td>
+                                </tr>
+                            </thead>
+                            <tbody class="lobby-table" id="lobby-players"></tbody>
+                        </table>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col"></div>
+                    <div class="col">
+                        <button class="btn btn-primary w-100 p-3" id="start-game-button">Start Game</button>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div>
+            <div id="view-select" class="d-none w-100">
+                <table class="table table-responsive">
+                    <thead>
+                        <tr id="lobby-table-categories">
+                            <th>Category 1</th>
+                            <th>Category 2</th>
+                            <th>Category 3</th>
+                            <th>Category 4</th>
+                            <th>Category 5</th>
+                        </tr>
+                    </thead>
+                    <tbody class="game-table" id="game-table">
+                        <tr>
+                            <td>$200</td>
+                            <td>$200</td>
+                            <td>$200</td>
+                            <td>$200</td>
+                            <td>$200</td>
+                        </tr>
+                        <tr>
+                            <td>$400</td>
+                            <td>$400</td>
+                            <td>$400</td>
+                            <td>$400</td>
+                            <td>$400</td>
+                        </tr>
+                        <tr>
+                            <td>$600</td>
+                            <td>$600</td>
+                            <td>$600</td>
+                            <td>$600</td>
+                            <td>$600</td>
+                        </tr>
+                        <tr>
+                            <td>$800</td>
+                            <td>$800</td>
+                            <td>$800</td>
+                            <td>$800</td>
+                            <td>$800</td>
+                        </tr>
+                        <tr>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                            <td>$1000</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="view-waiting" class="d-none w-100">
+                <div class="w-100">
+                    <h1 class="text-center">Waiting for host to select category...</h1>
+                </div>
+            </div>
+            <div id="view-waiting-user" class="d-none w-100">
+                <div class="w-100">
+                    <h1 class="text-center" id="view-waiting-user-text"></h1>
+                </div>
+            </div>
+
+            <div id="view-question" class="d-none w-100 h-100">
+                <div class="row m-4 d-block d-xl-none">
+                    <button class="btn btn-primary" id="buzz">Buzz in</button>
+                </div>
+                <div class="row mt-3">
+                    <div class="alert alert-info text-center">
+                        <span id="question-timer" class="float-end">10s</span>
+                        <p class="mb-0" id="view-question-question"></p>
+                    </div> 
+                </div>
+                <div class="row text-center" id="question-players"></div>
+                <div class="row m-4 d-none d-xl-block">
+                    <button class="btn btn-primary" id="buzz">Buzz in</button>
+                </div>
+            </div>
+            <div class="w-100 d-none" id="view-gameover">
+                <h1 class="text-center">Game Over</h1>
+                <div class="row">
+                    <div class="col-3"></div>
+                    <div class="col">
+                        <table class="table table-dark">
+                            <thead>
+                                <tr>
+                                    <td>Player Name</td>
+                                    <td>Score</td>
+                                </tr>
+                            </thead>
+                            <tbody class="lobby-table" id="game-over-score"></tbody>
+                        </table>
+                    </div>
+                    <div class="col-3"></div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col"></div>
+                    <div class="col">
+                        <a class="btn btn-primary w-100 p-3" href="/">Go Home</a>
+                    </div>
+                    <div class="col"></div>
+                </div>
+            </div> 
+        </div>
+
+        <div class="modal fade" id="answer-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form class="modal-content" id="answer-form">
+                    <div class="modal-body">
+                        <p class="text-dark">Time Left: <span id="answer-timer">10s</span></p>
+                        <input type="text" class="form-control" id="answer-input" placeholder="Enter your answer here" autocomplete="off">
+                    </div>
+                    <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-dismiss="modal" type="submit">Submit Answer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="modal fade" id="error-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-body">
+                    <div class="alert alert-danger" role="alert" id="error-modal-text"></div>
+                </div>
+                <div class="modal-footer">
+                  <a class="btn btn-primary" href="/">Return to menu</a>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <script src="/js/question-page.js"></script>
+        <script src="/js/lobby.js"></script>
+    </body>
+</html>
