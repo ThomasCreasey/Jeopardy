@@ -115,15 +115,15 @@
 
         <div class="modal fade" id="answer-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-body">
-                    <p class="text-dark">Time Left: <span id="answer-timer">10s</span></p>
-                    <input type="text" class="form-control" id="answer-input" placeholder="Enter your answer here">
-                </div>
-                <div class="modal-footer">
-                  <button class="btn btn-primary" data-bs-dismiss="modal">Submit Answer</button>
-                </div>
-              </div>
+                <form class="modal-content" id="answer-form">
+                    <div class="modal-body">
+                        <p class="text-dark">Time Left: <span id="answer-timer">10s</span></p>
+                        <input type="text" class="form-control" id="answer-input" placeholder="Enter your answer here" autocomplete="off">
+                    </div>
+                    <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-dismiss="modal" type="submit">Submit Answer</button>
+                    </div>
+                </form>
             </div>
         </div>
 
