@@ -35,12 +35,12 @@ type UserColours struct {
 type RoomState2 struct {
 	Question    string
 	UserColours []UserColours
-	Expires     time.Time
 }
 
 type UserAnswer struct {
 	Username string
 	Answer   string
+	Correct  bool
 }
 
 type RoomState3 struct {
@@ -100,9 +100,9 @@ func readLetters(message string, manager *Manager) {
 			case <-manager.closeReadLetterCh:
 				return
 			case <-manager.resumeReadLetterCh:
+				fmt.Println("Read Letters Resume")
 				manager.readLetterChPaused = false
 			}
-			fmt.Println("Read Letters Resume")
 		case <-manager.closeReadLetterCh:
 			fmt.Println("Read Letters Close")
 			manager.readLetterChClosed = true
@@ -135,6 +135,7 @@ func RoundOver(c *Client) {
 	if !c.manager.quesChClosed { // Ensure question channel is open
 		c.manager.closeQuesCh <- true
 	}
+	fmt.Println("Answer Channel Closed: ", c.manager.ansChClosed)
 	if !c.manager.ansChClosed { // Ensure answer channel is open
 		c.manager.closeAnsCh <- true
 	}
@@ -153,6 +154,39 @@ func RoundOver(c *Client) {
 	for client := range c.manager.clients {
 		client.lastAnswer = "" // Reset last answer
 	}
+	var newHost string
+	if c.manager.correctClient != "" {
+		for client := range c.manager.clients { // Switch host to user with correct answer
+			if client.username == c.manager.correctClient && !client.host { // If user is not already the host
+				client.host = true
+				newHost = client.username
+			} else if client.host && (client.username != c.manager.correctClient) { // Remove host status from existing host
+				client.host = false
+			}
+		}
+	}
+
+	if newHost != "" { // If host changed broadcast event
+		payloadBytes, err := json.Marshal(newHost)
+		if err != nil {
+			utils.Log(err)
+		}
+		c.manager.Broadcast(Event{
+			Type:    EventSetHost,
+			Payload: payloadBytes,
+		})
+	}
+	c.manager.correctClient = "" // Reset correct client
+
+	go func() {
+		timer := time.NewTimer(8 * time.Second)
+		<-timer.C
+
+		c.manager.currRoomState = 1
+		c.manager.Broadcast(Event{
+			Type: EventUpdateGameState,
+		})
+	}()
 }
 
 func SelectQuestionHandler(event Event, c *Client) error {
@@ -171,9 +205,9 @@ func SelectQuestionHandler(event Event, c *Client) error {
 			return nil
 		}
 
-		for _, category := range c.manager.categories {
+		for catIndex, category := range c.manager.categories {
 			if category.Category == clientSelectQuestion.Category {
-				for _, value := range category.Values {
+				for valIndex, value := range category.Values {
 					if value.Value == clientSelectQuestion.Value {
 						if value.Question.Answered {
 							return nil
@@ -181,18 +215,20 @@ func SelectQuestionHandler(event Event, c *Client) error {
 
 						var roomQuestionData RoomQuestionData
 
-						roomQuestionData.Question = value.Question.Question
-						roomQuestionData.Answer = value.Question.Answer
-						roomQuestionData.Value, err = strconv.Atoi(value.Value)
+						questionValue, err := strconv.Atoi(value.Value)
 
 						if err != nil {
 							utils.Log(err)
 						}
 
-						value.Question.Answered = true
+						roomQuestionData.Question = value.Question.Question
+						roomQuestionData.Answer = value.Question.Answer
+						roomQuestionData.Value = questionValue
 
 						c.manager.currRoomState = 2
 						c.manager.questionData = roomQuestionData
+
+						c.manager.categories[catIndex].Values[valIndex].Question.Answered = true
 
 						go readLetters(roomQuestionData.Question, c.manager)
 
@@ -216,6 +252,9 @@ func SelectQuestionHandler(event Event, c *Client) error {
 									if currTimer >= maxTime {
 										fmt.Println("Next Round")
 										RoundOver(c)
+										if !c.manager.quesChClosed {
+											c.manager.closeQuesCh <- true
+										}
 										return
 									}
 
@@ -232,7 +271,7 @@ func SelectQuestionHandler(event Event, c *Client) error {
 									fmt.Println("Setting new ticker")
 									ticker = time.NewTicker(1 * time.Second)
 								case <-c.manager.closeQuesCh:
-									fmt.Println("Closing ticker")
+									fmt.Println("Closing QUES ticker")
 									ticker.Stop()
 									c.manager.quesChClosed = true
 									return
@@ -285,6 +324,7 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 			var disabled []bool
 
 			for _, value := range category.Values {
+				fmt.Println(value)
 				disabled = append(disabled, value.Question.Answered)
 			}
 
@@ -304,6 +344,10 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		}
 
 		gameState.Data = dataBytes
+
+		c.manager.ansChClosed = false
+		c.manager.quesChClosed = false
+		c.manager.readLetterChClosed = false
 	case 2:
 		var roomState2 RoomState2
 		roomState2.Question = c.manager.questionState
@@ -336,6 +380,7 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 			UserAnswers = append(UserAnswers, UserAnswer{
 				Username: client.username,
 				Answer:   client.lastAnswer,
+				Correct:  client.username == c.manager.correctClient,
 			})
 		}
 
@@ -416,16 +461,15 @@ func BuzzHandler(event Event, c *Client) error {
 		c.manager.waitingFor = c.username
 		c.manager.buzzed = append(c.manager.buzzed, c.username)
 
+		fmt.Println("Ques Ch Closed: ", c.manager.quesChClosed)
 		if !c.manager.quesChClosed {
 			fmt.Println("Pausing Question Ch: Buzzed")
 			c.manager.pauseQuesCh <- true
-			fmt.Println("Finished waiting for pauseQuesCh")
 		}
 
 		if !c.manager.readLetterChClosed {
 			fmt.Println("Pausing Read Letter Ch: Buzzed")
 			c.manager.pauseReadLetterCh <- true
-			fmt.Println("Finished waiting for pauseReadLetterCh")
 		}
 
 		dataBytes, err := json.Marshal(c.username)
@@ -449,15 +493,6 @@ func BuzzHandler(event Event, c *Client) error {
 			for {
 				select {
 				case <-ticker.C:
-					if c.manager.waitingFor == "" {
-						fmt.Println("Resuming question ch: no longer waiting for someone")
-						ticker.Stop()
-
-						if !c.manager.quesChClosed {
-							c.manager.resumeQuesCh <- true
-						}
-					}
-
 					c.egress <- Event{
 						Type:    EventUpdateAnswerTimer,
 						Payload: []byte(fmt.Sprintf("%d", maxTime-currTimer)),
@@ -466,8 +501,6 @@ func BuzzHandler(event Event, c *Client) error {
 					currTimer++
 
 					if currTimer >= maxTime {
-						ticker.Stop()
-
 						if !c.manager.quesChClosed {
 							c.manager.resumeQuesCh <- true
 
@@ -477,30 +510,28 @@ func BuzzHandler(event Event, c *Client) error {
 								c.manager.resumeReadLetterCh <- true
 							}
 						}
-						return
+						if !c.manager.ansChClosed {
+							c.manager.closeAnsCh <- true
+						}
 					}
 				case <-c.manager.closeAnsCh:
-					fmt.Println("Closing ticker")
+					fmt.Println("Closing ANS CH ticker")
 					ticker.Stop()
 					c.manager.ansChClosed = true
 					return
 				}
 			}
+
 		}()
 
 		go func() {
 			waitingFor := c.manager.waitingFor
 			time.Sleep(10 * time.Second)
 
-			fmt.Println("Waiting for: ", waitingFor)
-			fmt.Println("Manager waiting for: ", c.manager.waitingFor)
-
 			if waitingFor != c.manager.waitingFor {
-				fmt.Println("NOT WHO WE WERE WAITING FOR")
 				return
 			}
 
-			fmt.Println(len(c.manager.buzzed), len(c.manager.clients))
 			if len(c.manager.buzzed) == len(c.manager.clients) {
 				fmt.Println("All users have answered incorrectly")
 				RoundOver(c)
@@ -567,7 +598,7 @@ func AnswerHandler(event Event, c *Client) error {
 
 		if answerScore >= 0.8 {
 			fmt.Println("Correct Answer")
-
+			c.manager.correctClient = c.username
 			var foundScore bool
 			for _, score := range c.manager.scores {
 				if score.Username == c.username {

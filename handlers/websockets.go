@@ -112,11 +112,11 @@ type Manager struct {
 	currRoomState int8
 	questionData  RoomQuestionData
 	categories    []types.CategoryData
-
-	pauseQuesCh  chan bool
-	resumeQuesCh chan bool
-	closeQuesCh  chan bool
-	quesChClosed bool
+	correctClient string
+	pauseQuesCh   chan bool
+	resumeQuesCh  chan bool
+	closeQuesCh   chan bool
+	quesChClosed  bool
 
 	closeAnsCh  chan bool
 	ansChClosed bool
@@ -332,17 +332,18 @@ func (m *Manager) removeClient(client *Client) {
 			for otherClient := range m.clients {
 				otherClient.host = true
 
-				data := true
+				data := otherClient.username
 				dataBytes, err := json.Marshal(data) // Marshal data to bytes
 
 				if err != nil {
 					utils.Log(err)
 					return
 				}
-				m.routeEvent(Event{
+
+				m.Broadcast(Event{
 					Type:    EventSetHost,
 					Payload: dataBytes,
-				}, otherClient)
+				})
 
 				m.routeEvent(Event{ // Inform client that they successfully joined
 					Type: EventUpdateGameState,
