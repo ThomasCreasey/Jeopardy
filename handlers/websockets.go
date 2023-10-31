@@ -91,26 +91,25 @@ type Client struct {
 	lastAnswer string
 }
 
-type RoomQuestionData struct {
-	Question string
-	Answer   string
-	Value    int
-}
-
 type UserScore struct {
 	Username string `json:"username"`
 	Score    int    `json:"score"`
 }
 
+type RecentlyLeft struct {
+	Score  int    `json:"score"`
+	Colour string `json:"colour"`
+}
+
 type Manager struct {
 	roomId        string
 	clients       map[*Client]bool
-	recentlyLeft  map[string]bool
+	recentlyLeft  map[string]RecentlyLeft
 	handlers      map[string]EventHandler
 	started       bool
 	prevRoomState int8
 	currRoomState int8
-	questionData  RoomQuestionData
+	questionData  types.RoomQuestionData
 	categories    []types.CategoryData
 	correctClient string
 
@@ -132,7 +131,6 @@ type Manager struct {
 	questionState    string
 	availableColours []string
 	buzzed           []string
-	scores           []UserScore
 	waitingFor       string
 	sync.RWMutex
 }
@@ -197,14 +195,14 @@ func GetManager(roomId string) *Manager {
 	manager := &Manager{
 		clients:            make(map[*Client]bool),
 		handlers:           make(map[string]EventHandler),
-		recentlyLeft:       make(map[string]bool),
-		scores:             make([]UserScore, 0),
+		recentlyLeft:       make(map[string]RecentlyLeft),
 		currRoomState:      0,
 		prevRoomState:      0,
 		roomId:             roomId,
 		pauseQuesCh:        make(chan bool),
 		resumeQuesCh:       make(chan bool),
 		closeAnsCh:         make(chan bool),
+		ansChClosed:        true,
 		closeQuesCh:        make(chan bool),
 		pauseReadLetterCh:  make(chan bool),
 		resumeReadLetterCh: make(chan bool),
@@ -241,11 +239,16 @@ func NewClient(conn *websocket.Conn, manager *Manager, roomId string, username s
 		}
 	}
 
+	var scoreOverwrite int
+	var colourOverwrite string
+
 	if manager.started {
 		var foundClient bool
-		for client := range manager.recentlyLeft {
-			if client == username {
+		for user, client := range manager.recentlyLeft {
+			if user == username {
 				foundClient = true
+				scoreOverwrite = client.Score
+				colourOverwrite = client.Colour
 				break
 			}
 		}
@@ -270,7 +273,8 @@ func NewClient(conn *websocket.Conn, manager *Manager, roomId string, username s
 		egress:   make(chan Event),
 		username: username,
 		host:     len(manager.clients) == 0,
-		score:    0,
+		score:    scoreOverwrite,
+		colour:   colourOverwrite,
 	}
 }
 
@@ -388,11 +392,15 @@ func (m *Manager) removeClient(client *Client) {
 
 		username := client.username
 
-		client.manager.recentlyLeft[username] = true // Add client to recently left map
+		client.manager.recentlyLeft[username] = RecentlyLeft{
+			Score:  client.score,
+			Colour: client.colour,
+		} // Add client to recently left map
+
 		go func() {
 			timer := time.NewTimer(15 * time.Second)
 			for range timer.C {
-				if client.manager.recentlyLeft[username] {
+				if _, ok := client.manager.recentlyLeft[username]; ok {
 					delete(client.manager.recentlyLeft, username)
 
 					if len(client.manager.clients) < 2 {

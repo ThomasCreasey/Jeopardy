@@ -81,9 +81,10 @@ func main() {
 
 	r.Get("/ws", handlers.HandleWs)
 
-	utils.Log("\033[0;32mServer running on port 8080\033[0m")
+	port := os.Getenv("PORT")
+	utils.Log("\033[0;32mServer running on port" + port + "\033[0m")
 	server := &http.Server{
-		Addr:              ":8080",
+		Addr:              ":" + port,
 		Handler:           r,
 		ReadHeaderTimeout: 3 * time.Second,
 	}

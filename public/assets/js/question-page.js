@@ -310,7 +310,9 @@ function createSvg(username, score, colour) {
 }
 
 function updateScore(username, score) {
+  console.log(username)
   const scoreEl = document.getElementById(`score-${username}`);
+  console.log(scoreEl)
   scoreEl.textContent = score;
 }
 

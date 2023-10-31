@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"jeopardy/types"
 	"jeopardy/utils"
+	"sort"
 	"strconv"
 	"time"
 )
@@ -58,7 +59,7 @@ type RoomState5 struct {
 
 func StartGameHandler(event Event, c *Client) error {
 	if c.host && !c.manager.started { // Ensure user is host, and game isn't already started
-
+		utils.Log(len(c.manager.clients))
 		if len(c.manager.clients) < 2 { // Ensure there are at least 2 players
 			return nil
 		}
@@ -92,21 +93,21 @@ func readLetters(message string, manager *Manager) {
 		}
 
 		if builtString == message {
-			fmt.Println("Closing Read Letter Ch")
+			utils.Log("Closing Read Letter Ch")
 			manager.readLetterChClosed = true
 			return
 		}
 		select {
 		case <-manager.pauseReadLetterCh:
 			manager.Lock()
-			fmt.Println("Read Letters Pause")
+			utils.Log("Read Letters Pause")
 			manager.readLetterChPaused = true
 			manager.Unlock()
 			select {
 			case <-manager.closeReadLetterCh:
 				return
 			case <-manager.resumeReadLetterCh:
-				fmt.Println("Read Letters Resume")
+				utils.Log("Read Letters Resume")
 				manager.Lock()
 				manager.readLetterChPaused = false
 				manager.Unlock()
@@ -114,7 +115,7 @@ func readLetters(message string, manager *Manager) {
 		case <-manager.closeReadLetterCh:
 			manager.Lock()
 			defer manager.Unlock()
-			fmt.Println("Read Letters Close")
+			utils.Log("Read Letters Close")
 			manager.readLetterChClosed = true
 			return
 		default:
@@ -136,16 +137,14 @@ func readLetters(message string, manager *Manager) {
 }
 
 func RoundOver(c *Client) {
-	fmt.Println("FUNC Round Over")
+	utils.Log("FUNC Round Over")
 	c.manager.currRoomState = 3
 	c.manager.waitingFor = ""
 	c.manager.buzzed = []string{}
 
 	if !c.manager.quesChClosed { // Ensure question channel is open
-		fmt.Println("Closing: Round Over")
 		c.manager.closeQuesCh <- true
 	}
-	fmt.Println("Answer Channel Closed: ", c.manager.ansChClosed)
 	if !c.manager.ansChClosed { // Ensure answer channel is open
 		c.manager.closeAnsCh <- true
 	}
@@ -154,7 +153,7 @@ func RoundOver(c *Client) {
 		c.manager.closeReadLetterCh <- true // Close read letter channel
 	}
 
-	c.manager.questionData = RoomQuestionData{}
+	c.manager.questionData = types.RoomQuestionData{}
 	c.manager.questionState = ""
 
 	c.manager.Broadcast(Event{
@@ -196,8 +195,6 @@ func RoundOver(c *Client) {
 
 		gameOver := utils.CheckQuestionsAnswered(c.manager.categories)
 
-		fmt.Println("Game Over: ", gameOver)
-
 		if gameOver {
 			c.manager.currRoomState = 4
 		} else {
@@ -205,7 +202,7 @@ func RoundOver(c *Client) {
 		}
 		c.manager.Unlock()
 
-		fmt.Println("Broadcasting 2")
+		utils.Log("Broadcasting 2")
 		c.manager.Broadcast(Event{
 			Type: EventUpdateGameState,
 		})
@@ -213,7 +210,7 @@ func RoundOver(c *Client) {
 }
 
 func SelectQuestionHandler(event Event, c *Client) error {
-	fmt.Println("SelectQuestionHandler")
+	utils.Log("SelectQuestionHandler")
 	if c.host { // Only host can select question
 		var clientSelectQuestion types.ClientSelectQuestion
 		err := json.Unmarshal(event.Payload, &clientSelectQuestion)
@@ -221,10 +218,6 @@ func SelectQuestionHandler(event Event, c *Client) error {
 		if err != nil {
 			utils.Log(err)
 			return err
-		}
-
-		if c.manager.questionData != (RoomQuestionData{}) { // Ensure there isn't already a question selected
-			return nil
 		}
 
 		for catIndex, category := range c.manager.categories {
@@ -235,7 +228,7 @@ func SelectQuestionHandler(event Event, c *Client) error {
 							return nil
 						}
 
-						var roomQuestionData RoomQuestionData
+						var RoomQuestionData types.RoomQuestionData
 
 						questionValue, err := strconv.Atoi(value.Value)
 
@@ -243,16 +236,17 @@ func SelectQuestionHandler(event Event, c *Client) error {
 							utils.Log(err)
 						}
 
-						roomQuestionData.Question = value.Question.Question
-						roomQuestionData.Answer = value.Question.Answer
-						roomQuestionData.Value = questionValue
+						RoomQuestionData.Category = category.Category
+						RoomQuestionData.Question = value.Question.Question
+						RoomQuestionData.Answers = value.Question.Answers
+						RoomQuestionData.Value = questionValue
 
 						c.manager.currRoomState = 2
-						c.manager.questionData = roomQuestionData
+						c.manager.questionData = RoomQuestionData
 
 						c.manager.categories[catIndex].Values[valIndex].Question.Answered = true
 
-						go readLetters(roomQuestionData.Question, c.manager)
+						go readLetters(RoomQuestionData.Question, c.manager)
 
 						c.manager.Broadcast(Event{
 							Type: EventUpdateGameState,
@@ -266,17 +260,20 @@ func SelectQuestionHandler(event Event, c *Client) error {
 							for {
 								select {
 								case <-ticker.C:
-									if c.manager.questionData == (RoomQuestionData{}) {
-										fmt.Println("No question data")
+									if !utils.CheckQuestionData(c.manager.questionData) {
+										ticker.Stop()
 										return
 									}
 
 									if currTimer >= maxTime {
-										fmt.Println("Next Round")
-										RoundOver(c)
+										utils.Log("Next Round")
 										if !c.manager.quesChClosed {
-											c.manager.closeQuesCh <- true
+											c.manager.Lock()
+											c.manager.quesChClosed = true
+											ticker.Stop()
+											c.manager.Unlock()
 										}
+										RoundOver(c)
 										return
 									}
 
@@ -287,22 +284,21 @@ func SelectQuestionHandler(event Event, c *Client) error {
 
 									currTimer++
 								case <-c.manager.pauseQuesCh:
-									fmt.Println("Received Pause Question Ch")
+									utils.Log("Received Pause Question Ch")
 									ticker.Stop()
 									c.manager.Lock()
-									fmt.Println("PAUSED QUES CH")
+									utils.Log("PAUSED QUES CH")
 									c.manager.quesChPaused = true
 									c.manager.Unlock()
 								case <-c.manager.resumeQuesCh:
-									fmt.Println("RESUMING QUES CH")
+									utils.Log("RESUMING QUES CH")
 									ticker = time.NewTicker(1 * time.Second)
 									c.manager.Lock()
 									c.manager.quesChPaused = false
-									c.manager.quesChClosed = true
 									c.manager.Unlock()
 								case <-c.manager.closeQuesCh:
 									c.manager.Lock()
-									fmt.Println("Closing QUES ticker")
+									utils.Log("Closing QUES ticker")
 									ticker.Stop()
 									c.manager.quesChClosed = true
 									c.manager.Unlock()
@@ -353,10 +349,22 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 	case 1:
 		var categories []RoomCategoryData
 		for _, category := range c.manager.categories {
-			var disabled []bool
+			disabled := make([]bool, len(category.Values))
 
-			for _, value := range category.Values {
-				disabled = append(disabled, value.Question.Answered)
+			sort.Slice(category.Values, func(i, j int) bool {
+				firstAsInt, err := strconv.Atoi(category.Values[i].Value)
+				if err != nil {
+					utils.Log(err)
+				}
+				secondAsInt, err := strconv.Atoi(category.Values[j].Value)
+				if err != nil {
+					utils.Log(err)
+				}
+				return firstAsInt < secondAsInt
+			})
+
+			for i, value := range category.Values {
+				disabled[i] = value.Question.Answered
 			}
 
 			categories = append(categories, RoomCategoryData{
@@ -377,7 +385,7 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		gameState.Data = dataBytes
 
 		c.manager.Lock()
-		c.manager.ansChClosed = false
+		c.manager.ansChClosed = true
 		c.manager.quesChClosed = false
 		c.manager.readLetterChClosed = false
 		c.manager.Unlock()
@@ -405,7 +413,16 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		roomState2.UserColours = userColours
 	case 3:
 		var roomState3 RoomState3
-		roomState3.Scores = c.manager.scores
+		var scores []UserScore
+
+		for client := range c.manager.clients {
+			scores = append(scores, UserScore{
+				Username: client.username,
+				Score:    client.score,
+			})
+		}
+
+		roomState3.Scores = scores
 
 		var UserAnswers []UserAnswer
 
@@ -428,7 +445,15 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		gameState.Data = dataBytes
 	case 4:
 		var roomState4 RoomState4
-		roomState4.Scores = c.manager.scores
+		var scores []UserScore
+
+		for client := range c.manager.clients {
+			scores = append(scores, UserScore{
+				Username: client.username,
+				Score:    client.score,
+			})
+		}
+		roomState4.Scores = scores
 
 		dataBytes, err := json.Marshal(roomState4)
 		if err != nil {
@@ -479,14 +504,13 @@ func handleSendMessage(event Event, c *Client) error {
 
 func BuzzHandler(event Event, c *Client) error {
 	if c.manager.currRoomState == 2 {
-		if c.manager.questionData == (RoomQuestionData{}) {
-			fmt.Println("Manager has no question")
+		if !utils.CheckQuestionData(c.manager.questionData) {
 			return nil
 		}
 
-		fmt.Println("Buzzed")
+		utils.Log("Buzzed")
 		if c.manager.waitingFor != "" {
-			fmt.Println("Already waiting for someone")
+			utils.Log("Already waiting for someone")
 			return nil
 		}
 
@@ -498,21 +522,18 @@ func BuzzHandler(event Event, c *Client) error {
 		}
 
 		if foundUser {
-			fmt.Println("Already buzzed")
+			utils.Log("Already buzzed")
 			return nil
 		}
 
 		c.manager.waitingFor = c.username
 		c.manager.buzzed = append(c.manager.buzzed, c.username)
 
-		fmt.Println("Ques Ch Closed: ", c.manager.quesChClosed)
 		if !c.manager.quesChClosed {
-			fmt.Println("Pausing Question Ch: Buzzed")
 			c.manager.pauseQuesCh <- true
 		}
 
 		if !c.manager.readLetterChClosed {
-			fmt.Println("Pausing Read Letter Ch: Buzzed")
 			c.manager.pauseReadLetterCh <- true
 		}
 
@@ -522,7 +543,7 @@ func BuzzHandler(event Event, c *Client) error {
 			return err
 		}
 
-		fmt.Println("Broadcasting")
+		utils.Log("Broadcasting")
 
 		c.manager.Broadcast(Event{
 			Type:    EventBuzzed,
@@ -530,7 +551,7 @@ func BuzzHandler(event Event, c *Client) error {
 		})
 
 		go func() {
-			fmt.Println("Spawn new answer timer")
+			utils.Log("Spawn new answer timer")
 			currTimer := 0
 			maxTime := 9
 
@@ -548,38 +569,30 @@ func BuzzHandler(event Event, c *Client) error {
 
 					currTimer++
 
-					fmt.Println("Current Timer: ", currTimer)
-					fmt.Println("Max Timer: ", maxTime)
-
 					if currTimer >= maxTime {
-						fmt.Println("Here")
 						if !c.manager.quesChClosed && c.manager.quesChPaused {
-							fmt.Println("Times up: Resuming question ch")
+							utils.Log("Times up: Resuming question ch")
 							c.manager.resumeQuesCh <- true
 							c.manager.waitingFor = ""
 
 							if !c.manager.readLetterChClosed {
 								time.Sleep(1 * time.Second)
 								if c.manager.readLetterChPaused { // Ensure read letter channel is paused
-									fmt.Println("Times up: Resuming read letter ch")
+									utils.Log("Times up: Resuming read letter ch")
 									c.manager.resumeReadLetterCh <- true
 								}
 							}
-							fmt.Println("Here2")
 						}
-						fmt.Println("Here3")
 						if !c.manager.ansChClosed {
 							c.manager.Lock()
 							c.manager.ansChClosed = true // Mark the answer channel as closed
 							ticker.Stop()
 							c.manager.Unlock()
-							fmt.Println("Returning ques")
 							return
 
 						}
 					}
 				case <-c.manager.closeAnsCh:
-					fmt.Println("Closing ANS CH ticker")
 					c.manager.Lock()
 					ticker.Stop()
 					c.manager.ansChClosed = true // Mark the answer channel as closed
@@ -595,7 +608,7 @@ func BuzzHandler(event Event, c *Client) error {
 			waitingFor := c.manager.waitingFor
 			time.Sleep(10 * time.Second)
 
-			if currQuestion != c.manager.questionData {
+			if fmt.Sprintf("%v", currQuestion) != fmt.Sprintf("%v", c.manager.questionData) {
 				return
 			}
 
@@ -603,12 +616,15 @@ func BuzzHandler(event Event, c *Client) error {
 				return
 			}
 
+			if len(c.manager.buzzed) == len(c.manager.clients) {
+				RoundOver(c)
+				return
+			}
+
 			if !c.manager.quesChClosed && c.manager.quesChPaused {
-				fmt.Println("Answer Timeout: Resuming Ques Ch")
 				c.manager.resumeQuesCh <- true
 
 				if !c.manager.readLetterChClosed && c.manager.readLetterChPaused {
-					fmt.Println("Answer Timeout: Resuming read letter ch")
 					c.manager.waitingFor = ""
 					c.manager.resumeReadLetterCh <- true
 				}
@@ -625,7 +641,7 @@ type Answer struct {
 
 func CheckIfRoundOver(c *Client) bool {
 	if len(c.manager.buzzed) == len(c.manager.clients) {
-		fmt.Println("All users have answered incorrectly")
+		utils.Log("All users have answered incorrectly")
 		RoundOver(c)
 		return true
 	}
@@ -633,21 +649,20 @@ func CheckIfRoundOver(c *Client) bool {
 }
 
 func AnswerHandler(event Event, c *Client) error {
-	fmt.Println("Current Room State: ")
-	fmt.Println(c.manager.currRoomState)
+	utils.Log("Current Room State: ")
+	utils.Log(c.manager.currRoomState)
 	if c.manager.currRoomState == 2 {
-		if c.manager.questionData == (RoomQuestionData{}) {
-			fmt.Println("Manager has no question")
+		if !utils.CheckQuestionData(c.manager.questionData) {
 			return nil
 		}
 
 		if c.manager.waitingFor == "" {
-			fmt.Println("Not waiting for anyone")
+			utils.Log("Not waiting for anyone")
 			return nil
 		}
 
 		if c.manager.waitingFor != c.username {
-			fmt.Println("Not waiting for this user")
+			utils.Log("Not waiting for this user")
 			return nil
 		}
 
@@ -661,29 +676,22 @@ func AnswerHandler(event Event, c *Client) error {
 
 		c.lastAnswer = answer.Answer
 
-		answerScore := utils.CompareTwoStrings(answer.Answer, c.manager.questionData.Answer)
+		var highestScore float32
+		for _, quesAns := range c.manager.questionData.Answers {
+			answerScore := utils.CompareTwoStrings(answer.Answer, string(quesAns))
+			if answerScore > highestScore {
+				highestScore = answerScore
+			}
+		}
 
-		if answerScore >= 0.8 {
-			fmt.Println("Correct Answer")
+		if highestScore >= 0.8 {
+			utils.Log("Correct Answer")
 			c.manager.correctClient = c.username
-			var foundScore bool
-			for _, score := range c.manager.scores {
-				if score.Username == c.username {
-					foundScore = true
-					score.Score += c.manager.questionData.Value
-				}
-			}
-
-			if !foundScore {
-				c.manager.scores = append(c.manager.scores, UserScore{
-					Username: c.username,
-					Score:    c.manager.questionData.Value,
-				})
-			}
+			c.score += c.manager.questionData.Value
 
 			RoundOver(c)
 		} else {
-			fmt.Println("Incorrect Answer")
+			utils.Log("Incorrect Answer")
 			c.manager.waitingFor = ""
 
 			if CheckIfRoundOver(c) {
@@ -691,15 +699,15 @@ func AnswerHandler(event Event, c *Client) error {
 			}
 
 			if !c.manager.quesChClosed {
-				fmt.Println("Closing answer channel")
+				utils.Log("Closing answer channel")
 				c.manager.closeAnsCh <- true
 			}
 			if !c.manager.readLetterChClosed && c.manager.readLetterChPaused {
-				fmt.Println("Incorrect Answer: Resuming read letter channel")
+				utils.Log("Incorrect Answer: Resuming read letter channel")
 				c.manager.resumeReadLetterCh <- true
 			}
 			if !c.manager.quesChClosed && c.manager.quesChPaused {
-				fmt.Println("Resuming question channel")
+				utils.Log("Resuming question channel")
 				c.manager.resumeQuesCh <- true
 			}
 

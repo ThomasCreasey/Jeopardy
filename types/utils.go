@@ -7,7 +7,7 @@ type GetQuestionOutput struct {
 
 type QuestionData struct {
 	Question string
-	Answer   string
+	Answers  []string
 	Answered bool
 }
 

@@ -28,6 +28,7 @@ window.onload = function() {
     let isHost;
     let username;
     let lastBuzzer;
+    let players;
 
     document.getElementById('room-code').innerText = roomId;
 
@@ -124,7 +125,7 @@ window.onload = function() {
             }
         }
         else if(data.type == "server_update_players") {
-            const players = data.payload;
+            players = data.payload;
 
             updatePlayers(players)
 
@@ -194,17 +195,49 @@ window.onload = function() {
                     document.getElementById('answer-timer').innerText = '10s';
                     document.getElementById('question-timer').innerText = '10s';
                     document.getElementById('view-question-question').innerText = payloadData.Question;
+                    
+                    updatePlayers(players)
+                    
                     showPage('question')
                     break;
                 case 3:
                     const answers = payloadData.answers;
+                    const scores = payloadData.scores;
+
                     answers.forEach(answer => {
                         document.getElementById('answer-'+answer.Username).innerText = answer.Answer;
                         document.getElementById('answer-'+answer.Username).style.color = answer.Correct ? '#77dd77' : '#ff6961';
                         showSvgEl(answer.Username, 'answer')
                     })
+
+                    scores.forEach(score => {
+                        updateScore(score.username, score.score);
+                        players.filter(player => player.username == score.username)[0].score = score.score;
+                    })
                     break;
                 case 4:
+                    const playerScores = payloadData.scores;
+                    playerScores.sort((a, b) => b.score - a.score);
+
+                    const scoreTable = document.getElementById('game-over-score')
+                    scoreTable.innerHTML = "";
+
+                    playerScores.forEach(player => {
+                        const tr = document.createElement('tr');
+
+                        const usernameTd = document.createElement('td');
+                        usernameTd.innerText = player.username;
+
+                        const scoreTd = document.createElement('td');
+                        scoreTd.innerText = player.score;
+
+                        tr.appendChild(usernameTd);
+                        tr.appendChild(scoreTd);
+
+                        scoreTable.appendChild(tr);
+                    })
+
+                    showPage('gameover')
                     break;
                 case 5:
                     document.getElementById('view-waiting-user-text').innerText = `Waiting for user: ${payloadData.Username} to reconnect...`;
@@ -230,7 +263,6 @@ window.onload = function() {
             document.getElementById('answer-timer').innerText = timeLeft + 's';
         }
         else if(data.type == "server_update_question_timer") {
-            showSvgEl(lastBuzzer, 'score')
             answerModal.hide();
             document.getElementById('question-timer').innerText = data.payload + 's';
         }

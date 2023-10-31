@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"fmt"
 	"jeopardy/types"
 )
 
@@ -16,8 +15,5 @@ func CheckQuestionsAnswered(category []types.CategoryData) bool {
 			}
 		}
 	}
-
-	fmt.Println("All Questions Answered: ", allAnswered)
-
 	return allAnswered
 }
