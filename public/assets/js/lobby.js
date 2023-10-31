@@ -96,13 +96,18 @@ window.onload = function() {
             const payload = data.payload;
             username = payload.username;
             isHost = payload.isHost;
-
             updateHost();
 
         }
         else if (data.type == "server_set_host") {
-            isHost = true;
-            updateHost();
+            if (data.payload == username) {
+                isHost = true;
+                updateHost();
+            }
+            else {
+                isHost = false
+                updateHost();
+            }
         }
         else if (data.type == "server_update_ping") {
             const lobbyTable = document.getElementById('lobby-players');
@@ -186,11 +191,18 @@ window.onload = function() {
                     showPage('select');
                     break;
                 case 2:
+                    document.getElementById('answer-timer').innerText = '10s';
+                    document.getElementById('question-timer').innerText = '10s';
                     document.getElementById('view-question-question').innerText = payloadData.Question;
                     showPage('question')
                     break;
                 case 3:
-
+                    const answers = payloadData.answers;
+                    answers.forEach(answer => {
+                        document.getElementById('answer-'+answer.Username).innerText = answer.Answer;
+                        document.getElementById('answer-'+answer.Username).style.color = answer.Correct ? '#77dd77' : '#ff6961';
+                        showSvgEl(answer.Username, 'answer')
+                    })
                     break;
                 case 4:
                     break;
