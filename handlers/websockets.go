@@ -297,6 +297,7 @@ func (m *Manager) registerClient(client *Client) {
 }
 
 func (m *Manager) gracefulShutdown(reason string) {
+	controllers.DB.Delete(&types.Room{ID: m.roomId}) // Delete room from database
 	for client := range m.clients {
 		client.conn.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, "Server is shutting down: "+reason))
 		client.conn.Close()
