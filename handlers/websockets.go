@@ -113,10 +113,12 @@ type Manager struct {
 	questionData  RoomQuestionData
 	categories    []types.CategoryData
 	correctClient string
-	pauseQuesCh   chan bool
-	resumeQuesCh  chan bool
-	closeQuesCh   chan bool
-	quesChClosed  bool
+
+	pauseQuesCh  chan bool
+	resumeQuesCh chan bool
+	closeQuesCh  chan bool
+	quesChClosed bool
+	quesChPaused bool
 
 	closeAnsCh  chan bool
 	ansChClosed bool
@@ -431,8 +433,7 @@ func (c *Client) readMessages() {
 
 	c.conn.SetReadLimit(512) // Set the max size of a message
 	// Configure Wait time for Pong response, use Current time + pongWait
-	// This has to be done here to set the first initial timer.
-	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil {
+	if err := c.conn.SetReadDeadline(time.Now().Add(pongWait)); err != nil { // Set the intial pong response timeout
 		log.Println(err)
 		return
 	}
@@ -446,18 +447,17 @@ func (c *Client) readMessages() {
 		_, payload, err := c.conn.ReadMessage()
 
 		if err != nil {
-			// If Connection is closed, we will Recieve an error here
-			// We only want to log Strange errors, but simple Disconnection
+			// If Connection is closed, we will receive an error here
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
 				log.Printf("error reading message: %v", err)
 			}
-			break // Break the loop to close conn & Cleanup
+			break // Break the loop to close conn & cleanup
 		}
 		// Marshal incoming data into a Event struct
 		var request Event
 		if err := json.Unmarshal(payload, &request); err != nil {
 			log.Printf("error marshalling message: %v", err)
-			break // Breaking the connection here might be harsh xD
+			break
 		}
 		// Route the Event
 		if err := c.manager.routeEvent(request, c); err != nil {
