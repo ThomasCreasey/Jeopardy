@@ -51,6 +51,7 @@ type UserAnswer struct {
 type RoomState3 struct {
 	Answers []UserAnswer `json:"answers"`
 	Scores  []UserScore  `json:"scores"`
+	Answer string       `json:"answer"`
 }
 
 type RoomState5 struct {
@@ -423,6 +424,7 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		}
 
 		roomState3.Scores = scores
+		roomState3.Answer = c.manager.questionData.Answers[0]
 
 		var UserAnswers []UserAnswer
 

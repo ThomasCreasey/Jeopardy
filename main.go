@@ -82,7 +82,7 @@ func main() {
 	r.Get("/ws", handlers.HandleWs)
 
 	port := os.Getenv("PORT")
-	utils.Log("\033[0;32mServer running on port" + port + "\033[0m")
+	utils.Log("\033[0;32mServer running on port " + port + "\033[0m")
 	server := &http.Server{
 		Addr:              ":" + port,
 		Handler:           r,

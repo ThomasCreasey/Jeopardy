@@ -203,6 +203,7 @@ window.onload = function() {
                 case 3:
                     const answers = payloadData.answers;
                     const scores = payloadData.scores;
+                    const correctAnswer = payloadData.answer;
 
                     answers.forEach(answer => {
                         document.getElementById('answer-'+answer.Username).innerText = answer.Answer;
@@ -214,6 +215,8 @@ window.onload = function() {
                         updateScore(score.username, score.score);
                         players.filter(player => player.username == score.username)[0].score = score.score;
                     })
+
+                    document.getElementById('view-question-question').innerText = "Answer: "+correctAnswer;
                     break;
                 case 4:
                     const playerScores = payloadData.scores;
