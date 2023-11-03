@@ -104,6 +104,8 @@ jobs:
     needs: [build_amd64, build_arm, create-tag, get-version]
     runs-on: ubuntu-latest
     steps:
+      - name: List files in the directory
+        run: ls -R ./builds
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
