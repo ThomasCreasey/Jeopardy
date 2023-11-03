@@ -90,7 +90,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create-release:
-    needs: [build_amd64, build_arm]
+    needs: [build_amd64, build_arm, create-tag]
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
