@@ -24,9 +24,47 @@ jobs:
           echo "::set-output name=version::$version"
         shell: bash
 
+  create-tag:
+    needs: get-version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set Git user identity
+        run: |
+          git config user.email "{{ secrets.GITHUB_ACTOR }}@users.noreply.github.com"
+          git config user.name "ItzCryptonized"
+        shell: bash
+      - name: Create Git Tag
+        run: |
+          version=${{ needs.get-version.outputs.version }}
+          git tag -a v${version} -m "Version ${version}"
+          git push origin v${version}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create-release:
+    needs: [create-tag, get-version]
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.get-version.outputs.version }}
+          release_name: Release ${{ needs.get-version.outputs.version }}
+          draft: false
+          prerelease: false
+        
+
   build_amd64:
     runs-on: ubuntu-latest
-    needs: get-version
+    needs: [create-release, get-version]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -49,15 +87,19 @@ jobs:
       - name: Test
         run: go test -v ./...
 
-      - name: Upload Artifacts (amd64)
-        uses: actions/upload-artifact@v3
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: jeopardy_amd64
-          path: ./jeopardy_amd64
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./jeopardy_amd64
+          asset_name: jeopardy_amd64
+          asset_content_type: application/octet-stream
 
   build_arm:
     runs-on: ubuntu-latest
-    needs: get-version
+    needs: [get-version, create-release]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -80,62 +122,13 @@ jobs:
       - name: Test
         run: go test -v ./...
 
-      - name: Upload Artifacts (amd64)
-        uses: actions/upload-artifact@v3
-        with:
-          name: jeopardy_arm
-          path: ./jeopardy_arm
-
-  create-tag:
-    needs: get-version
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v4
-
-      - name: Set Git user identity
-        run: |
-          git config user.email "{{ secrets.GITHUB_ACTOR }}@users.noreply.github.com"
-          git config user.name "ItzCryptonized"
-        shell: bash
-      - name: Create Git Tag
-        run: |
-          version=${{ needs.get-version.outputs.version }}
-          git tag -a v${version} -m "Version ${version}"
-          git push origin v${version}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  create-release:
-    needs: [build_amd64, build_arm, create-tag, get-version]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ needs.get-version.outputs.version }}
-          release_name: Release ${{ needs.get-version.outputs.version }}
-          draft: false
-          prerelease: false
-      - name: Upload ARM Build
+      - name: Upload Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
           asset_path: ./jeopardy_arm
           asset_name: jeopardy_arm
-          asset_content_type: application/octet-stream
-      - name: Upload AMD64 Build
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./jeopardy_amd64
-          asset_name: jeopardy_amd64
           asset_content_type: application/octet-stream
           
