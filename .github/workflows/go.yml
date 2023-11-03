@@ -31,9 +31,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create Builds Directory
-        run: mkdir -p ./builds
-
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
@@ -46,11 +43,17 @@ jobs:
         shell: bash
 
       - name: Build for amd64
-        run: go build -o ./builds/jeopardy_amd64
+        run: go build -o ./jeopardy_amd64
         working-directory: .
 
       - name: Test
         run: go test -v ./...
+
+      - name: Upload Artifacts (amd64)
+        uses: actions/upload-artifact@v3
+        with:
+          name: amd64-artifacts
+          path: ./jeopardy_amd64
 
   build_arm:
     runs-on: ubuntu-latest
@@ -58,9 +61,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Create Builds Directory
-        run: mkdir -p ./builds
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -74,11 +74,17 @@ jobs:
         shell: bash
 
       - name: Build for ARM
-        run: go build -o ./builds/jeopardy_arm
+        run: go build -o ./jeopardy_arm
         working-directory: .
 
       - name: Test
         run: go test -v ./...
+
+      - name: Upload Artifacts (amd64)
+        uses: actions/upload-artifact@v3
+        with:
+          name: arm-artifacts
+          path: ./jeopardy_arm
 
   create-tag:
     needs: get-version
@@ -104,35 +110,14 @@ jobs:
     needs: [build_amd64, build_arm, create-tag, get-version]
     runs-on: ubuntu-latest
     steps:
-      - name: List files in the directory
-        run: ls -R ./builds
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          files: |
+            ./jeopardy_amd64
+            ./jeopardy_arm
           tag_name: v${{ needs.get-version.outputs.version }}
           release_name: Release ${{ needs.get-version.outputs.version }}
-          draft: false
-          prerelease: false
-
-      - name: Upload Release Asset (amd64)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./builds/jeopardy_amd64
-          asset_name: jeopardy_amd64
-          asset_content_type: application/octet-stream
-
-      - name: Upload Release Asset (ARM)
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./builds/jeopardy_arm
-          asset_name: jeopardy_arm
-          asset_content_type: application/octet-stream
