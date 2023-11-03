@@ -47,7 +47,7 @@ jobs:
 
       - name: Build for amd64
         run: go build -o jeopardy_amd64
-        working-directory: ./builds 
+        working-directory: .
 
       - name: Test
         run: go test -v ./...
@@ -75,7 +75,7 @@ jobs:
 
       - name: Build for ARM
         run: go build -o jeopardy_arm
-        working-directory: ./builds 
+        working-directory: .
 
       - name: Test
         run: go test -v ./...
@@ -87,6 +87,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Set Git user identity
+        run: |
+          git config user.email "{{ secrets.GITHUB_ACTOR }}@users.noreply.github.com"
+          git config user.name "ItzCryptonized"
+        shell: bash
       - name: Create Git Tag
         run: |
           version=${{ needs.get-version.outputs.version }}
