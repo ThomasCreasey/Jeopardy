@@ -46,7 +46,7 @@ jobs:
         shell: bash
 
       - name: Build for amd64
-        run: go build -o jeopardy_amd64
+        run: go build -o ./builds/jeopardy_amd64
         working-directory: .
 
       - name: Test
@@ -74,7 +74,7 @@ jobs:
         shell: bash
 
       - name: Build for ARM
-        run: go build -o jeopardy_arm
+        run: go build -o ./builds/jeopardy_arm
         working-directory: .
 
       - name: Test
@@ -101,7 +101,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create-release:
-    needs: [build_amd64, build_arm, create-tag]
+    needs: [build_amd64, build_arm, create-tag, get-version]
     runs-on: ubuntu-latest
     steps:
       - name: Create Release
@@ -110,8 +110,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v{{ needs.get-version.outputs.version }}
-          release_name: Release {{ needs.get-version.outputs.version }}
+          tag_name: v${{ needs.get-version.outputs.version }}
+          release_name: Release ${{ needs.get-version.outputs.version }}
           draft: false
           prerelease: false
 
