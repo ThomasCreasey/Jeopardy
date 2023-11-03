@@ -19,7 +19,11 @@ jobs:
       uses: actions/setup-go@v4
       with:
         go-version: '1.21.3'
-
+    - name: Set GOOS and GOARCH
+        run: |
+          export GOOS=linux
+          export GOARCH=amd64 
+        shell: bash
     - name: Build
       run: go build -o ./jeopardy
     - name: Test
