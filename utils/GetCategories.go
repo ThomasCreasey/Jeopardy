@@ -35,7 +35,7 @@ func GetCategories() []types.CategoryData {
 	counter := 0
 
 	for k, v := range dataCache {
-		if counter >= 5 { // Max 5 categories
+		if counter >= 5 || counter >= len(dataCache) { // Max 5 categories
 			break
 		}
 
@@ -47,7 +47,6 @@ func GetCategories() []types.CategoryData {
 
 			categoryValues, ok := categoryData[0].(map[string]interface{})
 			if !ok || len(categoryValues) == 0 {
-				Log("WOMP WOMP")
 				return nil
 			}
 
