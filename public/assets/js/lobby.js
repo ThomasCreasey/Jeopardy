@@ -216,7 +216,7 @@ window.onload = function() {
                         players.filter(player => player.username == score.username)[0].score = score.score;
                     })
 
-                    document.getElementById('view-question-question').innerText = "Answer: "+correctAnswer;
+                    document.getElementById('view-question-question').innerText = "Answer(s): "+correctAnswer;
                     break;
                 case 4:
                     const playerScores = payloadData.scores;
