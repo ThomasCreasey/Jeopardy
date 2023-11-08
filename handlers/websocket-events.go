@@ -22,6 +22,7 @@ import (
 
 type RoomCategoryData struct {
 	Category string
+	Values   []string
 	Disabled []bool
 }
 
@@ -365,12 +366,15 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 				return firstAsInt < secondAsInt
 			})
 
+			categoryValues := make([]string, len(category.Values))
 			for i, value := range category.Values {
+				categoryValues[i] = value.Value
 				disabled[i] = value.Question.Answered
 			}
 
 			categories = append(categories, RoomCategoryData{
 				Category: category.Category,
+				Values:   categoryValues,
 				Disabled: disabled,
 			})
 		}
