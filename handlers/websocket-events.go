@@ -7,6 +7,7 @@ import (
 	"jeopardy/utils"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -51,7 +52,7 @@ type UserAnswer struct {
 type RoomState3 struct {
 	Answers []UserAnswer `json:"answers"`
 	Scores  []UserScore  `json:"scores"`
-	Answer string       `json:"answer"`
+	Answer  string       `json:"answer"`
 }
 
 type RoomState5 struct {
@@ -60,7 +61,6 @@ type RoomState5 struct {
 
 func StartGameHandler(event Event, c *Client) error {
 	if c.host && !c.manager.started { // Ensure user is host, and game isn't already started
-		utils.Log(len(c.manager.clients))
 		if len(c.manager.clients) < 2 { // Ensure there are at least 2 players
 			return nil
 		}
@@ -70,7 +70,9 @@ func StartGameHandler(event Event, c *Client) error {
 		var gameState GameState
 		gameState.RoomState = c.manager.currRoomState
 
+		c.manager.Lock()
 		c.manager.categories = utils.GetCategories()
+		c.manager.Unlock()
 
 		event := Event{
 			Type: EventUpdateGameState,
@@ -94,14 +96,14 @@ func readLetters(message string, manager *Manager) {
 		}
 
 		if builtString == message {
-			utils.Log("Closing Read Letter Ch")
+			utils.Log("Closing Read Letter Ch: Built")
 			manager.readLetterChClosed = true
 			return
 		}
 		select {
 		case <-manager.pauseReadLetterCh:
-			manager.Lock()
 			utils.Log("Read Letters Pause")
+			manager.Lock()
 			manager.readLetterChPaused = true
 			manager.Unlock()
 			select {
@@ -114,23 +116,24 @@ func readLetters(message string, manager *Manager) {
 				manager.Unlock()
 			}
 		case <-manager.closeReadLetterCh:
+			utils.Log("Read Letters Close")
 			manager.Lock()
 			defer manager.Unlock()
-			utils.Log("Read Letters Close")
 			manager.readLetterChClosed = true
 			return
 		default:
-			manager.Lock()
 			data, err := json.Marshal(builtString)
 			if err != nil {
 				utils.Log(err)
 			}
+			manager.Lock()
 			manager.questionState = builtString
+			manager.Unlock()
+
 			manager.Broadcast(Event{
 				Type:    EventUpdateQuestion,
 				Payload: data,
 			})
-			manager.Unlock()
 			time.Sleep(100 * time.Millisecond) // Adjust the delay as needed
 		}
 	}
@@ -153,9 +156,6 @@ func RoundOver(c *Client) {
 	if !c.manager.readLetterChClosed { // Ensure read letter channel is open
 		c.manager.closeReadLetterCh <- true // Close read letter channel
 	}
-
-	c.manager.questionData = types.RoomQuestionData{}
-	c.manager.questionState = ""
 
 	c.manager.Broadcast(Event{
 		Type: EventUpdateGameState,
@@ -187,10 +187,11 @@ func RoundOver(c *Client) {
 		})
 	}
 	c.manager.correctClient = "" // Reset correct client
+	c.manager.questionData = types.RoomQuestionData{}
+	c.manager.questionState = ""
 
 	go func() {
-		timer := time.NewTimer(1 * time.Second)
-		<-timer.C
+		time.Sleep(7 * time.Second)
 
 		c.manager.Lock()
 
@@ -424,7 +425,7 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		}
 
 		roomState3.Scores = scores
-		roomState3.Answer = c.manager.questionData.Answers[0]
+		roomState3.Answer = strings.Join(c.manager.questionData.Answers, ", ")
 
 		var UserAnswers []UserAnswer
 
