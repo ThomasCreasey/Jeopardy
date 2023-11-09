@@ -1,4 +1,5 @@
 const totalValueLevels = 5 // Change this if you have less than 5 value levels, default is 5 (200, 400, 600, 800, 1000);
+const wsUrl = 'ws://localhost:8080/ws';
 
 class WSEvent {
     constructor(type, payload) {
@@ -34,7 +35,7 @@ window.onload = function() {
 
     document.getElementById('room-code').innerText = roomId;
 
-    conn = new WebSocket('ws://localhost:8080/ws?roomId='+roomId);
+    conn = new WebSocket(wsUrl+'?roomId='+roomId);
 
     // Close the WebSocket connection when it is no longer needed
     window.addEventListener('beforeunload', function() {
