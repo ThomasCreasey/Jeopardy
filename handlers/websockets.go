@@ -232,6 +232,8 @@ func NewClient(conn *websocket.Conn, manager *Manager, roomId string, username s
 		return nil
 	}
 
+	username = utils.ReplaceSpaces(username)
+
 	for client := range manager.clients {
 		if client.username == username {
 			RemoveClient(conn, nil, EventSendError, "Username is taken")
