@@ -86,7 +86,7 @@ jobs:
 
       - name: Test
         run: go test -v ./...
-
+        
       - name: Minify Web Assets
         uses: nizarmah/auto-minify@v2.1
         with:
