@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   get-version:
@@ -86,6 +83,16 @@ jobs:
 
       - name: Test
         run: go test -v ./...
+        
+      - name: Minify Web Assets
+        uses: nizarmah/auto-minify@v2.1
+        with:
+          directory: ./public
+          overwrite: true
+
+      - name: Zip Assets
+        run: zip -r jeopardy_amd64.zip ./public ./jeopardy_amd64 ./categories.json ./env
+        working-directory: .
 
       - name: Upload Asset
         uses: actions/upload-release-asset@v1
@@ -93,9 +100,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create-release.outputs.upload_url }}
-          asset_path: ./jeopardy_amd64
-          asset_name: jeopardy_amd64
-          asset_content_type: application/octet-stream
+          asset_path: ./jeopardy_amd64.zip
+          asset_name: jeopardy_amd64.zip
+          asset_content_type: application/zip
 
   build_arm:
     runs-on: ubuntu-latest
@@ -131,4 +138,3 @@ jobs:
           asset_path: ./jeopardy_arm
           asset_name: jeopardy_arm
           asset_content_type: application/octet-stream
-          

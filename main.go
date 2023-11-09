@@ -16,8 +16,6 @@ import (
 )
 
 func main() {
-	os.Remove("database.sqlite")
-
 	useLogs := false
 	logger := httplog.NewLogger("httplog-example", httplog.Options{
 		Concise: true,
