@@ -179,6 +179,7 @@ window.onload = function() {
                     const categories = payloadData.Categories;
 
                     document.getElementById('lobby-table-categories').innerHTML = "";
+                    document.getElementById('game-table').innerHTML = "";
 
                     const rows = []
 
