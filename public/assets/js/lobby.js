@@ -193,7 +193,7 @@ window.onload = function() {
                         document.getElementById('lobby-table-categories').appendChild(th);
 
                         category.Values.forEach((value, i) => {
-                            rows[i].push(value)
+                            rows[i].push({ value: value, disabled: category.Disabled[i]})
                         })
                     })
 
@@ -202,29 +202,15 @@ window.onload = function() {
 
                         for(let j=0; j < rows[i].length; j++) {
                             const td = document.createElement('td');
-                            td.innerText = '$'+rows[i][j];
+                            const element = rows[i][j];
+                            td.innerText = '$'+element.value;
+                            $(td).toggleClass('disabled', element.disabled);
                             tr.appendChild(td);
                         }
 
                         document.getElementById('game-table').appendChild(tr)
                     }
 
-                    // MUST CHANGE J FROM 5
-                    /*for(let i=0; i < rows.length; i++) {
-                        console.log("I: "+i)
-                        const tr = document.createElement('tr');
-                        for(let j=0; j < rows[i].length; j++) {
-                            console.log("J: "+j)
-                            console.log(rows[j])
-                            console.log(rows[j][i])
-                            const td = document.createElement('td');
-                            td.innerText = '$'+rows[j][i];
-                            tr.appendChild(td);
-                        }
-                        document.getElementById('game-table').appendChild(tr)
-                    }*/
-
-                    console.log(rows)
                     showPage('select');
                     break;
                 case 2:
