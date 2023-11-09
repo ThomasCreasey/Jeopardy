@@ -1,49 +1,143 @@
-# This workflow will build a golang project
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
-
 name: Go
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
   pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
+  get-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-  build:
+      - name: Read Version
+        id: get-version
+        run: |
+          version=$(cat version.txt)
+          echo "::set-output name=version::$version"
+        shell: bash
+
+  create-tag:
+    needs: get-version
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: '1.21.3'
+      - name: Check out code
+        uses: actions/checkout@v4
 
-    - name: Build
-      run: go build -o ./jeopardy
-    - name: Test
-      run: go test -v ./...
-    - uses: actions/upload-artifact@v3
-      with:
-        name: Jeopardy
-        path: ./jeopardy
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: v1.0.1  # Use a valid tag name without 'refs/'
-        release_name: Release 1.0.1
-        draft: false
-        prerelease: false
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./jeopardy
-        asset_name: jeopardy
-        asset_content_type: application/octet-stream
+      - name: Set Git user identity
+        run: |
+          git config user.email "{{ secrets.GITHUB_ACTOR }}@users.noreply.github.com"
+          git config user.name "ItzCryptonized"
+        shell: bash
+      - name: Create Git Tag
+        run: |
+          version=${{ needs.get-version.outputs.version }}
+          git tag -a v${version} -m "Version ${version}"
+          git push origin v${version}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  create-release:
+    needs: [create-tag, get-version]
+    runs-on: ubuntu-latest
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ needs.get-version.outputs.version }}
+          release_name: Release ${{ needs.get-version.outputs.version }}
+          draft: false
+          prerelease: false
+        
+
+  build_amd64:
+    runs-on: ubuntu-latest
+    needs: [create-release, get-version]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.3'
+
+      - name: Set GOOS and GOARCH for amd64
+        run: |
+          export GOOS=linux
+          export GOARCH=amd64
+        shell: bash
+
+      - name: Build for amd64
+        run: go build -o ./jeopardy_amd64
+        working-directory: .
+
+      - name: Test
+        run: go test -v ./...
+
+      - name: Minify Web Assets
+        uses: nizarmah/auto-minify@v2.1
+        with:
+          directory: ./public
+          overwrite: true
+
+      - name: Zip Assets
+        run: zip -r jeopardy_amd64.zip ./public ./jeopardy_amd64 ./categories.json ./env
+        working-directory: .
+
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./jeopardy_amd64.zip
+          asset_name: jeopardy_amd64.zip
+          asset_content_type: application/zip
+
+  build_arm:
+    runs-on: ubuntu-latest
+    needs: [get-version, create-release]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21.3'
+
+      - name: Set GOOS and GOARCH for ARM
+        run: |
+          export GOOS=linux
+          export GOARCH=arm
+        shell: bash
+
+      - name: Build for ARM
+        run: go build -o ./jeopardy_arm
+        working-directory: .
+
+      - name: Test
+        run: go test -v ./...
+
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./jeopardy_arm
+          asset_name: jeopardy_arm
+          asset_content_type: application/octet-stream
