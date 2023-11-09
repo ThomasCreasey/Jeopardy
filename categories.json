@@ -1,5 +1,5 @@
 {
-    "Random Stats": [
+    "General Knowledge": [
         {
             "200": [
                 {
@@ -33,6 +33,14 @@
                 {
                     "question": "What is the closest planet to the sun?",
                     "answer": ["mercury"]
+                },
+                {
+                    "question": "When did the UK leave the EU?",
+                    "answer": ["2020", "twenty twenty"]
+                },
+                {
+                    "question": "How many states are there in the USA?",
+                    "answer": ["50", "fifty"]
                 }
             ],
             "400": [
@@ -79,6 +87,14 @@
                 {
                     "question": "What is the smallest prime number?",
                     "answer": ["2", "two"]
+                },
+                {
+                    "question": "How many stars are on the flag of China?",
+                    "answer": ["5", "five"]
+                },
+                {
+                    "question": "How many stars are on the flag of the USA?",
+                    "answer": ["50", "fifty"]
                 }
             ],
             "600": [
@@ -159,12 +175,24 @@
                 {
                     "question": "What is the most common surname in the world?",
                     "answer": ["wang"]
+                },
+                {
+                    "question": "In what year did the Great Molasses Flood occur?",
+                    "answer": ["1919", "nineteen nineteen"]
+                },
+                {
+                    "question": "Who is the richest black man in America?",
+                    "answer": ["robert smith"]
+                },
+                {
+                    "question": "Which US state has the highest population?",
+                    "answer": ["california", "cali"]
                 }
             ],
             "1000": [
                 {
                     "question": "If everybody is good at cooking something, then what am I good at cooking?",
-                    "answer": ["crumble"]
+                    "answer": ["crumble", "apple crumble"]
                 },
                 {
                     "question": "Which gas makes up the least of Earth's atmosphere?",
@@ -175,20 +203,20 @@
                     "answer": ["ares"]
                 },
                 {
-                    "question": "How many stars are on the flag of China?",
-                    "answer": ["5"]
-                },
-                {
-                    "question": "How many stars are on the flag of the USA?",
-                    "answer": ["50"]
-                },
-                {
                     "question": "What playground sport used to be an Olympic sport?",
                     "answer": ["tug of war"]
                 },
                 {
                     "question": "Who performs the voice of Homer Simpson?",
                     "answer": ["dan castellaneta", "castellaneta"]
+                },
+                {
+                    "question": "In what year did the Cocoanut Grove fire happen?",
+                    "answer": ["1942", "nineteen forty two"]
+                },
+                {
+                    "question": "How many people died in the Cocoanut Grove fire?",
+                    "answer": ["492", "four hundred and ninety two"]
                 }
             ]
         }
@@ -215,6 +243,10 @@
                 {
                     "question": "What does the Connor McGregor do?",
                     "answer": ["mma", "mixed martial arts"]
+                },
+                {
+                    "question": "What part of the body can you not use in football (except for goalie)?",
+                    "answer": ["hands"]
                 }
             ],
             "400": [
@@ -253,6 +285,10 @@
                 {
                     "question": "What does the MMA stand for?",
                     "answer": ["mixed martial arts"]
+                },
+                {
+                    "question": "Who has the most points in NBA history?",
+                    "answer": ["lebron james", "lebron"]
                 }
             ],
             "600": [
@@ -279,6 +315,30 @@
                 {
                     "question": "What is the national sport of Japan?",
                     "answer": ["sumo"]
+                },
+                {
+                    "question": "How many regulation strokes are there in swimming?",
+                    "answer": ["4", "four"]
+                },
+                {
+                    "question": "Who is the most prestigious olympian of all time?",
+                    "answer": ["michael phelps", "phelps", "big mike"]
+                },
+                {
+                    "question": "Where did the first modern Summer Olympic games take place?",
+                    "answer": ["athens", "greece"]
+                },
+                {
+                    "question": "Who was the first WNBA player to dunk in a playoff game?",
+                    "answer": ["brittney griner", "griner"]
+                },
+                {
+                    "question": "The first-ever soccer World Cup was won by what country?",
+                    "answer": ["uruguay"]
+                },
+                {
+                    "question": "which sports brand was founded after a family feud between brothers and shoe manufacturers Adi and Rudi Dassler?",
+                    "answer": ["puma"]
                 }
             ],
             "800": [
@@ -303,8 +363,36 @@
                     "answer": ["le mans"]
                 },
                 {
-                    "question": "Where did the first modern Summer Olympic games take place?",
-                    "answer": ["athens", "greece"]
+                    "question": "Tiger Woods won his first major in over a decade at which 2019 tournament?",
+                    "answer": ["the masters", "masters"]
+                },
+                {
+                    "question": "How old was Tiger Woods when he won the Masters?",
+                    "answer": ["21", "twenty one"]
+                },
+                {
+                    "question": "Name an artist at the 2020 Superbowl half time show?",
+                    "answer": ["jennifer lopez", "jlo", "shakira", "bad bunny", "j balvin", "balvin", "emme muniz", "muniz"]
+                },
+                {
+                    "question": "What year was the first-ever Wimbledon tournament held?",
+                    "answer": ["1877", "eighteen seventy seven"]
+                },
+                {
+                    "question": "In hours, how long was the longest singles match in recorded tennis history?",
+                    "answer": ["11", "eleven"]
+                },
+                {
+                    "question": "What is the name of the horse that won the 2021 Grand National?",
+                    "answer": ["minella times", "minella"]
+                },
+                {
+                    "question": "Which basketball player was Michael Jordan nicknamed after as a young high school basketball enthusiast?",
+                    "answer": ["magic johnson", "magic"]
+                },
+                {
+                    "question": "Which NYC borough is the only one that does not have a professional sports team?",
+                    "answer": ["staten island"]
                 }
             ],
             "1000": [
@@ -319,48 +407,26 @@
                 {
                     "question": "How many horses will start the Grand National at Aintree from 2024?",
                     "answer": ["34", "thirty four"]
-                }
-            ]
-        }
-    ],
-    "Music": [
-        {
-            "200": [
-                {
-                    "question": "q1",
-                    "answer": "a1"
                 },
                 {
-                    "question": "q2",
-                    "answer": "a2"
+                    "question": "Jurgen Klopp began his managerial career at which German club?",
+                    "answer": ["mainz", "mainz 05", "fsv mainz", "fsv mainz 05"]
                 },
                 {
-                    "question": "q3",
-                    "answer": "a3"
-                }
-            ],
-            "400": [
+                    "question": "What coach came off the bench to play for his team in the Stanley Cup finals?",
+                    "answer": ["lester patrick", "patrick"]
+                },
                 {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "600": [
+                    "question": "Who holds the record in basketball for the most fouls?",
+                    "answer": ["kareem", "kareem abdul"]
+                },
                 {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "800": [
+                    "question": "What country has competed the most times in the Summer Olympics without winning any medal at all?",
+                    "answer": ["liechtenstein"]
+                },
                 {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "1000": [
-                {
-                    "question": "",
-                    "answer": [""]
+                    "question": "Who remains the MLB's all-time home run leader?",
+                    "answer": ["barry bonds", "bonds"]
                 }
             ]
         }
@@ -395,6 +461,14 @@
                 {
                     "question": "What is the largest country by population?",
                     "answer": ["china"]
+                },
+                {
+                    "question": "Who was the prime minister in the UK in 2020?",
+                    "answer": ["boris johnson", "johnson"]
+                },
+                {
+                    "question": "Who was the president of the United States in 2020?",
+                    "answer": ["donald trump", "trump"]
                 }
             ],
             "400": [
@@ -425,6 +499,10 @@
                 {
                     "question": "What is the widest river in the UK?",
                     "answer": ["severn", "river severn"]
+                },
+                {
+                    "question": "What is the capital city of India?",
+                    "answer": ["new delhi"]
                 }
             ],
             "600": [
@@ -777,174 +855,6 @@
                 {
                     "question": "What part of the plant transports water from the roots to the leaves?",
                     "answer": ["xylem"]
-                }
-            ]
-        }
-    ],
-    "Brands": [
-        {
-            "200": [
-                {
-                    "question": "q1",
-                    "answer": "a1"
-                },
-                {
-                    "question": "q2",
-                    "answer": "a2"
-                },
-                {
-                    "question": "q3",
-                    "answer": "a3"
-                }
-            ],
-            "400": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "600": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "800": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "1000": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ]
-        }
-    ],
-    "Roblox": [
-        {
-            "200": [
-                {
-                    "question": "q1",
-                    "answer": "a1"
-                },
-                {
-                    "question": "q2",
-                    "answer": "a2"
-                },
-                {
-                    "question": "q3",
-                    "answer": "a3"
-                }
-            ],
-            "400": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "600": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "800": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "1000": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ]
-        }
-    ],
-    "Games": [
-        {
-            "200": [
-                {
-                    "question": "q1",
-                    "answer": "a1"
-                },
-                {
-                    "question": "q2",
-                    "answer": "a2"
-                },
-                {
-                    "question": "q3",
-                    "answer": "a3"
-                }
-            ],
-            "400": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "600": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "800": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "1000": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ]
-        }
-    ],
-    "TV / Films": [
-        {
-            "200": [
-                {
-                    "question": "q1",
-                    "answer": "a1"
-                },
-                {
-                    "question": "q2",
-                    "answer": "a2"
-                },
-                {
-                    "question": "q3",
-                    "answer": "a3"
-                }
-            ],
-            "400": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "600": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "800": [
-                {
-                    "question": "",
-                    "answer": [""]
-                }
-            ],
-            "1000": [
-                {
-                    "question": "",
-                    "answer": [""]
                 }
             ]
         }

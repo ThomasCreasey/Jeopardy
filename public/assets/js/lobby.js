@@ -1,3 +1,5 @@
+const totalValueLevels = 5 // Change this if you have less than 5 value levels, default is 5 (200, 400, 600, 800, 1000);
+
 class WSEvent {
     constructor(type, payload) {
         this.type = type;
@@ -177,18 +179,52 @@ window.onload = function() {
                     const categories = payloadData.Categories;
 
                     document.getElementById('lobby-table-categories').innerHTML = "";
+                    document.getElementById('game-table').innerHTML = "";
+
+                    const rows = []
+
+                    for(let i=0; i < totalValueLevels; i++) {
+                        rows.push([])
+                    }
 
                     categories.forEach((category, index) => {
                         const th = document.createElement('th');
                         th.innerText = category.Category
                         document.getElementById('lobby-table-categories').appendChild(th);
 
-                        for(let i = 0; i < 5; i++) {
-                            const children = document.getElementById('game-table').children[i];
-                            const disabled = category.Disabled[i];
-                            $(children.children[index]).toggleClass('disabled', disabled)
-                        }
+                        category.Values.forEach((value, i) => {
+                            rows[i].push(value)
+                        })
                     })
+
+                    for(let i=0; i < rows.length; i++) {
+                        const tr = document.createElement('tr');
+
+                        for(let j=0; j < rows[i].length; j++) {
+                            const td = document.createElement('td');
+                            td.innerText = '$'+rows[i][j];
+                            tr.appendChild(td);
+                        }
+
+                        document.getElementById('game-table').appendChild(tr)
+                    }
+
+                    // MUST CHANGE J FROM 5
+                    /*for(let i=0; i < rows.length; i++) {
+                        console.log("I: "+i)
+                        const tr = document.createElement('tr');
+                        for(let j=0; j < rows[i].length; j++) {
+                            console.log("J: "+j)
+                            console.log(rows[j])
+                            console.log(rows[j][i])
+                            const td = document.createElement('td');
+                            td.innerText = '$'+rows[j][i];
+                            tr.appendChild(td);
+                        }
+                        document.getElementById('game-table').appendChild(tr)
+                    }*/
+
+                    console.log(rows)
                     showPage('select');
                     break;
                 case 2:
@@ -216,7 +252,7 @@ window.onload = function() {
                         players.filter(player => player.username == score.username)[0].score = score.score;
                     })
 
-                    document.getElementById('view-question-question').innerText = "Answer: "+correctAnswer;
+                    document.getElementById('view-question-question').innerText = "Answer(s): "+correctAnswer;
                     break;
                 case 4:
                     const playerScores = payloadData.scores;

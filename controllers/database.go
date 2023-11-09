@@ -15,6 +15,7 @@ import (
 var DB *gorm.DB
 
 func init() {
+	os.Remove("database.sqlite")
 	var err error
 
 	newLogger := logger.New(
