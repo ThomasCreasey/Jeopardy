@@ -8,8 +8,6 @@ $(document).ready(function() {
         const data = {
             'username': username
         }
-
-        window.localStorage.setItem('username', username);
         
         $.ajax({
             url: '/create',
@@ -37,8 +35,6 @@ $(document).ready(function() {
             'username': username,
             'roomId': roomId
         }
-
-        window.localStorage.setItem('username', username);
         
         $.ajax({
             url: '/join',
