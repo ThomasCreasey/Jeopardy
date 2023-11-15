@@ -17,9 +17,12 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function(data) {
-               window.location.href = '/lobby/'+data
+                document.getElementById('create-game').disabled = false
+                window.location.href = '/lobby/'+data
             },
             error: function(err) {
+                document.getElementById('error-home-text').innerText = err.responseText.replace("\n", "");
+                document.getElementById('create-game').disabled = false;
                 console.log(err);
             },
         })
@@ -46,7 +49,8 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function(data) {
-               window.location.href = '/lobby/'+data
+                document.getElementById('join-game').disabled = false
+                window.location.href = '/lobby/'+data
             },
             error: function(err) {
                 document.getElementById('error-home-text').innerText = err.responseText.replace("\n", "");
