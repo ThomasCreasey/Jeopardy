@@ -41,6 +41,14 @@
                 {
                     "question": "How many states are there in the USA?",
                     "answer": ["50", "fifty"]
+                },
+                {
+                    "question": "What year did the WW1 end?",
+                    "answer": ["1918", "nineteen eighteen"]
+                },
+                {
+                    "question": "What year did WW2 end?",
+                    "answer": ["1945", "nineteen forty five"]
                 }
             ],
             "400": [
@@ -187,6 +195,10 @@
                 {
                     "question": "Which US state has the highest population?",
                     "answer": ["california", "cali"]
+                },
+                {
+                    "question": "Who was the second US president?",
+                    "answer": ["john adams", "adams"]
                 }
             ],
             "1000": [
@@ -217,6 +229,18 @@
                 {
                     "question": "How many people died in the Cocoanut Grove fire?",
                     "answer": ["492", "four hundred and ninety two"]
+                },
+                {
+                    "question": "In what year did the Piper Alpha explosion occur?",
+                    "answer": ["1988", "nineteen eighty eight"]
+                },
+                {
+                    "question": "How many USD did Google buy YouTube for?",
+                    "answer": ["1.65 billion", "1.65 billion dollars", "1650000000"]
+                },
+                {
+                    "answer": "On what hill is the annual cheese rolling competition held?",
+                    "question": ["coopers hill", "cooper", "coopers"]
                 }
             ]
         }
@@ -241,12 +265,20 @@
                     "answer": ["22", "twenty two"]
                 },
                 {
-                    "question": "What does the Connor McGregor do?",
+                    "question": "What sport does Connor McGregor do?",
                     "answer": ["mma", "mixed martial arts"]
                 },
                 {
                     "question": "What part of the body can you not use in football (except for goalie)?",
                     "answer": ["hands"]
+                },
+                {
+                   "question": "What is the national sport of England?",
+                   "answer": ["cricket"]
+                },
+                {
+                    "question": "What do the Americans call football?",
+                    "answer": ["soccer"]
                 }
             ],
             "400": [
@@ -289,6 +321,10 @@
                 {
                     "question": "Who has the most points in NBA history?",
                     "answer": ["lebron james", "lebron"]
+                },
+                {
+                    "question": "Who was the manager of the England national men's football team in 2022?",
+                    "answer": ["gareth southgate", "southgate"]
                 }
             ],
             "600": [
@@ -339,6 +375,10 @@
                 {
                     "question": "which sports brand was founded after a family feud between brothers and shoe manufacturers Adi and Rudi Dassler?",
                     "answer": ["puma"]
+                },
+                {
+                    "question": "Which country won the most medals in the 2016 Olympics?",
+                    "answer": ["usa", "united states"]
                 }
             ],
             "800": [
@@ -393,6 +433,14 @@
                 {
                     "question": "Which NYC borough is the only one that does not have a professional sports team?",
                     "answer": ["staten island"]
+                },
+                {
+                    "question": "How many feathers are on a regulation standard shuttlecock?",
+                    "answer": ["16", "sixteen"]
+                },
+                {
+                    "question": "Who was the manager of the England national women's football team in 2023?",
+                    "answer": ["sarina weigman", "weigman"]
                 }
             ],
             "1000": [
@@ -469,6 +517,10 @@
                 {
                     "question": "Who was the president of the United States in 2020?",
                     "answer": ["donald trump", "trump"]
+                },
+                {
+                    "question": "How many continents are there?",
+                    "answer": ["7", "seven"]
                 }
             ],
             "400": [
@@ -503,6 +555,18 @@
                 {
                     "question": "What is the capital city of India?",
                     "answer": ["new delhi"]
+                },
+                {
+                    "question": "What is the capital city of Australia?",
+                    "answer": ["canberra"]
+                },
+                {
+                    "question": "What continent does Australia belong to?",
+                    "answer": ["oceania"]
+                },
+                {
+                    "question": "How many oceans are there?",
+                    "answer": ["5", "five"]
                 }
             ],
             "600": [
@@ -529,6 +593,10 @@
                 {
                     "question": "Which country invested in the most renewable energy in 2019?",
                     "answer": ["china"]
+                },
+                {
+                    "questoin": "Which country has the most volcanoes?",
+                    "answer": ["indonesia"]
                 }
             ],
             "800": [
@@ -621,6 +689,10 @@
                 {
                     "question": "What is the largest island in the Pacific Ocean?",
                     "answer": ["new guinea"]
+                },
+                {
+                    "question": "How deep is the deepest part of the ocean in metres?",
+                    "answer": ["11034", "eleven thousand and thirty four"]
                 }
             ]
         }
@@ -663,6 +735,10 @@
                 {
                     "question": "What does a Geiger counter measure?",
                     "answer": ["radiation"]
+                },
+                {
+                    "question": "In what year was the first atomic bomb detonated?",
+                    "answer": ["1945", "nineteen forty five"]
                 }
             ],
             "400": [
@@ -817,6 +893,10 @@
                 {
                     "question": "What kind of energy does an unlit match have?",
                     "answer": ["chemical"]
+                },
+                {
+                    "question": "Which scientist was the first to discover the existence of radio waves?",
+                    "answer": ["heinrich hertz", "hertz"]
                 }
             ],
             "1000": [
@@ -855,6 +935,236 @@
                 {
                     "question": "What part of the plant transports water from the roots to the leaves?",
                     "answer": ["xylem"]
+                },
+                {
+                    "question": "Who is referred to as the 'father of the hydrogen bomb'?",
+                    "answer": ["edward teller", "teller"]
+                }
+            ]
+        }
+    ],
+    "History": [
+        {
+            "200": [
+                {
+                    "question": "What year did WW1 start?",
+                    "answer": ["1914", "nineteen fourteen"]
+                },
+                {
+                    "question": "What year did WW2 start?",
+                    "answer": ["1939", "nineteen thirty nine"]
+                },
+                {
+                    "question": "Name a member of the Axis powers in WW2?",
+                    "answer": ["germany", "italy", "japan"]
+                },
+                {
+                    "question": "Name one of 'The Big Three' in WW2?",
+                    "answer": ["uk", "usa", "france", "russia", "soviet union"]
+                },
+                {
+                    "question": "In which month is remembrance day?",
+                    "answer": ["november"]
+                },
+                {
+                    "question": "Who led the Soviet Union during WW2?",
+                    "answer": ["joseph stalin", "stalin"]
+                },
+                {
+                    "question": "What common water feature surrounded historic castles?",
+                    "answer": ["moat"]
+                },
+                {
+                    "question": "Who was the longest reigning monarch in British history?",
+                    "answer": ["queen elizabeth II", "elizabeth II", "elizabeth", "queen elizabeth", "lizzy"]
+                },
+                {
+                    "question": "How many nations are in the UK?",
+                    "answer": ["4", "four"]
+                }
+            ],
+            "400": [
+                {
+                    "question": "What year did the Titanic sink?",
+                    "answer": ["1912", "nineteen twelve"]
+                },
+                {
+                    "question": "What year was the great fire of London?",
+                    "answer": ["1666", "sixteen sixty six"]
+                },
+                {
+                    "question": "How many wives did Henry VIII have?",
+                    "answer": ["6", "six"]
+                },
+                {
+                    "question": "In what year was the battle of Hastings?",
+                    "answer": ["1066", "ten sixty six"]
+                },
+                {
+                    "question": "How did Hitler die?",
+                    "answer": ["suicide"]
+                },
+                {
+                    "question": "What was the name of the first bridge across the River Thames?",
+                    "answer": ["london bridge", "london", "the london bridge"]
+                },
+                {
+                    "question": "In 1594, which theatre did Shakespeare join?",
+                    "answer": ["the globe", "globe", "globe theatre"]
+                },
+                {
+                    "question": "Which terrorist group was responsible for the 9/11 attacks?",
+                    "answer": ["al qaeda", "george w bush"]
+                },
+                {
+                    "question": "Where was Cleopatras birthplace?",
+                    "answer": ["greece"]
+                },
+                {
+                    "question": "What was the name of the book written by Hitler during his time in prison?",
+                    "answer": ["mein kampf"]
+                },
+                {
+                    "question": "Which country did the UK fight against in the Falklands war?",
+                    "answer": ["argentina"]
+                },
+                {
+                    "question": "Which country lost the most soldiers in WW2?",
+                    "answer": ["soviet union", "russia"]
+                }
+            ],
+            "600": [
+                {
+                    "question": "When did the Great Depression start?",
+                    "answer": ["1929", "nineteen twenty nine"]
+                },
+                {
+                    "question": "When did the Great Depression end?",
+                    "answer": ["1939", "nineteen thirty nine"]
+                },
+                {
+                    "question": "What year did the Black Death die down?",
+                    "answer": ["1353", "thirteen fifty three"]
+                },
+                {
+                    "question": "What year did the Great Plague of London end?",
+                    "answer": ["1666", "sixteen sixty six"]
+                },
+                {
+                    "question": "What year did the Great Plague of London start?",
+                    "answer": ["1665", "sixteen sixty five"]
+                },
+                {
+                    "question": "How many US presidents have been assassinated?",
+                    "answer": ["4", "four"]
+                },
+                {
+                    "question": "Which country did the Easter Rising take place in?",
+                    "answer": ["ireland"]
+                },
+                {
+                    "question": "Who was the first man to swim the English Channel?",
+                    "answer": ["matthew webb", "webb"]
+                },
+                {
+                    "question": "What was the first toy to be advertised on television?",
+                    "answer": ["mr potato head", "potato head"]
+                },
+                {
+                    "question": "In what country did Kim Jong Un receive his education?",
+                    "answer": ["switzerland"]
+                },
+                {
+                    "question": "What was the name of the first proper castles built in England?",
+                    "answer": ["motte and bailey", "motte", "bailey"]
+                },
+                {
+                    "question": "Which country was the first to legalize same-sex marriage?",
+                    "answer": ["netherlands", "the netherlands"]
+                },
+                {
+                    "question": "How many member nations are in the UN?",
+                    "answer": ["193", "one hundred and ninety three"]
+                }
+            ],
+            "800": [
+                {
+                    "question": "In what year did Isaac Newton die?",
+                    "answer": ["1727", "seventeen twenty seven"]
+                },
+                {
+                    "question": "What year did the Black Death reach London?",
+                    "answer": ["1348", "thirteen forty eight"]
+                },
+                {
+                    "question": "Who led France during the battle of Hastings?",
+                    "answer": ["harold godwinson", "godwinson"]
+                },
+                {
+                    "question": "How many years did the 100 years war last?",
+                    "answer": ["116", "one hundred and sixteen"]
+                },
+                {
+                    "question": "Who was the shortest running US President?",
+                    "answer": ["william henry harrison", "henry harrison", "harrison"]
+                },
+                {
+                    "question": "Which King of England was executed in 1649?",
+                    "answer": ["charles I", "charles the first", "king charles I", "king charles the first", "king charles", "charles"]
+                },
+                {
+                    "question": "When did the first space shuttle launch?",
+                    "answer": ["1981", "nineteen eighty one"]
+                },
+                {
+                    "question": "What is the name of the first human civilization?",
+                    "answer": ["mesopotamia"]
+                },
+                {
+                    "question": "What category was Hurricane Katrina when it made landfall in 2005?",
+                    "answer": ["category 3", "category three", "3", "three"]
+                },
+                {
+                    "question": "Who invented the first commercial combustion engine in 1872?",
+                    "answer": ["george brayton", "brayton"]
+                }
+            ],
+            "1000": [
+                {
+                    "question": "The ancient city of Rome was built on how many hills?",
+                    "answer": ["7", "seven"]
+                },
+                {
+                    "question": "Octavian defeated Mark Anthony in which famous naval battle?",
+                    "answer": ["battle of actium", "actium"]
+                },
+                {
+                    "question": "Who was the first black Senator in the United States?",
+                    "answer": ["carol moseley braun", "braun", "moseley"]
+                },
+                {
+                    "question": "Which Roman Emporer built a wall across Northern England?",
+                    "answer": ["hadrian"]
+                },
+                {
+                    "question": "Who painted the Sistine Chapel?",
+                    "answer": ["michelangelo"]
+                },
+                {
+                    "question": "How many KT of TNT was the Hiroshima bomb?",
+                    "answer": ["15", "fifteen"]
+                },
+                {
+                    "question": "What was the exact date of the attack on Pearl Harbour?",
+                    "answer": ["7th december 1941", "december 7th 1941", "07/12/1941", "12/07/1941"]
+                },
+                {
+                    "question": "Which human ancestor was the first to discover fire?",
+                    "answer": ["homo erectus"]
+                },
+                {
+                    "question": "What was the name of the first Nazi concentration camp?",
+                    "answer": ["dachau"]
                 }
             ]
         }
