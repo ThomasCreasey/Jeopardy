@@ -84,6 +84,7 @@ window.onload = function() {
     }
 
     $('#start-game-button').click(function() {
+        console.log("Is Host: " + isHost)
         if (!isHost) return;
         sendEvent("client_start_game", null)
     })
@@ -94,13 +95,11 @@ window.onload = function() {
 
     conn.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        console.log(data)
         if(data.type == "server_successfully_joined") {
             const payload = data.payload;
             username = payload.username;
             isHost = payload.isHost;
             updateHost();
-
         }
         else if (data.type == "server_set_host") {
             if (data.payload == username) {
@@ -170,7 +169,6 @@ window.onload = function() {
                 4: Game Over
                 5: Waiting for user to reconnect
             */
-                console.log(state)
             switch (state) {
                 case 0:
                     showPage('lobby')
