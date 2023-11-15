@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"jeopardy/controllers"
 	"jeopardy/types"
 	"jeopardy/utils"
 	"sort"
@@ -469,6 +470,8 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		}
 
 		gameState.Data = dataBytes
+
+		controllers.DB.Delete(&types.Room{}, c.manager.roomId) // Delete room from database
 	case 5:
 		var roomState5 RoomState5
 		roomState5.Username = string(event.Payload)
@@ -682,39 +685,35 @@ func AnswerHandler(event Event, c *Client) error {
 		}
 
 		c.lastAnswer = answer.Answer
+		lowercaseAnswer := strings.ToLower(answer.Answer) // Convert answer to lowercase
 
-		var highestScore float32
+		var highestScore float32 // Will store the highest similarity score
 		for _, quesAns := range c.manager.questionData.Answers {
-			answerScore := utils.CompareTwoStrings(answer.Answer, string(quesAns))
-			if answerScore > highestScore {
+			answerScore := utils.CompareTwoStrings(lowercaseAnswer, string(quesAns)) // Compare answer to correct answer
+			if answerScore > highestScore {                                          // If the score's similarity is higher than the current highest, update it
 				highestScore = answerScore
 			}
 		}
 
-		if highestScore >= 0.8 {
-			utils.Log("Correct Answer")
+		if highestScore >= 0.8 { // If answer is at least 80% similar, mark as correct
 			c.manager.correctClient = c.username
 			c.score += c.manager.questionData.Value
 
 			RoundOver(c)
 		} else {
-			utils.Log("Incorrect Answer")
-			c.manager.waitingFor = ""
+			c.manager.waitingFor = "" // Reset waiting for
 
 			if CheckIfRoundOver(c) {
 				return nil
 			}
 
 			if !c.manager.quesChClosed {
-				utils.Log("Closing answer channel")
 				c.manager.closeAnsCh <- true
 			}
 			if !c.manager.readLetterChClosed && c.manager.readLetterChPaused {
-				utils.Log("Incorrect Answer: Resuming read letter channel")
 				c.manager.resumeReadLetterCh <- true
 			}
 			if !c.manager.quesChClosed && c.manager.quesChPaused {
-				utils.Log("Resuming question channel")
 				c.manager.resumeQuesCh <- true
 			}
 
