@@ -50,7 +50,13 @@ func PostCreateRoom(w http.ResponseWriter, r *http.Request) {
 
 	session, _ := controllers.Store.Get(r, "jeopardy")
 	session.Values["username"] = body.Username
-	session.Save(r, w)
+	err = session.Save(r, w)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		utils.Log(err)
+		return
+	}
 
 	roomCodeTaken := true
 
