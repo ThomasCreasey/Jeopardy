@@ -566,7 +566,13 @@ var upgrader = websocket.Upgrader{
 
 func HandleWs(w http.ResponseWriter, r *http.Request) {
 	roomId := r.URL.Query().Get("roomId")
-	session, _ := controllers.Store.Get(r, "jeopardy")
+	session, err := controllers.Store.Get(r, "jeopardy")
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		utils.Log(err)
+		return
+	}
 
 	var username string
 
