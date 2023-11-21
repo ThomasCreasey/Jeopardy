@@ -21,6 +21,7 @@ func main() {
 		Concise: true,
 	})
 
+	// Defines Content Security Policy
 	cspBuilder := cspbuilder.Builder{
 		Directives: map[string][]string{
 			cspbuilder.DefaultSrc: {"'self'"},
@@ -30,6 +31,8 @@ func main() {
 		},
 	}
 
+	// Sets up secure middleware
+	// Set IsDevelopment to false in production
 	secureMiddleware := secure.New(secure.Options{
 		AllowedHosts:          []string{"example\\.com", ".*\\.example\\.com"},
 		AllowedHostsAreRegex:  true,
@@ -46,10 +49,6 @@ func main() {
 		ContentSecurityPolicy: cspBuilder.MustBuild(),
 		IsDevelopment:         true,
 	})
-
-	// CHANGE IN PRODUCTION
-	// CHANGE TO SECURE TRUE IN PRODUCTION
-	//csrfMiddleware := csrf.Protect([]byte(os.Getenv("CSRF_KEY")), csrf.Secure(false), csrf.MaxAge(0), csrf.SameSite(csrf.SameSiteStrictMode))
 
 	r := chi.NewRouter()
 	if useLogs {
