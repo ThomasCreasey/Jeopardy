@@ -14,6 +14,7 @@ var (
 	fileName   = "categories.json" // Replace with your actual file name
 )
 
+// Loads the data from the categories.json file into a cache
 func init() {
 	jsonData, err := os.ReadFile(fileName)
 	if err != nil {
@@ -26,6 +27,9 @@ func init() {
 	}
 }
 
+// Gets up to 5 categories from the cache
+// Also appends a random question from each value in the category
+// Returns an array of CategoryData
 func GetCategories() []types.CategoryData {
 	cacheMutex.Lock()
 	defer cacheMutex.Unlock()
