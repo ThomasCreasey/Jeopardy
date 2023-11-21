@@ -53,15 +53,15 @@
             ],
             "400": [
                 {
-                    "question": "What is the chemical symbal for gold?",
+                    "question": "What is the chemical symbol for gold?",
                     "answer": ["au"]
                 },
                 {
-                    "question": "What is the chemical symbal for silver?",
+                    "question": "What is the chemical symbol for silver?",
                     "answer": ["ag"]
                 },
                 {
-                    "question": "What is the chemical symbal for iron?",
+                    "question": "What is the chemical symbol for iron?",
                     "answer": ["fe"]
                 },
                 {
