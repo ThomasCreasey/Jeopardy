@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	"jeopardy/controllers"
 	"jeopardy/types"
 	"jeopardy/utils"
 	"sort"
@@ -61,8 +62,13 @@ type RoomState5 struct {
 }
 
 func StartGameHandler(event Event, c *Client) error {
+	utils.Log("Starting Game")
+	utils.Log("Host: " + strconv.FormatBool(c.host))
+	utils.Log("Started: " + strconv.FormatBool(c.manager.started))
 	if c.host && !c.manager.started { // Ensure user is host, and game isn't already started
+
 		if len(c.manager.clients) < 2 { // Ensure there are at least 2 players
+			utils.Log("Not enough players")
 			return nil
 		}
 
@@ -88,17 +94,21 @@ func StartGameHandler(event Event, c *Client) error {
 }
 
 func readLetters(message string, manager *Manager) {
-	var builtString string
+	var builder strings.Builder
 	for _, letter := range message {
-		builtString += string(letter)
+		builder.WriteString(string(letter))
 
 		if letter == ' ' {
 			continue
 		}
 
+		builtString := builder.String()
+
 		if builtString == message {
 			utils.Log("Closing Read Letter Ch: Built")
+			manager.Lock()
 			manager.readLetterChClosed = true
+			manager.Unlock()
 			return
 		}
 		select {
@@ -264,6 +274,7 @@ func SelectQuestionHandler(event Event, c *Client) error {
 								select {
 								case <-ticker.C:
 									if !utils.CheckQuestionData(c.manager.questionData) {
+										utils.Log("Question Data Invalid")
 										ticker.Stop()
 										return
 									}
@@ -469,6 +480,8 @@ func UpdateGameStateHandler(event Event, c *Client) error {
 		}
 
 		gameState.Data = dataBytes
+
+		controllers.DB.Delete(&types.Room{}, c.manager.roomId) // Delete room from database
 	case 5:
 		var roomState5 RoomState5
 		roomState5.Username = string(event.Payload)
@@ -537,10 +550,12 @@ func BuzzHandler(event Event, c *Client) error {
 		c.manager.buzzed = append(c.manager.buzzed, c.username)
 
 		if !c.manager.quesChClosed {
+			utils.Log("Ques Ch not closed")
 			c.manager.pauseQuesCh <- true
 		}
 
 		if !c.manager.readLetterChClosed {
+			utils.Log("Read Letter Ch not closed")
 			c.manager.pauseReadLetterCh <- true
 		}
 
@@ -682,39 +697,35 @@ func AnswerHandler(event Event, c *Client) error {
 		}
 
 		c.lastAnswer = answer.Answer
+		lowercaseAnswer := strings.ToLower(answer.Answer) // Convert answer to lowercase
 
-		var highestScore float32
+		var highestScore float32 // Will store the highest similarity score
 		for _, quesAns := range c.manager.questionData.Answers {
-			answerScore := utils.CompareTwoStrings(answer.Answer, string(quesAns))
-			if answerScore > highestScore {
+			answerScore := utils.CompareTwoStrings(lowercaseAnswer, string(quesAns)) // Compare answer to correct answer
+			if answerScore > highestScore {                                          // If the score's similarity is higher than the current highest, update it
 				highestScore = answerScore
 			}
 		}
 
-		if highestScore >= 0.8 {
-			utils.Log("Correct Answer")
+		if highestScore >= 0.8 { // If answer is at least 80% similar, mark as correct
 			c.manager.correctClient = c.username
 			c.score += c.manager.questionData.Value
 
 			RoundOver(c)
 		} else {
-			utils.Log("Incorrect Answer")
-			c.manager.waitingFor = ""
+			c.manager.waitingFor = "" // Reset waiting for
 
 			if CheckIfRoundOver(c) {
 				return nil
 			}
 
 			if !c.manager.quesChClosed {
-				utils.Log("Closing answer channel")
 				c.manager.closeAnsCh <- true
 			}
 			if !c.manager.readLetterChClosed && c.manager.readLetterChPaused {
-				utils.Log("Incorrect Answer: Resuming read letter channel")
 				c.manager.resumeReadLetterCh <- true
 			}
 			if !c.manager.quesChClosed && c.manager.quesChPaused {
-				utils.Log("Resuming question channel")
 				c.manager.resumeQuesCh <- true
 			}
 

@@ -15,6 +15,7 @@ function createSvg(username, score, colour) {
   const style = document.createElementNS("http://www.w3.org/2000/svg", "style");
   style.textContent = `
     .cls-${uniqueID}-1 {
+      font-family: TitilliumWeb-Bold, 'Titillium Web';
       fill: #8b5e3c;
     }
 

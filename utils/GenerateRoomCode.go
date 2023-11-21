@@ -2,6 +2,8 @@ package utils
 
 import "math/rand"
 
+// Generates a random 4 character string
+// Used for the room code
 func GenerateRoomCode() string {
 	characters := "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 

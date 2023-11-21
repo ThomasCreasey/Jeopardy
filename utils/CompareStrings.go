@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Compares two string values using an algorithm to provide a score of similarity between 0.0 and 1.0
 func CompareTwoStrings(stringOne, stringTwo string) float32 {
 	removeSpaces(&stringOne, &stringTwo)
 	removeNonAlphanumeric(&stringOne, &stringTwo)
