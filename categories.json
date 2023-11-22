@@ -239,8 +239,8 @@
                     "answer": ["1.65 billion", "1.65 billion dollars", "1650000000"]
                 },
                 {
-                    "answer": "On what hill is the annual cheese rolling competition held?",
-                    "question": ["coopers hill", "cooper", "coopers"]
+                    "question": "On what hill is the annual cheese rolling competition held?",
+                    "answer": ["coopers hill", "cooper", "coopers"]
                 }
             ]
         }
@@ -291,8 +291,8 @@
                     "answer": ["argentina"]
                 },
                 {
-                    "answer": "Which WWE star can you not see?",
-                    "question": ["john cena", "cena", "my mate john"]
+                    "question": "Which WWE star can you not see?",
+                    "answer": ["john cena", "cena", "my mate john"]
                 },
                 {
                     "question": "Why was the 1942 World Cup cancelled?",
