@@ -546,8 +546,10 @@ func BuzzHandler(event Event, c *Client) error {
 			return nil
 		}
 
+		c.manager.Lock()
 		c.manager.waitingFor = c.username
 		c.manager.buzzed = append(c.manager.buzzed, c.username)
+		c.manager.Unlock()
 
 		if !c.manager.quesChClosed {
 			utils.Log("Ques Ch not closed")
@@ -595,7 +597,9 @@ func BuzzHandler(event Event, c *Client) error {
 						if !c.manager.quesChClosed && c.manager.quesChPaused {
 							utils.Log("Times up: Resuming question ch")
 							c.manager.resumeQuesCh <- true
+							c.manager.Lock()
 							c.manager.waitingFor = ""
+							c.manager.Unlock()
 
 							if !c.manager.readLetterChClosed {
 								time.Sleep(1 * time.Second)
@@ -647,7 +651,9 @@ func BuzzHandler(event Event, c *Client) error {
 				c.manager.resumeQuesCh <- true
 
 				if !c.manager.readLetterChClosed && c.manager.readLetterChPaused {
+					c.manager.Lock()
 					c.manager.waitingFor = ""
+					c.manager.Unlock()
 					c.manager.resumeReadLetterCh <- true
 				}
 			}
