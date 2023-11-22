@@ -73,7 +73,6 @@ func GetCategories() []types.CategoryData {
 						},
 					})
 				}
-
 			}
 
 			counter++
