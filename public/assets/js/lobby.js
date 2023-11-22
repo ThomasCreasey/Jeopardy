@@ -1,6 +1,5 @@
 const totalValueLevels = 5 // Change this if you have less than 5 value levels, default is 5 (200, 400, 600, 800, 1000);
 const wsUrl = 'ws://localhost:8080/ws';
-
 class WSEvent {
     constructor(type, payload) {
         this.type = type;
@@ -279,6 +278,8 @@ window.onload = function() {
             if (lastBuzzer == username) {
                 document.getElementById('answer-input').value = "";
                 answerModal.show();
+
+                document.getElementById('answer-input').focus();
                 console.log("YOU BUZZED BOZO")   
             }
         }
@@ -347,9 +348,9 @@ window.onload = function() {
             Answer: answer
         }
 
-        console.log(answer)
-
         sendEvent("client_answer", outgoingEvent);
+
+        answerModal.hide();
     })
     
 };

@@ -26,7 +26,8 @@ $(document).ready(function() {
         })
     })
 
-    $('#join-game').on('click', function() {
+    $('#join-game').on('submit', function(e) {
+        e.preventDefault();
         const username = document.getElementById('username').value;
         if(!username) return;
         const roomId = document.getElementById('room-code').value;
