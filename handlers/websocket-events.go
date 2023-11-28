@@ -108,7 +108,19 @@ func readLetters(message string, manager *Manager) {
 			utils.Log("Closing Read Letter Ch: Built")
 			manager.Lock()
 			manager.readLetterChClosed = true
+			manager.questionState = builtString
 			manager.Unlock()
+
+			data, err := json.Marshal(builtString)
+			if err != nil {
+				utils.Log(err)
+			}
+
+			manager.Broadcast(Event{
+				Type:    EventUpdateQuestion,
+				Payload: data,
+			})
+
 			return
 		}
 		select {

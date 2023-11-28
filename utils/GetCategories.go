@@ -58,21 +58,28 @@ func GetCategories() []types.CategoryData {
 				valueQuestions := v.([]interface{})
 
 				randomIndex := rand.Intn(len(valueQuestions))
-				question, ok := valueQuestions[randomIndex].(map[string]interface{})
-				if ok {
-					answers := make([]string, 0)
-					for _, answer := range question["answer"].([]interface{}) {
-						answers = append(answers, answer.(string))
+				var question map[string]interface{}
+
+				for {
+					question, ok = valueQuestions[randomIndex].(map[string]interface{})
+					if ok && question != nil {
+						break
 					}
-					categories[counter].Values = append(categories[counter].Values, types.ValueData{
-						Value: k,
-						Question: types.QuestionData{
-							Question: question["question"].(string),
-							Answers:  answers,
-							Answered: false,
-						},
-					})
+					randomIndex = rand.Intn(len(valueQuestions))
 				}
+				answers := make([]string, 0)
+				for _, answer := range question["answer"].([]interface{}) {
+					answers = append(answers, answer.(string))
+				}
+				categories[counter].Values = append(categories[counter].Values, types.ValueData{
+					Value: k,
+					Question: types.QuestionData{
+						Question: question["question"].(string),
+						Answers:  answers,
+						Answered: false,
+					},
+				})
+
 			}
 
 			counter++

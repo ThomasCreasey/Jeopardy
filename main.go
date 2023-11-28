@@ -34,7 +34,7 @@ func main() {
 	// Sets up secure middleware
 	// Set IsDevelopment to false in production
 	secureMiddleware := secure.New(secure.Options{
-		AllowedHosts:          []string{"example\\.com", ".*\\.example\\.com"},
+		AllowedHosts:          []string{"https://" + os.Getenv("DOMAIN"), "*." + os.Getenv("DOMAIN")},
 		AllowedHostsAreRegex:  true,
 		HostsProxyHeaders:     []string{"X-Forwarded-Host"},
 		SSLRedirect:           true,
@@ -47,7 +47,7 @@ func main() {
 		ContentTypeNosniff:    true,
 		BrowserXssFilter:      true,
 		ContentSecurityPolicy: cspBuilder.MustBuild(),
-		IsDevelopment:         true,
+		IsDevelopment:         false,
 	})
 
 	r := chi.NewRouter()
